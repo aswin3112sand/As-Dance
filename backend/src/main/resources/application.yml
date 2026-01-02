@@ -1,0 +1,86 @@
+server:
+  port: 8085
+  compression:
+    enabled: true
+    min-response-size: 1024
+    mime-types: application/json,application/javascript,text/javascript,text/html,text/xml,text/plain,text/css,image/svg+xml
+
+spring:
+  profiles:
+    default: dev
+  security:
+    user:
+      name: 
+      password: 
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration
+  thymeleaf:
+    cache: false
+  web:
+    resources:
+      cache:
+        period: 0
+      chain:
+        cache: false
+  devtools:
+    restart:
+      enabled: true
+    livereload:
+      enabled: true
+  h2:
+    console:
+      enabled: true
+  datasource:
+    url: jdbc:h2:mem:asdance;MODE=MYSQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driverClassName: org.h2.Driver
+    username: sa
+    password: 
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+
+app:
+  jwt:
+    secret: ${APP_JWT_SECRET:}
+    issuer: as-dance
+    expMinutes: 43200
+  access:
+    allowedEmail: ${APP_ALLOWED_EMAIL:}
+    allowedUserId: ${APP_ALLOWED_USER_ID:U1001}
+    allowedPassword: ${APP_ALLOWED_PASSWORD:}
+  payment:
+    mock: false
+    razorpay:
+      keyId: ${RAZORPAY_KEY_ID:}
+      keySecret: ${RAZORPAY_KEY_SECRET:}
+  brand:
+    name: AS DANCE
+  support:
+    whatsapp: https://wa.me/918825602356
+  mail:
+    enabled: false
+    from: businessaswin@gmail.com
+    admin: businessaswin@gmail.com
+  notify:
+    adminWhatsapp: +918825602356
+  whatsapp:
+    enabled: false
+    provider: meta
+    metaToken: 
+    metaPhoneNumberId: 
+    metaApiBase: https://graph.facebook.com/v19.0
+    gupshupApiKey: 
+    gupshupAppName: 
+    gupshupUrl: https://api.gupshup.io/sm/api/v1/msg
+  admin:
+    email: admin@asdance.com
+    password: change_me
+  links:
+    demo1: https://drive.google.com/
+    demo2: https://drive.google.com/
+    demo3: https://drive.google.com/
+    demo4: https://drive.google.com/
+    unlockedVideo: ${EPDI_LINK:}

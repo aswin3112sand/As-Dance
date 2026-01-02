@@ -1,0 +1,29 @@
+## dependencies
+node_modules/
+frontend/node_modules/
+backend/target/
+frontend/dist/
+frontend/.vite/
+
+## logs
+*.log
+hs_err_pid*.log
+replay_pid*.log
+backend/build_out.txt
+backend/debug_out.txt
+
+## env/local overrides
+.env
+.env.*
+backend/src/main/resources/application-local.properties
+backend/src/main/resources/application-local.yml
+
+## IDE/OS
+.vscode/
+.idea/
+*.iml
+.DS_Store
+Thumbs.db
+
+## caches
+.m2/

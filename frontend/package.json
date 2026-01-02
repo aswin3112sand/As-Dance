@@ -1,0 +1,30 @@
+{
+  "name": "as-dance-frontend",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "cross-env ROLLUP_USE_WASM=1 vite build",
+    "images:webp": "node scripts/convert-images.mjs",
+    "build:backend": "npm run build && node scripts/sync-to-backend.mjs",
+    "preview": "vite preview",
+    "patch-rollup-wasm": "node scripts/apply-rollup-wasm.js",
+    "postinstall": "npm run patch-rollup-wasm"
+  },
+  "dependencies": {
+    "@rollup/wasm-node": "^4.54.0",
+    "bootstrap": "^5.3.3",
+    "gsap": "^3.12.5",
+    "lucide-react": "^0.562.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.26.2"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.1",
+    "cross-env": "^7.0.3",
+    "sharp": "^0.33.5",
+    "vite": "^5.4.2"
+  }
+}

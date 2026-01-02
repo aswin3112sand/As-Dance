@@ -1,0 +1,28 @@
+services:
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_DATABASE: asdance
+      MYSQL_USER: asdance
+      MYSQL_PASSWORD: asdance123
+      MYSQL_ROOT_PASSWORD: root123
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  backend:
+    build: ./backend
+    ports:
+      - "8085:8085"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/asdance?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: asdance
+      SPRING_DATASOURCE_PASSWORD: asdance123
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      APP_PAYMENT_MOCK: "true"
+    depends_on:
+      - mysql
+
+volumes:
+  mysql_data:
