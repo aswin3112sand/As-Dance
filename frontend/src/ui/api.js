@@ -3,6 +3,25 @@ function getCookie(name) {
   return match ? decodeURIComponent(match[1]) : "";
 }
 
+function clearOldCache() {
+  if ("caches" in window && import.meta.env.PROD) {
+    caches.keys().then((cacheNames) => {
+      cacheNames.forEach((cacheName) => {
+        caches.delete(cacheName);
+      });
+    });
+  }
+}
+
+function initNewCache() {
+  if ("caches" in window && import.meta.env.PROD) {
+    caches.open("as-dance-v1").catch(() => {});
+  }
+}
+
+clearOldCache();
+initNewCache();
+
 export function apiFetch(url, options = {}) {
   const opts = { credentials: "include", ...options };
   const method = (opts.method || "GET").toUpperCase();

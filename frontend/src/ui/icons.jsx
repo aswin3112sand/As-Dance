@@ -1,7 +1,7 @@
 import React from 'react';
 import {
   ArrowRight,
-  Headset,
+  Headphones,
   Infinity,
   MessageCircle,
   Play,
@@ -9,7 +9,7 @@ import {
   Sparkles,
   Star,
   Zap,
-  UserRound,
+  User,
   UserPlus,
   CreditCard,
   PlayCircle,
@@ -48,7 +48,7 @@ export const WhatsApp = ({ size = 24, color = "currentColor", ...props }) => (
 
 export {
   ArrowRight,
-  Headset,
+  Headphones,
   Infinity,
   MessageCircle,
   Play,
@@ -56,7 +56,7 @@ export {
   Sparkles,
   Star,
   Zap,
-  UserRound,
+  User,
   UserPlus,
   CreditCard,
   PlayCircle,

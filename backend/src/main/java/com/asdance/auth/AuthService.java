@@ -46,7 +46,7 @@ public class AuthService {
         .hasAccess(false)
         .enabled(true)
         .build();
-    return userRepository.save(Objects.requireNonNull(user));
+    return userRepository.save(user);
   }
 
   public AppUser authenticate(String email, String password) {

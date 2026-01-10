@@ -37,6 +37,23 @@ SPRING_PROFILES_ACTIVE=dev mvn spring-boot:run
 
 Then run backend again.
 
+## Tests
+### Frontend
+```bash
+cd frontend
+npm test
+```
+Run once (CI style):
+```bash
+npm run test:run
+```
+
+### Backend
+```bash
+cd backend
+mvn test
+```
+
 ## Login/Payment Flow
 - Create account: /register
 - Login: /login

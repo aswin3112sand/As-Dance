@@ -33,7 +33,7 @@ const LEVELS = [
 
 export default function ExploreCategories() {
     return (
-        <div className="explore-grid">
+        <div className="explore-grid" style={{ border: "2px solid red" }}>
             {LEVELS.map((level) => (
                 <div
                     className="explore-card instruction-card"
@@ -50,8 +50,8 @@ export default function ExploreCategories() {
                             alt={`${level.heading} preview`}
                             loading="lazy"
                             decoding="async"
-                            width="640"
-                            height="420"
+                            width="1280"
+                            height="720"
                         />
                     </div>
                     <div className="instruction-caption">{level.caption}</div>

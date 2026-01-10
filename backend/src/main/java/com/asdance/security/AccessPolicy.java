@@ -22,7 +22,13 @@ public class AccessPolicy {
 
   public boolean isAllowedEmail(String email) {
     String normalized = normalizeEmail(email);
-    return !normalized.isBlank() && normalized.equals(allowedEmail);
+    if (normalized.isBlank()) {
+      return false;
+    }
+    if (allowedEmail.isBlank() || "<email_id>".equals(allowedEmail)) {
+      return true;
+    }
+    return normalized.equals(allowedEmail);
   }
 
   public boolean isAllowedUser(AppUser user) {

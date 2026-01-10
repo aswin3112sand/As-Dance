@@ -7,20 +7,35 @@ gsap.registerPlugin(ScrollTrigger);
 export default function ParallaxBackgrounds() {
     const rootRef = useRef(null);
 
+    // Generate stars only once
+    const stars = React.useMemo(() => {
+        return Array.from({ length: 60 }).map((_, i) => ({
+            id: i,
+            top: `${Math.random() * 100}%`,
+            left: `${Math.random() * 100}%`,
+            size: Math.random() * 3 + 1 + "px",
+            animationDelay: `${Math.random() * 5}s`,
+            opacity: Math.random() * 0.7 + 0.3,
+            colorClass: Math.random() > 0.7 ? (Math.random() > 0.5 ? "blue" : "purple") : ""
+        }));
+    }, []);
+
     useLayoutEffect(() => {
         const ctx = gsap.context(() => {
             const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
             if (!prefersReducedMotion) {
-                gsap.to(".mesh-orb", {
-                    y: -40,
-                    x: 18,
-                    duration: 6,
+                // Animate Nebula Clouds instead of mesh-orbs
+                gsap.to(".nebula-cloud", {
+                    y: -30,
+                    x: 10,
+                    scale: 1.1,
+                    duration: 8,
                     ease: "sine.inOut",
                     yoyo: true,
                     repeat: -1,
                     stagger: {
-                        each: 0.6,
+                        each: 0.5,
                         from: "random"
                     }
                 });
@@ -64,41 +79,55 @@ export default function ParallaxBackgrounds() {
 
     return (
         <div className="parallax-root" ref={rootRef} aria-hidden="true">
-            {/* Hero BG */}
+            {/* Main Star Field Layer - Persistent */}
+            <div className="star-field">
+                {stars.map((star) => (
+                    <div
+                        key={star.id}
+                        className={`galaxy-star ${star.colorClass}`}
+                        style={{
+                            top: star.top,
+                            left: star.left,
+                            width: star.size,
+                            height: star.size,
+                            opacity: star.opacity,
+                            "--delay": star.animationDelay
+                        }}
+                    />
+                ))}
+            </div>
+
+            {/* Hero Nebula */}
             <div className="parallax-container bg-layer-hero" style={{ opacity: 1 }}>
-                <div className="mesh-orb" style={{ top: "8%", left: "6%", width: "420px", height: "420px", opacity: 0.4 }} />
-                <div className="mesh-orb is-purple" style={{ bottom: "-10%", right: "-5%", width: "380px", height: "380px", opacity: 0.35 }} />
-                <div className="mesh-orb is-amber" style={{ top: "30%", right: "35%", width: "220px", height: "220px", opacity: 0.3 }} />
+                <div className="nebula-cloud" style={{ top: "10%", left: "10%", width: "500px", height: "500px", opacity: 0.4 }} />
+                <div className="nebula-cloud is-purple" style={{ bottom: "5%", right: "-10%", width: "600px", height: "600px", opacity: 0.3 }} />
             </div>
 
-            {/* Stats BG */}
+            {/* Stats Nebula */}
             <div className="parallax-container bg-layer-stats" style={{ opacity: 0 }}>
-                <div className="mesh-orb is-ink" style={{ top: "30%", left: "60%", width: "520px", height: "520px", opacity: 0.2 }} />
-                <div className="mesh-orb" style={{ top: "60%", left: "10%", width: "260px", height: "260px", opacity: 0.18 }} />
+                <div className="nebula-cloud is-blue" style={{ top: "20%", left: "60%", width: "550px", height: "550px", opacity: 0.25 }} />
             </div>
 
-            {/* Services/Offer BG */}
+            {/* Services/Offer Nebula */}
             <div className="parallax-container bg-layer-offer" style={{ opacity: 0 }}>
-                <div className="mesh-orb" style={{ top: "15%", right: "12%", width: "360px", height: "360px", opacity: 0.3 }} />
-                <div className="mesh-orb is-amber" style={{ bottom: "0%", left: "10%", width: "260px", height: "260px", opacity: 0.28 }} />
+                <div className="nebula-cloud is-pink" style={{ top: "15%", right: "15%", width: "400px", height: "400px", opacity: 0.3 }} />
+                <div className="nebula-cloud" style={{ bottom: "-10%", left: "5%", width: "450px", height: "450px", opacity: 0.25 }} />
             </div>
 
-            {/* Demo BG */}
+            {/* Demo Nebula */}
             <div className="parallax-container bg-layer-demo" style={{ opacity: 0 }}>
-                <div className="mesh-orb" style={{ top: "-5%", right: "0%", width: "420px", height: "420px", opacity: 0.3 }} />
-                <div className="mesh-orb is-purple" style={{ bottom: "-5%", left: "-8%", width: "320px", height: "320px", opacity: 0.32 }} />
-                <div className="mesh-orb is-amber" style={{ bottom: "20%", right: "30%", width: "200px", height: "200px", opacity: 0.25 }} />
+                <div className="nebula-cloud is-purple" style={{ top: "-10%", right: "-5%", width: "500px", height: "500px", opacity: 0.3 }} />
+                <div className="nebula-cloud is-blue" style={{ bottom: "10%", left: "-10%", width: "400px", height: "400px", opacity: 0.25 }} />
             </div>
 
-            {/* Reviews BG */}
+            {/* Reviews Nebula */}
             <div className="parallax-container bg-layer-reviews" style={{ opacity: 0 }}>
-                <div className="mesh-orb is-purple" style={{ top: "10%", left: "20%", width: "260px", height: "260px", opacity: 0.28 }} />
-                <div className="mesh-orb" style={{ bottom: "10%", right: "10%", width: "240px", height: "240px", opacity: 0.22 }} />
+                <div className="nebula-cloud is-purple" style={{ top: "20%", left: "30%", width: "350px", height: "350px", opacity: 0.2 }} />
             </div>
 
-            {/* Contact BG */}
+            {/* Contact Nebula */}
             <div className="parallax-container bg-layer-contact" style={{ opacity: 0 }}>
-                <div className="mesh-orb is-ink" style={{ top: "40%", left: "40%", width: "420px", height: "420px", opacity: 0.15 }} />
+                <div className="nebula-cloud is-blue" style={{ top: "40%", right: "20%", width: "600px", height: "600px", opacity: 0.15 }} />
             </div>
         </div>
     );

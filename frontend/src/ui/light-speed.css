@@ -1,0 +1,184 @@
+/* Light-speed performance overrides */
+:root {
+  --scroll-progress: 0;
+}
+
+body {
+  background:
+    radial-gradient(120% 120% at 16% 8%, rgba(116, 88, 228, 0.1), transparent 60%),
+    linear-gradient(180deg, #0C0D13 0%, #11131B 60%, #0C0D13 100%) !important;
+}
+
+body::before,
+body::after {
+  opacity: 0.2;
+  animation-duration: 140s, 36s;
+}
+
+.scroll-progress {
+  width: 100% !important;
+  transform-origin: left;
+  transform: scaleX(var(--scroll-progress, 0));
+  transition: none !important;
+  will-change: transform;
+}
+
+.site-footer .footer-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: start;
+}
+
+.site-footer .footer-col {
+  min-width: 0;
+}
+
+.site-footer .footer-brand,
+.site-footer .footer-center,
+.site-footer .footer-right {
+  grid-column: auto;
+  text-align: left;
+}
+
+.navbar-glass,
+.banner-marquee-strip,
+.banner-copy,
+.banner-buy-wrap,
+.auth-card,
+.review-card {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.galaxy-nebula-layer {
+  filter: blur(40px);
+  opacity: 0.45;
+  animation-duration: 48s;
+}
+
+.galaxy-nebula-layer.secondary {
+  animation-duration: 60s;
+}
+
+.banner-strip-advanced::before {
+  filter: blur(24px);
+  opacity: 0.45;
+}
+
+.banner-starfield.depth-near {
+  display: none;
+}
+
+.banner-starfield.depth-mid {
+  opacity: 0.45;
+}
+
+.banner-image-rotator {
+  filter: none;
+}
+
+.hero-grid-background {
+  opacity: 0.05;
+}
+
+.hero-glow {
+  opacity: 0.2;
+}
+
+.hero-poster-frame {
+  animation-duration: 24s;
+  transition: transform 180ms var(--motion-magnetic);
+}
+
+.hero-poster-frame:hover {
+  box-shadow: 0 30px 80px -10px rgba(0, 0, 0, 0.7) !important;
+}
+
+.service-card,
+.card-3d,
+.review-card {
+  transition: transform 180ms var(--motion-magnetic), opacity 180ms ease !important;
+  box-shadow: var(--depth-z1) !important;
+}
+
+.service-card:hover,
+.card-3d:hover,
+.review-card:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: var(--depth-z1) !important;
+}
+
+.review-fog-layer,
+.review-nebula-tl,
+.review-nebula-br {
+  display: none !important;
+}
+
+.btn-cta,
+.nav-cta,
+.auth-cta,
+.hero-primary-cta,
+.banner-buy-btn,
+.service-whatsapp {
+  transition: background-position 180ms var(--motion-inertial), opacity 120ms ease !important;
+}
+
+.btn-cta:hover,
+.nav-cta:hover,
+.auth-cta:hover,
+.hero-primary-cta:hover,
+.banner-buy-btn:hover,
+.service-whatsapp:hover {
+  filter: none;
+}
+
+.section {
+  content-visibility: auto;
+  contain-intrinsic-size: 700px;
+}
+
+@media (max-width: 768px) {
+  .site-footer .footer-grid {
+    grid-template-columns: 1fr;
+  }
+
+  body::before,
+  body::after {
+    animation: none;
+  }
+
+  .banner-starfield.depth-mid {
+    display: none;
+  }
+
+  .hero-poster-frame {
+    animation: none;
+  }
+
+  .section {
+    contain-intrinsic-size: 520px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .galaxy-nebula-layer,
+  .banner-image-rotator,
+  .hero-poster-frame,
+  .review-card-avatar-ring,
+  .review-track.is-animating,
+  .btn-cta::after,
+  .nav-cta::after,
+  .auth-cta::after,
+  .hero-primary-cta::after,
+  .service-whatsapp::after {
+    animation: none !important;
+  }
+
+  .btn-cta,
+  .nav-cta,
+  .auth-cta,
+  .hero-primary-cta,
+  .banner-buy-btn,
+  .service-whatsapp {
+    transition: none !important;
+  }
+}

@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { useNavigate } from "react-router-dom";
-import { ShieldCheck, Infinity, Zap, Headset } from "../icons.jsx";
 import { useAuth } from "../auth.jsx";
+import { ShieldCheck, Infinity, Zap, Headphones } from "../icons.jsx";
 import heroPreview from "../../assets/bg/As Dance.webp";
 
 const LEVELS = [
@@ -19,8 +19,8 @@ const OFFER_ICONS = [
 ];
 
 const HeroSection = () => {
-  const { user, loading } = useAuth();
   const nav = useNavigate();
+  const { user } = useAuth();
   const heroRef = useRef(null);
   const textRef = useRef(null);
   const imageRef = useRef(null);
@@ -28,19 +28,23 @@ const HeroSection = () => {
   const hasCounted = useRef(false);
 
   const handleCheckout = () => {
-    if (loading) return;
-    if (user) {
-      nav("/checkout");
+    const target = "/checkout?pay=1";
+    if (!user) {
+      nav(`/login?redirect=${encodeURIComponent(target)}`);
       return;
     }
-    nav("/login", { state: { from: "/checkout" } });
+    nav(target);
   };
 
   useEffect(() => {
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (prefersReducedMotion) return;
+    const isCoarsePointer = window.matchMedia("(pointer: coarse)").matches;
+    const isSmallScreen = window.matchMedia("(max-width: 768px)").matches;
+    const isSaveData = navigator?.connection?.saveData === true;
+    const skipMotion = prefersReducedMotion || isSmallScreen || isSaveData;
 
     const ctx = gsap.context(() => {
+      if (skipMotion) return;
       gsap.fromTo(
         textRef.current,
         { opacity: 0, y: 30 },
@@ -51,28 +55,36 @@ const HeroSection = () => {
         { opacity: 0, scale: 0.92, y: 20 },
         { opacity: 1, scale: 1, y: 0, duration: 1.2, ease: "power3.out", delay: 0.2 }
       );
-      gsap.to(imageRef.current, {
-        y: -6,
-        duration: 5,
-        repeat: -1,
-        yoyo: true,
-        ease: "sine.inOut"
-      });
+      if (!isCoarsePointer) {
+        gsap.to(imageRef.current, {
+          y: -4,
+          duration: 12,
+          repeat: -1,
+          yoyo: true,
+          ease: "sine.inOut"
+        });
+      }
     }, heroRef);
 
+    if (skipMotion || isCoarsePointer) {
+      return () => ctx.revert();
+    }
+
+    if (!imageRef.current) {
+      return () => ctx.revert();
+    }
+
+    const xTo = gsap.quickTo(imageRef.current, "x", { duration: 0.8, ease: "power2.out" });
+    const rotYTo = gsap.quickTo(imageRef.current, "rotationY", { duration: 0.8, ease: "power2.out" });
+    const rotXTo = gsap.quickTo(imageRef.current, "rotationX", { duration: 0.8, ease: "power2.out" });
+
     const handleMouseMove = (e) => {
-      if (!imageRef.current) return;
       const { clientX, clientY } = e;
-      const xPos = (clientX / window.innerWidth - 0.5) * 20;
-      const yPos = (clientY / window.innerHeight - 0.5) * 10;
-      gsap.to(imageRef.current, {
-        x: -xPos,
-        y: -yPos,
-        rotationY: -xPos * 0.5,
-        rotationX: yPos * 0.5,
-        duration: 0.6,
-        ease: "power2.out"
-      });
+      const xPos = (clientX / window.innerWidth - 0.5) * 12;
+      const yPos = (clientY / window.innerHeight - 0.5) * 6;
+      xTo(-xPos);
+      rotYTo(-xPos * 0.35);
+      rotXTo(yPos * 0.35);
     };
 
     window.addEventListener("mousemove", handleMouseMove);
@@ -131,7 +143,7 @@ const HeroSection = () => {
           </div>
           <div className="hero-headline-row">
             <h1 className="hero-title">
-              639-STEP <span className="hero-title-highlight">PREMIUM NEON</span> DANCE BUNDLE
+              639-STEP <span className="hero-title-highlight">STAGE-READY</span> DANCE CURRICULUM
             </h1>
             <div className="hero-count-panel">
               <span className="hero-count-value" ref={counterRef}>0</span>
@@ -165,7 +177,6 @@ const HeroSection = () => {
               type="button"
               className="btn btn-cta btn-hero btn-cta-primary hero-primary-cta"
               onClick={handleCheckout}
-              disabled={loading}
             >
               UNLOCK NOW &nbsp;→&nbsp; START IN MINUTES
             </button>
@@ -195,7 +206,7 @@ const HeroSection = () => {
               Instant Unlock
             </span>
             <span className="trust-item">
-              <Headset size={16} />
+              <Headphones size={16} />
               24/7 Support
             </span>
           </div>
@@ -207,8 +218,9 @@ const HeroSection = () => {
               alt="AS DANCE premium poster"
               loading="eager"
               decoding="async"
-              width="720"
-              height="420"
+              width="1024"
+              height="1536"
+              fetchpriority="high"
               className="hero-preview-image"
             />
           </div>

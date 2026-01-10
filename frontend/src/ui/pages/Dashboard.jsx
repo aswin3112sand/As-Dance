@@ -36,6 +36,11 @@ export default function Dashboard() {
     window.open(url, "_blank", "noopener,noreferrer");
   };
 
+  const handleLogout = async () => {
+    await logout();
+    nav("/", { replace: true });
+  };
+
   const scrollToRoutines = () => {
     const el = document.getElementById("my-routines");
     if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -54,7 +59,7 @@ export default function Dashboard() {
 
         {user && (
           <div className="dashboard-nav" role="navigation" aria-label="Dashboard actions">
-            <button className="btn btn-neon btn-neo" onClick={() => nav("/checkout")}>
+            <button className="btn btn-neon btn-neo" onClick={() => nav("/checkout?pay=1")}>
               Get Bundle @ ₹499
             </button>
             <button className="btn btn-ghost btn-neo" onClick={scrollToRoutines}>
@@ -63,7 +68,7 @@ export default function Dashboard() {
             <a className="btn btn-ghost btn-neo" href="https://wa.me/918825602356" target="_blank" rel="noreferrer">
               Support
             </a>
-            <button className="btn btn-ghost btn-neo" onClick={logout}>
+            <button className="btn btn-ghost btn-neo" onClick={handleLogout}>
               Logout
             </button>
           </div>

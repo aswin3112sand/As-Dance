@@ -1,33 +1,73 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import gsap from "gsap";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../auth.jsx";
 import welcomeBanner from "../../assets/bg/dhanush.webp";
 
 export default function BannerStrip() {
-  const { user, loading } = useAuth();
   const nav = useNavigate();
+  const { user } = useAuth();
   const containerRef = useRef(null);
   const titleRef = useRef(null);
   const imageRef = useRef(null);
   const badgeRef = useRef(null);
+  const starLayers = useMemo(() => {
+    const reduceStars = typeof window !== "undefined" && (
+      window.matchMedia("(max-width: 768px)").matches ||
+      window.matchMedia("(pointer: coarse)").matches ||
+      navigator?.connection?.saveData === true
+    );
+    const buildStars = (count, sizeMin, sizeMax, opacityMin, opacityMax, twinkleMin, twinkleMax, delayMax) => (
+      Array.from({ length: count }, () => {
+        const size = sizeMin + Math.random() * (sizeMax - sizeMin);
+        const opacity = opacityMin + Math.random() * (opacityMax - opacityMin);
+        const twinkle = twinkleMin + Math.random() * (twinkleMax - twinkleMin);
+        const delay = Math.random() * delayMax;
+        return {
+          top: Math.random() * 100,
+          left: Math.random() * 100,
+          size: Number(size.toFixed(2)),
+          opacity: Number(opacity.toFixed(2)),
+          twinkle: Number(twinkle.toFixed(2)),
+          delay: Number(delay.toFixed(2))
+        };
+      })
+    );
+
+    const counts = reduceStars
+      ? { far: 10, mid: 8, near: 6 }
+      : { far: 18, mid: 16, near: 12 };
+    const twinkleMin = reduceStars ? 8 : 6;
+    const twinkleMax = reduceStars ? 16 : 16;
+    const delayMax = reduceStars ? 8 : 6;
+
+    return {
+      far: buildStars(counts.far, 0.6, 1.4, 0.25, 0.5, twinkleMin, twinkleMax, delayMax),
+      mid: buildStars(counts.mid, 0.9, 1.8, 0.35, 0.65, twinkleMin, twinkleMax, delayMax),
+      near: buildStars(counts.near, 1.1, 2.4, 0.5, 0.85, twinkleMin, twinkleMax, delayMax)
+    };
+  }, []);
 
   const handleCheckout = () => {
-    if (loading) return;
-    if (user) {
-      nav("/checkout");
+    const target = "/checkout?pay=1";
+    if (!user) {
+      nav("/login", { state: { from: target } });
       return;
     }
-    nav("/login", { state: { from: "/checkout" } });
+    nav(target);
   };
 
   useEffect(() => {
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const isCoarsePointer = window.matchMedia("(pointer: coarse)").matches;
+    const isSmallScreen = window.matchMedia("(max-width: 768px)").matches;
+    const isSaveData = navigator?.connection?.saveData === true;
+    const skipMotion = prefersReducedMotion || isSmallScreen || isSaveData;
     const ctx = gsap.context(() => {
       gsap.set(".banner-content-item", { opacity: 0, y: 20 });
       gsap.set(".banner-poster-3d", { opacity: 0, scale: 0.95, rotationY: 5 });
 
-      if (!prefersReducedMotion) {
+      if (!skipMotion) {
         const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
 
         tl.to(".banner-content-item", {
@@ -50,36 +90,71 @@ export default function BannerStrip() {
 
     }, containerRef);
 
+    let rafId = null;
+    const updateVignette = () => {
+      const el = containerRef.current;
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      const viewHeight = window.innerHeight || 1;
+      const progress = Math.min(Math.max((viewHeight - rect.top) / (viewHeight + rect.height), 0), 1);
+      const strength = 0.18 + progress * 0.18;
+      const depthShift = (progress - 0.5) * 2;
+      el.style.setProperty("--banner-vignette", strength.toFixed(3));
+      el.style.setProperty("--banner-scroll-depth", depthShift.toFixed(3));
+    };
+
+    updateVignette();
+
+    const handleScroll = () => {
+      if (rafId) return;
+      rafId = window.requestAnimationFrame(() => {
+        rafId = null;
+        updateVignette();
+      });
+    };
+
+    if (!skipMotion) {
+      window.addEventListener("scroll", handleScroll, { passive: true });
+      window.addEventListener("resize", handleScroll);
+    }
+
+    if (skipMotion || isCoarsePointer) {
+      return () => {
+        ctx.revert();
+        if (!skipMotion) {
+          window.removeEventListener("scroll", handleScroll);
+          window.removeEventListener("resize", handleScroll);
+        }
+        if (rafId) {
+          window.cancelAnimationFrame(rafId);
+        }
+      };
+    }
+
+    const imgContainer = imageRef.current;
+    const rotateXTo = imgContainer ? gsap.quickTo(imgContainer, "rotationX", { duration: 0.4, ease: "power2.out" }) : null;
+    const rotateYTo = imgContainer ? gsap.quickTo(imgContainer, "rotationY", { duration: 0.4, ease: "power2.out" }) : null;
+    const translateYTo = imgContainer ? gsap.quickTo(imgContainer, "y", { duration: 0.4, ease: "power2.out" }) : null;
+
     const handleMouseMove = (e) => {
-      if (!imageRef.current || prefersReducedMotion) return;
+      if (!imageRef.current || !rotateXTo || !rotateYTo || !translateYTo) return;
 
       const { left, top, width, height } = imageRef.current.getBoundingClientRect();
       const relativeX = (e.clientX - left) / width - 0.5;
       const relativeY = (e.clientY - top) / height - 0.5;
 
-      gsap.to(imageRef.current, {
-        rotationY: relativeX * 6,
-        rotationX: -relativeY * 6,
-        y: -5,
-        scale: 1.02,
-        duration: 0.4,
-        ease: "power2.out"
-      });
+      rotateYTo(relativeX * 3.5);
+      rotateXTo(-relativeY * 3.5);
+      translateYTo(-4);
     };
 
     const handleMouseLeave = () => {
-      if (!imageRef.current) return;
-      gsap.to(imageRef.current, {
-        rotationY: 0,
-        rotationX: 0,
-        y: 0,
-        scale: 1,
-        duration: 0.6,
-        ease: "power2.out"
-      });
+      if (!rotateXTo || !rotateYTo || !translateYTo) return;
+      rotateYTo(0);
+      rotateXTo(0);
+      translateYTo(0);
     };
 
-    const imgContainer = imageRef.current;
     if (imgContainer) {
       imgContainer.addEventListener("mousemove", handleMouseMove);
       imgContainer.addEventListener("mouseleave", handleMouseLeave);
@@ -91,32 +166,74 @@ export default function BannerStrip() {
         imgContainer.removeEventListener("mousemove", handleMouseMove);
         imgContainer.removeEventListener("mouseleave", handleMouseLeave);
       }
+      if (!skipMotion) {
+        window.removeEventListener("scroll", handleScroll);
+        window.removeEventListener("resize", handleScroll);
+      }
+      if (rafId) {
+        window.cancelAnimationFrame(rafId);
+      }
     };
   }, []);
 
   return (
     <section className="banner-strip-advanced" id="bundle" ref={containerRef}>
-      {/* Hyper-realistic night sky layers */}
-      <div className="banner-nebula-haze" aria-hidden="true" />
-      <div className="banner-edge-smoke" aria-hidden="true" />
-      <div className="banner-sky-fog" aria-hidden="true" />
-      <div className="banner-starfield" aria-hidden="true" />
-      <div className="shooting-star" aria-hidden="true" />
-      <div className="shooting-star alt" aria-hidden="true" />
-      <div className="bottom-glow" aria-hidden="true" />
-      <div className="bottom-glow right" aria-hidden="true" />
-
-      {/* Realistic moon */}
-      <div className="banner-realistic-moon" aria-hidden="true">
-        <div className="moon-realistic-surface" />
-        <div className="moon-realistic-glow" />
+      {/* Advanced Galaxy Nebula Background */}
+      <div className="galaxy-nebula-bg" aria-hidden="true">
+        <div className="galaxy-nebula-layer" />
+        <div className="galaxy-nebula-layer secondary" />
+        <div className="banner-starfield depth-far">
+          {starLayers.far.map((star, i) => (
+            <span
+              key={`far-${i}`}
+              className="galaxy-star"
+              style={{
+                top: `${star.top}%`,
+                left: `${star.left}%`,
+                width: `${star.size}px`,
+                height: `${star.size}px`,
+                "--star-opacity": `${star.opacity}`,
+                "--twinkle-duration": `${star.twinkle}s`,
+                "--twinkle-delay": `${star.delay}s`
+              }}
+            />
+          ))}
+        </div>
+        <div className="banner-starfield depth-mid">
+          {starLayers.mid.map((star, i) => (
+            <span
+              key={`mid-${i}`}
+              className="galaxy-star"
+              style={{
+                top: `${star.top}%`,
+                left: `${star.left}%`,
+                width: `${star.size}px`,
+                height: `${star.size}px`,
+                "--star-opacity": `${star.opacity}`,
+                "--twinkle-duration": `${star.twinkle}s`,
+                "--twinkle-delay": `${star.delay}s`
+              }}
+            />
+          ))}
+        </div>
+        <div className="banner-starfield depth-near">
+          {starLayers.near.map((star, i) => (
+            <span
+              key={`near-${i}`}
+              className="galaxy-star"
+              style={{
+                top: `${star.top}%`,
+                left: `${star.left}%`,
+                width: `${star.size}px`,
+                height: `${star.size}px`,
+                "--star-opacity": `${star.opacity}`,
+                "--twinkle-duration": `${star.twinkle}s`,
+                "--twinkle-delay": `${star.delay}s`
+              }}
+            />
+          ))}
+        </div>
       </div>
-
-      {/* Neon purple-blue rim lighting */}
-      <div className="banner-neon-rim-top" aria-hidden="true" />
-      <div className="banner-neon-rim-bottom" aria-hidden="true" />
-      <div className="banner-neon-rim-left" aria-hidden="true" />
-      <div className="banner-neon-rim-right" aria-hidden="true" />
 
       <div className="banner-marquee-strip">
         <div className="marquee-content">
@@ -177,14 +294,18 @@ export default function BannerStrip() {
         <div className="banner-visual banner-content-item">
           <div className="banner-poster-3d" ref={imageRef}>
             <div className="banner-image-layer">
+              {/* Rotating Light Ring */}
+              <div className="banner-image-rotator" aria-hidden="true" />
+
               <span className="ring-shimmer" aria-hidden="true" />
-              <span className="ring-particles" aria-hidden="true" />
-                <img
-                  src={welcomeBanner}
-                  alt="AS DANCE welcome banner"
-                  loading="eager"
-                  decoding="async"
-                className="banner-image"
+              <img
+                src={welcomeBanner}
+                alt="AS DANCE welcome banner"
+                loading="eager"
+                decoding="async"
+                width="1280"
+                height="720"
+                className="banner-image banner-image-stable"
                 style={{ width: '100%', borderRadius: '50%', display: 'block' }}
               />
               <div className="scanline-overlay" aria-hidden="true" />
@@ -197,7 +318,6 @@ export default function BannerStrip() {
               type="button"
               className="banner-buy-btn"
               onClick={handleCheckout}
-              disabled={loading}
             >
               Buy Now
             </button>

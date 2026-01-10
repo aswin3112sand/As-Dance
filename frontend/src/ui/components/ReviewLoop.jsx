@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import gsap from "gsap";
 import { Star } from "../icons.jsx";
 import w1 from "../../assets/bg/w1.webp";
@@ -46,59 +46,35 @@ const REVIEWS = [
 const ANIMATION_STATE_KEY = "as-dance-review-animation-state";
 
 export default function ReviewLoop() {
-  const scrollerRef = useRef(null);
-  const animationRef = useRef(null);
   const reviews = REVIEWS;
   const [isAnimating, setIsAnimating] = useState(() => {
+    if (typeof window === "undefined") return false;
     const stored = localStorage.getItem(ANIMATION_STATE_KEY);
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const isSmallScreen = window.matchMedia("(max-width: 768px)").matches;
+    const isCoarsePointer = window.matchMedia("(pointer: coarse)").matches;
+    const isSaveData = navigator?.connection?.saveData === true;
+    if (prefersReducedMotion || isSmallScreen || isCoarsePointer || isSaveData) return false;
     return stored ? JSON.parse(stored) : true;
   });
+  const loopReviews = isAnimating ? [...reviews, ...reviews] : reviews;
 
   useEffect(() => {
-    localStorage.setItem(ANIMATION_STATE_KEY, JSON.stringify(isAnimating));
+    if (typeof window !== "undefined") {
+      localStorage.setItem(ANIMATION_STATE_KEY, JSON.stringify(isAnimating));
+    }
   }, [isAnimating]);
 
   useEffect(() => {
-    const scroller = scrollerRef.current;
-    if (!scroller || reviews.length === 0) return;
-
-    const startAnimation = () => {
-      if (animationRef.current) animationRef.current.kill();
-
-      const scrollWidth = scroller.scrollWidth;
-      const containerWidth = scroller.clientWidth;
-      const distance = scrollWidth - containerWidth;
-
-      animationRef.current = gsap.to(scroller, {
-        scrollLeft: distance,
-        duration: 45,
-        ease: "none",
-        repeat: -1,
-        onRepeat: () => {
-          scroller.scrollLeft = 0;
-        },
-      });
-
-      if (!isAnimating) {
-        animationRef.current.pause();
-      }
-    };
-
-    startAnimation();
-
-    return () => {
-      if (animationRef.current) animationRef.current.kill();
-    };
-  }, [reviews, isAnimating]);
-
-  useEffect(() => {
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (prefersReducedMotion) return;
+    const isSmallScreen = window.matchMedia("(max-width: 768px)").matches;
+    const isSaveData = navigator?.connection?.saveData === true;
+    if (prefersReducedMotion || isSmallScreen || isSaveData) return;
 
     const ctx = gsap.context(() => {
       gsap.to(".review-fog-layer", {
         opacity: 0.12,
-        duration: 12,
+        duration: 24,
         repeat: -1,
         yoyo: true,
         ease: "sine.inOut"
@@ -106,7 +82,7 @@ export default function ReviewLoop() {
 
       gsap.to(".review-nebula-tl, .review-nebula-br", {
         scale: 1.02,
-        duration: 8,
+        duration: 20,
         repeat: -1,
         yoyo: true,
         ease: "sine.inOut"
@@ -114,7 +90,7 @@ export default function ReviewLoop() {
 
       gsap.to(".reviews-title-glow", {
         opacity: 0.4,
-        duration: 4,
+        duration: 12,
         repeat: -1,
         yoyo: true,
         ease: "sine.inOut"
@@ -198,7 +174,7 @@ export default function ReviewLoop() {
 
         .reviews-title {
           font-family: 'Outfit Condensed', sans-serif;
-          font-size: 3rem;
+          font-size: clamp(1.8rem, 4vw, 3rem);
           font-weight: 800;
           color: #fff;
           margin: 0 0 1rem 0;
@@ -238,32 +214,49 @@ export default function ReviewLoop() {
           padding: 0 1rem;
         }
 
-        .review-grid {
-          display: flex;
-          gap: 1.5rem;
-          overflow-x: auto;
-          scroll-behavior: smooth;
-          padding: 1rem 0;
-          scrollbar-width: none;
+        .review-scroller {
+          position: relative;
           flex: 1;
-          -webkit-overflow-scrolling: touch;
+          min-width: 0;
+          overflow: hidden;
         }
 
-        .review-grid::-webkit-scrollbar {
+        .review-scroller.is-static {
+          overflow-x: auto;
+          -webkit-overflow-scrolling: touch;
+          scrollbar-width: none;
+        }
+
+        .review-scroller.is-static::-webkit-scrollbar {
           display: none;
         }
 
+        .review-track {
+          display: flex;
+          gap: 1.5rem;
+          padding: 1rem 0;
+          width: max-content;
+          will-change: transform;
+        }
+
+        .review-track.is-animating {
+          animation: reviewMarquee 70s linear infinite;
+        }
+
+        @keyframes reviewMarquee {
+          from { transform: translateX(0); }
+          to { transform: translateX(-50%); }
+        }
+
         .review-card {
-          flex: 0 0 340px;
-          min-width: 340px;
+          flex: 0 0 clamp(260px, 70vw, 340px);
+          min-width: clamp(260px, 70vw, 340px);
           height: 100%;
           background: rgba(10, 18, 25, 0.4);
           border: 1px solid rgba(0, 242, 234, 0.12);
           border-radius: 16px;
-          padding: 2rem;
-          backdrop-filter: blur(10px);
-          -webkit-backdrop-filter: blur(10px);
-          transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+          padding: clamp(1.25rem, 3.5vw, 2rem);
+          transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease;
           cursor: pointer;
           display: flex;
           flex-direction: column;
@@ -275,7 +268,7 @@ export default function ReviewLoop() {
           border-color: rgba(0, 242, 234, 0.4);
           background: rgba(10, 18, 25, 0.6);
           box-shadow: 0 16px 48px rgba(0, 242, 234, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.15);
-          transform: translateY(-6px) perspective(1000px) rotateX(2deg) rotateY(2deg);
+          transform: translateY(-3px);
         }
 
         .review-card-inner {
@@ -302,7 +295,7 @@ export default function ReviewLoop() {
           border-radius: 50%;
           background: conic-gradient(from 0deg, rgba(0, 242, 234, 0.6), rgba(255, 0, 80, 0.3), rgba(0, 242, 234, 0.6));
           opacity: 0.8;
-          animation: ringRotate 8s linear infinite;
+          animation: ringRotate 140s linear infinite;
           will-change: transform;
         }
 
@@ -314,8 +307,8 @@ export default function ReviewLoop() {
         .review-card-avatar-img {
           position: relative;
           z-index: 1;
-          width: 56px;
-          height: 56px;
+          width: clamp(44px, 14vw, 56px);
+          height: clamp(44px, 14vw, 56px);
           border-radius: 50%;
           object-fit: cover;
           border: 2px solid rgba(0, 242, 234, 0.3);
@@ -329,12 +322,12 @@ export default function ReviewLoop() {
           right: -6px;
           background: linear-gradient(135deg, rgba(0, 242, 234, 0.9), rgba(255, 0, 80, 0.7));
           color: #fff;
-          font-size: 0.65rem;
+          font-size: clamp(0.55rem, 2vw, 0.65rem);
           font-weight: 800;
           padding: 3px 5px;
           border-radius: 50%;
-          width: 24px;
-          height: 24px;
+          width: clamp(20px, 6vw, 24px);
+          height: clamp(20px, 6vw, 24px);
           display: flex;
           align-items: center;
           justify-content: center;
@@ -395,15 +388,15 @@ export default function ReviewLoop() {
           display: flex;
           align-items: center;
           justify-content: center;
-          width: 48px;
-          height: 48px;
+          width: clamp(40px, 10vw, 48px);
+          height: clamp(40px, 10vw, 48px);
           background: rgba(0, 242, 234, 0.1);
           border: 1.5px solid rgba(0, 242, 234, 0.3);
           border-radius: 10px;
           cursor: pointer;
-          transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+          transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), background 0.2s ease, color 0.2s ease;
           color: rgba(0, 242, 234, 0.8);
-          font-size: 1.2rem;
+          font-size: clamp(0.95rem, 2.5vw, 1.2rem);
           font-weight: 700;
           box-shadow: 0 0 16px rgba(0, 242, 234, 0.1);
           will-change: transform, box-shadow, background;
@@ -415,11 +408,11 @@ export default function ReviewLoop() {
           border-color: rgba(0, 242, 234, 0.6);
           color: rgba(0, 242, 234, 1);
           box-shadow: 0 0 24px rgba(0, 242, 234, 0.3);
-          transform: scale(1.08);
+          transform: translateY(-1px);
         }
 
         .review-control:active {
-          transform: scale(0.96);
+          transform: translateY(1px);
         }
 
         .review-control.active {
@@ -435,7 +428,7 @@ export default function ReviewLoop() {
           }
 
           .reviews-title {
-            font-size: 2rem;
+            font-size: clamp(1.6rem, 5vw, 2rem);
             letter-spacing: -0.5px;
           }
 
@@ -444,14 +437,30 @@ export default function ReviewLoop() {
           }
 
           .review-card {
-            flex: 0 0 300px;
-            min-width: 300px;
-            padding: 1.5rem;
+            flex: 0 0 clamp(240px, 78vw, 300px);
+            min-width: clamp(240px, 78vw, 300px);
+            padding: clamp(1.1rem, 3.5vw, 1.5rem);
           }
 
           .review-scroller-wrapper {
             gap: 1rem;
             padding: 0 0.5rem;
+          }
+
+          .review-card-avatar-ring {
+            animation: none;
+          }
+        }
+
+        @media (max-width: 640px) {
+          .review-scroller-wrapper {
+            flex-direction: column;
+            align-items: stretch;
+          }
+
+          .review-controls {
+            width: 100%;
+            justify-content: center;
           }
         }
 
@@ -465,15 +474,15 @@ export default function ReviewLoop() {
           }
 
           .review-card {
-            flex: 0 0 280px;
-            min-width: 280px;
-            padding: 1.25rem;
+            flex: 0 0 clamp(220px, 82vw, 280px);
+            min-width: clamp(220px, 82vw, 280px);
+            padding: clamp(1rem, 4vw, 1.25rem);
           }
 
           .review-control {
-            width: 44px;
-            height: 44px;
-            font-size: 1rem;
+            width: clamp(38px, 12vw, 44px);
+            height: clamp(38px, 12vw, 44px);
+            font-size: clamp(0.9rem, 3.5vw, 1rem);
           }
         }
       `}</style>
@@ -495,43 +504,45 @@ export default function ReviewLoop() {
         </div>
 
         <div className="review-scroller-wrapper">
-          <div className="review-grid" ref={scrollerRef}>
-            {reviews.map((review, idx) => {
-              const profile = PROFILE_IMAGES[review.profileIndex % PROFILE_IMAGES.length];
-              return (
-                <article key={`review-${review.id}`} className="review-card">
-                  <div className="review-card-inner">
-                    <div className="review-card-heading">
-                      <div className="review-card-avatar">
-                        <div className="review-card-avatar-ring" />
-                        <img
-                          src={profile}
-                          alt="AS DANCE learner"
-                          loading="lazy"
-                          decoding="async"
-                          width="56"
-                          height="56"
-                          className="review-card-avatar-img"
-                        />
-                        <span className="review-card-avatar-label">{`#${review.id}`}</span>
+          <div className={`review-scroller ${isAnimating ? "is-animating" : "is-static"}`}>
+            <div className={`review-track ${isAnimating ? "is-animating" : ""}`}>
+              {loopReviews.map((review, idx) => {
+                const profile = PROFILE_IMAGES[review.profileIndex % PROFILE_IMAGES.length];
+                return (
+                  <article key={`review-${review.id}-${idx}`} className="review-card">
+                    <div className="review-card-inner">
+                      <div className="review-card-heading">
+                        <div className="review-card-avatar">
+                          <div className="review-card-avatar-ring" />
+                          <img
+                            src={profile}
+                            alt="AS DANCE learner"
+                            loading="lazy"
+                            decoding="async"
+                            width="56"
+                            height="56"
+                            className="review-card-avatar-img"
+                          />
+                          <span className="review-card-avatar-label">{`#${review.id}`}</span>
+                        </div>
+                        <div>
+                          <p className="review-card-name">{review.name}</p>
+                          <p className="review-card-tagline">{review.tagline}</p>
+                        </div>
                       </div>
-                      <div>
-                        <p className="review-card-name">{review.name}</p>
-                        <p className="review-card-tagline">{review.tagline}</p>
+
+                      <p className="review-card-text">"{review.txt}"</p>
+
+                      <div className="review-card-stars">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <Star key={star} size={16} fill="currentColor" stroke="none" />
+                        ))}
                       </div>
                     </div>
-
-                    <p className="review-card-text">"{review.txt}"</p>
-
-                    <div className="review-card-stars">
-                      {[1, 2, 3, 4, 5].map((star) => (
-                        <Star key={star} size={16} fill="currentColor" stroke="none" />
-                      ))}
-                    </div>
-                  </div>
-                </article>
-              );
-            })}
+                  </article>
+                );
+              })}
+            </div>
           </div>
           <div className="review-controls">
             <button

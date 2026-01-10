@@ -1,19 +1,19 @@
 import React from 'react';
 import { CheckCircle, ShieldCheck, Clock, MessageCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../auth.jsx';
+import { useAuth } from "../auth.jsx";
 
 const OfferCard = () => {
-    const { user, loading } = useAuth();
     const nav = useNavigate();
+    const { user } = useAuth();
 
     const handleCheckout = () => {
-        if (loading) return;
-        if (user) {
-            nav("/checkout");
+        const target = "/checkout?pay=1";
+        if (!user) {
+            nav("/login", { state: { from: target } });
             return;
         }
-        nav("/login", { state: { from: "/checkout" } });
+        nav(target);
     };
 
     return (
@@ -54,13 +54,12 @@ const OfferCard = () => {
                         <div className="mt-4 pt-2">
                             <button
                                 type="button"
-                                className="btn btn-neon btn-lg w-100 btn-shimmer"
-                                style={{ maxWidth: '300px' }}
-                                onClick={handleCheckout}
-                                disabled={loading}
-                            >
-                                UNLOCK NOW
-                            </button>
+                            className="btn btn-neon btn-lg w-100 btn-shimmer"
+                            style={{ maxWidth: '300px' }}
+                            onClick={handleCheckout}
+                        >
+                            UNLOCK NOW
+                        </button>
                         </div>
                     </div>
                 </div>

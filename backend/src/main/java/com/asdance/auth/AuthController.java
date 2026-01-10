@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import static com.asdance.auth.AuthDtos.*;
@@ -60,9 +61,10 @@ public class AuthController {
 
   @GetMapping("/me")
   public ResponseEntity<?> me(Authentication auth) {
-    if (auth == null) return ResponseEntity.status(401).body(new ApiResponse(false, "Not logged in"));
-    Long userId = (Long) auth.getPrincipal();
-    String email = (String) auth.getCredentials();
+    Authentication current = auth != null ? auth : SecurityContextHolder.getContext().getAuthentication();
+    if (current == null) return ResponseEntity.status(401).body(new ApiResponse(false, "Not logged in"));
+    Long userId = (Long) current.getPrincipal();
+    String email = (String) current.getCredentials();
     if (!accessPolicy.isAllowedEmail(email)) {
       return ResponseEntity.status(401).body(new ApiResponse(false, "EMAIL_NOT_ALLOWED"));
     }

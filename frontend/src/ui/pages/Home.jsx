@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect, useState } from "react";
+import React, { Suspense, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -9,30 +9,70 @@ import LevelCards from "../components/LevelCards.jsx";
 
 const DemoSection = React.lazy(() => import("../components/DemoSection.jsx"));
 const ReviewLoop = React.lazy(() => import("../components/ReviewLoop.jsx"));
-import { WhatsApp, Mail, ShieldCheck, Infinity, Zap, Headset, PhoneCall } from "../icons.jsx";
+import { WhatsApp, Mail, ShieldCheck, Infinity, Zap, Headphones, PhoneCall } from "../icons.jsx";
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function Home() {
   const [loaded, setLoaded] = useState(false);
-  const SectionSkeleton = ({ title, id }) => (
-    <section id={id} className="section section-compact section-anim" aria-busy="true">
+  const SectionSkeleton = ({ title, id, minHeight }) => (
+    <section
+      id={id}
+      className="section section-compact section-anim"
+      aria-busy="true"
+      style={minHeight ? { minHeight } : undefined}
+    >
       <div className="container-max text-center text-white-50 small" style={{ opacity: 0.8 }}>
         Loading {title}...
       </div>
     </section>
   );
+  const LazyMount = ({ rootMargin = "240px", fallback, children }) => {
+    const [isVisible, setIsVisible] = useState(false);
+    const targetRef = useRef(null);
+
+    useEffect(() => {
+      if (isVisible) return;
+      if (!("IntersectionObserver" in window)) {
+        setIsVisible(true);
+        return;
+      }
+      const observer = new IntersectionObserver(
+        (entries) => {
+          if (entries.some((entry) => entry.isIntersecting)) {
+            setIsVisible(true);
+            observer.disconnect();
+          }
+        },
+        { rootMargin }
+      );
+      const node = targetRef.current;
+      if (node) observer.observe(node);
+      return () => observer.disconnect();
+    }, [isVisible, rootMargin]);
+
+    return <div ref={targetRef}>{isVisible ? children : fallback}</div>;
+  };
 
   // --- 1. PRELOADER LOGIC ---
   useEffect(() => {
-    const timer = setTimeout(() => setLoaded(true), 1200);
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const isSaveData = navigator?.connection?.saveData === true;
+    if (prefersReducedMotion || isSaveData) {
+      setLoaded(true);
+      return undefined;
+    }
+    const timer = setTimeout(() => setLoaded(true), 200);
     return () => clearTimeout(timer);
   }, []);
 
   // --- 4. NAVBAR HORIZONTAL GLIDE (SCROLL REACTIVE) ---
   useEffect(() => {
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (prefersReducedMotion) return;
+    const isSmallScreen = window.matchMedia("(max-width: 768px)").matches;
+    const isCoarsePointer = window.matchMedia("(pointer: coarse)").matches;
+    const isSaveData = navigator?.connection?.saveData === true;
+    if (prefersReducedMotion || isSmallScreen || isCoarsePointer || isSaveData) return;
 
     const glideTargets = Array.from(document.querySelectorAll(".nav-center, .nhh-nav-links"));
     if (!glideTargets.length) return;
@@ -79,7 +119,8 @@ export default function Home() {
       const totalScroll = document.documentElement.scrollTop;
       const windowHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
       const scroll = windowHeight > 0 ? totalScroll / windowHeight : 0;
-      if (progressBar) progressBar.style.width = `${scroll * 100}%`;
+      if (progressBar) progressBar.style.setProperty("--scroll-progress", scroll.toFixed(3));
+      document.documentElement.style.setProperty("--ui-scroll-depth", scroll.toFixed(3));
       rafId = null;
     };
 
@@ -93,13 +134,18 @@ export default function Home() {
     return () => {
       window.removeEventListener("scroll", handleScroll);
       if (rafId) window.cancelAnimationFrame(rafId);
+      if (progressBar) progressBar.style.setProperty("--scroll-progress", "0");
+      document.documentElement.style.setProperty("--ui-scroll-depth", "0");
     };
   }, []);
 
   // --- 3. SECTION ENTRANCE ANIMATION ---
   useEffect(() => {
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (prefersReducedMotion) return;
+    const isSmallScreen = window.matchMedia("(max-width: 768px)").matches;
+    const isCoarsePointer = window.matchMedia("(pointer: coarse)").matches;
+    const isSaveData = navigator?.connection?.saveData === true;
+    if (prefersReducedMotion || isSmallScreen || isCoarsePointer || isSaveData) return;
     const ctx = gsap.context(() => {
       gsap.utils.toArray(".section-anim").forEach((section) => {
         const cards = section.querySelectorAll(".card-anim");
@@ -181,7 +227,7 @@ export default function Home() {
           </div>
 
           <div className="d-flex align-items-center gap-2 header-actions">
-            <Link to="/login" className="btn nav-cta nav-cta-secondary">
+            <Link to="/login" className="btn nav-cta nav-cta-primary">
               Login
             </Link>
             <Link to="/register" className="btn nav-cta nav-cta-primary">
@@ -201,14 +247,22 @@ export default function Home() {
         <LevelCards />
 
         {/* 3. DEMO / PREVIEW */}
-        <Suspense fallback={<SectionSkeleton title="preview" id="preview" />}>
-          <DemoSection />
-        </Suspense>
+        <LazyMount
+          fallback={<SectionSkeleton title="preview" id="preview" minHeight="clamp(260px, 45vw, 420px)" />}
+        >
+          <Suspense fallback={<SectionSkeleton title="preview" id="preview" minHeight="clamp(260px, 45vw, 420px)" />}>
+            <DemoSection />
+          </Suspense>
+        </LazyMount>
 
         {/* 5. REVIEWS */}
-        <Suspense fallback={<SectionSkeleton title="reviews" id="reviews" />}>
-          <ReviewLoop />
-        </Suspense>
+        <LazyMount
+          fallback={<SectionSkeleton title="reviews" id="reviews" minHeight="clamp(300px, 60vw, 560px)" />}
+        >
+          <Suspense fallback={<SectionSkeleton title="reviews" id="reviews" minHeight="clamp(300px, 60vw, 560px)" />}>
+            <ReviewLoop />
+          </Suspense>
+        </LazyMount>
 
       </main>
 
@@ -279,7 +333,7 @@ export default function Home() {
             Instant Unlock
           </div>
           <div className="footer-trust-item">
-            <Headset size={16} />
+            <Headphones size={16} />
             24/7 Support
           </div>
         </div>

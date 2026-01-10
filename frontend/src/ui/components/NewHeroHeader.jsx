@@ -5,13 +5,42 @@ const NewHeroHeader = () => {
     const starsRef = useRef(null);
 
     useEffect(() => {
+        const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        const isSmallScreen = window.matchMedia("(max-width: 768px)").matches;
+        const isCoarsePointer = window.matchMedia("(pointer: coarse)").matches;
+        const reduceStars = prefersReducedMotion || isSmallScreen || isCoarsePointer;
+
         // Navbar slide animation on load
         const nav = navRef.current;
-        if (nav) {
+        const navLinks = nav?.querySelector('.nhh-nav-links');
+        if (nav && !prefersReducedMotion) {
             const links = nav.querySelectorAll('.nhh-nav-links a');
             links.forEach((link, idx) => {
                 link.style.animation = `slideInNav 0.65s cubic-bezier(0.22, 1, 0.36, 1) ${idx * 0.08}s both`;
             });
+        }
+
+        let navRafId = null;
+        const handleNavMove = (event) => {
+            if (!nav || !navLinks) return;
+            if (navRafId) return;
+            const rect = nav.getBoundingClientRect();
+            const offset = (event.clientX - rect.left - rect.width / 2) / rect.width;
+            const clamped = Math.max(Math.min(offset, 0.35), -0.35);
+            navRafId = window.requestAnimationFrame(() => {
+                navRafId = null;
+                navLinks.style.setProperty('--nav-glide-x', `${(clamped * 18).toFixed(2)}px`);
+            });
+        };
+
+        const handleNavLeave = () => {
+            if (!navLinks) return;
+            navLinks.style.setProperty('--nav-glide-x', '0px');
+        };
+
+        if (nav && navLinks && !prefersReducedMotion && !isCoarsePointer) {
+            nav.addEventListener('pointermove', handleNavMove);
+            nav.addEventListener('pointerleave', handleNavLeave);
         }
 
         // Generate stars
@@ -19,8 +48,11 @@ const NewHeroHeader = () => {
         if (starsContainer) {
             // Avoid duplicates in React strict mode dev (effect can mount twice)
             starsContainer.innerHTML = '';
+            const fragment = document.createDocumentFragment();
+            const starCount = reduceStars ? 40 : 80;
+            const shootingStarCount = prefersReducedMotion ? 0 : (isSmallScreen ? 1 : 3);
 
-            for (let i = 0; i < 80; i++) {
+            for (let i = 0; i < starCount; i++) {
                 const star = document.createElement('div');
                 star.className = 'night-star';
                 star.style.left = Math.random() * 100 + '%';
@@ -33,11 +65,11 @@ const NewHeroHeader = () => {
 
                 star.style.animationDelay = Math.random() * 3 + 's';
                 star.style.animationDuration = (2 + Math.random() * 3) + 's';
-                starsContainer.appendChild(star);
+                fragment.appendChild(star);
             }
 
             // Shooting stars
-            for (let i = 0; i < 3; i++) {
+            for (let i = 0; i < shootingStarCount; i++) {
                 const shootingStar = document.createElement('div');
                 shootingStar.className = 'shooting-star';
 
@@ -50,9 +82,20 @@ const NewHeroHeader = () => {
                 shootingStar.style.setProperty('--shoot-distance', `${280 + Math.random() * 220}px`);
                 shootingStar.style.setProperty('--shoot-angle', `${35 + Math.random() * 20}deg`);
 
-                starsContainer.appendChild(shootingStar);
+                fragment.appendChild(shootingStar);
             }
+            starsContainer.appendChild(fragment);
         }
+
+        return () => {
+            if (nav && navLinks && !prefersReducedMotion && !isCoarsePointer) {
+                nav.removeEventListener('pointermove', handleNavMove);
+                nav.removeEventListener('pointerleave', handleNavLeave);
+            }
+            if (navRafId) {
+                window.cancelAnimationFrame(navRafId);
+            }
+        };
     }, []);
 
     return (
@@ -119,6 +162,10 @@ const NewHeroHeader = () => {
                             src="https://via.placeholder.com/400x600/transparent/FFFFFF?text=Dancer+Image"
                             alt="Dancer"
                             className="nhh-dancer-img"
+                            loading="lazy"
+                            decoding="async"
+                            width="400"
+                            height="600"
                         />
                     </div>
                 </div>

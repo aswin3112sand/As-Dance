@@ -1,0 +1,9 @@
+- [x] Add necessary imports: React, useState, useRef, useEffect, useNavigate, useAuth, payment functions
+- [x] Define STEP_INDEX object with FORM, PAYMENT, SUCCESS, FAILURE
+- [x] Set up state variables: stepIndex, messages, processing, receipt, failure
+- [x] Implement useEffect for initialization: check payment status, redirect if unlocked
+- [x] Add refs for name, phone, processing
+- [x] Implement payment flow: load Razorpay, configure options, handle success/cancel
+- [x] Manage payment success: verify payment, update state, schedule redirect
+- [x] Structure the component with conditional rendering for each step
+- [x] Fix merge conflict marker

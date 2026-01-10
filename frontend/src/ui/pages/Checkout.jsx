@@ -1,387 +1,392 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth.jsx";
-import { apiFetch } from "../api.js";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Clock, ShieldCheck, Zap, WhatsApp, Mail } from "../icons.jsx";
-import bundlePreview from "../../assets/bg/As Dance.webp";
+import { createPaymentOrder, verifyPayment, fetchPaymentStatus } from "../paymentApi.js";
+import { clearFailure, clearReceipt, saveFailure, saveReceipt } from "../paymentStorage.js";
+import bundlePreview from "../../assets/bg/poster.webp";
 
-const SUPPORT_WHATSAPP = "+91 88256 02356";
-const SUPPORT_EMAIL = "businessaswin@gmail.com";
-const RAZORPAY_PLACEHOLDER_KEY = "rzp_test_placeholder";
+const Checkout = () => {
+  const navigate = useNavigate();
+  const { user } = useAuth();
 
-export default function Checkout() {
-  const { user, refresh, logout } = useAuth();
-  const nav = useNavigate();
-  const [status, setStatus] = useState(null);
-  const [order, setOrder] = useState(null);
-  const [msg, setMsg] = useState("");
-  const [unlockedUrl, setUnlockedUrl] = useState("");
-  const [phone, setPhone] = useState("");
-  const [razorpayReady, setRazorpayReady] = useState(false);
-  const [isProcessing, setIsProcessing] = useState(false);
-  const rootRef = useRef(null);
-  const phoneRef = useRef("");
-  const lastOrderPhoneRef = useRef("");
-  const prefetchTimerRef = useRef(null);
-  const prefetchingRef = useRef(false);
+  const [messages, setMessages] = useState([]);
+  const [processing, setProcessing] = useState(false);
 
-  async function loadStatus() {
-    const res = await apiFetch("/api/payment/status");
-    const data = await res.json();
-    setStatus(data);
-  }
-
-  useEffect(() => { loadStatus(); }, []);
+  const nameRef = useRef(null);
+  const phoneRef = useRef(null);
+  const processingRef = useRef(false);
+  const razorpayReadyRef = useRef(false);
 
   useEffect(() => {
-    if (window.Razorpay) {
-      setRazorpayReady(true);
-      return;
-    }
-    const existing = document.getElementById("razorpay-checkout-js");
-    if (existing) {
-      existing.addEventListener("load", () => setRazorpayReady(true), { once: true });
-      return;
-    }
-    const script = document.createElement("script");
-    script.id = "razorpay-checkout-js";
-    script.src = "https://checkout.razorpay.com/v1/checkout.js";
-    script.async = true;
-    script.onload = () => setRazorpayReady(true);
-    script.onerror = () => setMsg("Payment gateway failed to load. Please refresh.");
-    document.body.appendChild(script);
-    return () => {
-      script.onload = null;
-      script.onerror = null;
+    const checkStatus = async () => {
+      const { ok, data } = await fetchPaymentStatus();
+      if (ok && data.unlocked) {
+        navigate("/dashboard");
+      }
     };
-  }, []);
+    checkStatus();
+  }, [navigate]);
 
-  useEffect(() => {
-    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (prefersReducedMotion) return;
-    gsap.registerPlugin(ScrollTrigger);
-    const ctx = gsap.context(() => {
-      gsap.fromTo(
-        rootRef.current,
-        { opacity: 0, y: 40 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.7,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: rootRef.current,
-            start: "top 80%"
-          }
-        }
-      );
+  const loadRazorpay = () => {
+    return new Promise((resolve) => {
+      const scriptId = "razorpay-checkout-js";
 
-      const items = gsap.utils.toArray(".checkout-anim");
-      if (!items.length) return;
-      gsap.fromTo(
-        items,
-        { opacity: 0, y: 30, scale: 0.96 },
-        {
-          opacity: 1,
-          y: 0,
-          scale: 1,
-          duration: 0.65,
-          ease: "power2.out",
-          stagger: 0.07,
-          scrollTrigger: {
-            trigger: rootRef.current,
-            start: "top 85%"
-          }
-        }
-      );
-    }, rootRef);
-    return () => ctx.revert();
-  }, []);
+      if (typeof window !== "undefined" && window.Razorpay) {
+        razorpayReadyRef.current = true;
+        return resolve(true);
+      }
+
+      const existingScript = document.getElementById(scriptId);
+      if (existingScript) {
+        existingScript.remove();
+      }
+
+      const script = document.createElement("script");
+      script.id = scriptId;
+      script.src = "https://checkout.razorpay.com/v1/checkout.js";
+      script.async = true;
+
+      script.onload = () => {
+        razorpayReadyRef.current = true;
+        resolve(true);
+      };
+
+      script.onerror = () => {
+        resolve(false);
+      };
+
+      document.body.appendChild(script);
+    });
+  };
 
   const normalizePhone = (value) => (value || "").replace(/[^\d]/g, "");
 
-  const validatePhone = (value) => {
+  const getValidatedPhone = (value) => {
     const digits = normalizePhone(value);
-    return digits.length >= 10 ? digits : "";
+    if (!digits) return "";
+    if (digits.length < 10) return null;
+    return digits;
   };
 
-  const handlePhoneChange = (value) => {
-    phoneRef.current = value;
-    setPhone(value);
-  };
+  const handlePayment = async () => {
+    if (processingRef.current) return;
+    processingRef.current = true;
+    setProcessing(true);
+    setMessages([]);
+    clearFailure();
+    clearReceipt();
 
-  async function finalizePayment(payload) {
-    setMsg("");
-    const res = await apiFetch("/api/payment/webhook/razorpay", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
-    const data = await res.json().catch(() => ({}));
-    if (!res.ok || data.ok === false) {
-      setMsg(data.message || "Payment verification failed.");
+    const name = nameRef.current?.value?.trim() || "";
+    const rawPhone = phoneRef.current?.value || "";
+    const validatedPhone = getValidatedPhone(rawPhone);
+    if (validatedPhone === null) {
+      setMessages(["Enter a valid WhatsApp number or leave it blank."]);
+      setProcessing(false);
+      processingRef.current = false;
       return;
     }
-    setMsg(data.message || "Payment Success ✔ Bundle Unlocked!");
-    if (data.unlocked) {
-      const url = data.unlockedVideoUrl || "";
-      setUnlockedUrl(url);
-      await refresh();
-      await loadStatus();
-      setTimeout(() => nav("/", { replace: true }), 800);
-    }
-  }
+    const phone = validatedPhone || "";
 
-  async function requestOrder(normalizedPhone, { silent } = {}) {
-    if (!user?.email) {
-      if (!silent) setMsg("Please login to create an order.");
-      return null;
-    }
-    const res = await apiFetch("/api/payment/order", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ buyerPhone: normalizedPhone })
-    });
-    const data = await res.json().catch(() => ({}));
-    if (!res.ok || data.ok === false) {
-      if (!silent) setMsg(data.message || "Order create failed");
-      return null;
-    }
-    setOrder(data);
-    lastOrderPhoneRef.current = normalizedPhone;
-    return data;
-  }
+    const prefillName = name || user?.fullName || user?.email?.split("@")[0] || "";
 
-  async function createOrder() {
-    setMsg("");
-    const normalizedPhone = validatePhone(phoneRef.current);
-    if (!normalizedPhone) {
-      setMsg("Enter a valid WhatsApp phone number to continue.");
+    let orderResult;
+    try {
+      orderResult = await createPaymentOrder({ buyerName: name, buyerPhone: phone });
+    } catch (err) {
+      setMessages(["Unable to reach the payment server. Please try again."]);
+      setProcessing(false);
+      processingRef.current = false;
       return;
     }
-    setIsProcessing(true);
-    let data = order;
-    if (!data || lastOrderPhoneRef.current !== normalizedPhone) {
-      data = await requestOrder(normalizedPhone);
-    }
-    if (!data) {
-      setIsProcessing(false);
+    const { ok, data } = orderResult;
+    if (!ok) {
+      setMessages([data.message || "Failed to create payment order"]);
+      setProcessing(false);
+      processingRef.current = false;
       return;
     }
+
     if (data.mode === "MOCK") {
-      setMsg("Demo mode: Razorpay placeholder checkout.");
+      const mockPaymentId = `pay_mock_${Date.now()}`;
+      let verifyRes;
+      try {
+        verifyRes = await verifyPayment({
+          orderId: data.orderId,
+          paymentId: mockPaymentId,
+          signature: ""
+        });
+      } catch (err) {
+        setMessages(["Payment verification failed. Please try again."]);
+        setProcessing(false);
+        processingRef.current = false;
+        return;
+      }
+      if (verifyRes.ok) {
+        const receiptPayload = {
+          orderId: data.orderId,
+          paymentId: mockPaymentId,
+          amountPaise: data.amountPaise,
+          googleDriveUrl: verifyRes.data?.unlockedVideoUrl
+        };
+        saveReceipt(receiptPayload, user?.id);
+        setProcessing(false);
+        processingRef.current = false;
+        navigate("/payment-success", { state: receiptPayload });
+      } else {
+        const reason = verifyRes.data?.message || "Payment failed. Please try again.";
+        const failurePayload = { reason };
+        saveFailure(failurePayload, user?.id);
+        setProcessing(false);
+        processingRef.current = false;
+        navigate("/payment-failed", { state: failurePayload });
+      }
+      return;
     }
-    if (!razorpayReady || !window.Razorpay) {
-      setMsg("Payment gateway is loading. Please wait a moment.");
-      setIsProcessing(false);
+
+    const razorpayLoaded = await loadRazorpay();
+    if (!razorpayLoaded) {
+      setMessages(["Failed to load payment gateway. Please try again."]);
+      setProcessing(false);
+      processingRef.current = false;
+      return;
+    }
+
+    if (!data.keyId || !data.orderId) {
+      setMessages(["Payment configuration missing. Please contact support."]);
+      setProcessing(false);
+      processingRef.current = false;
       return;
     }
 
     const options = {
-      key: data.keyId || RAZORPAY_PLACEHOLDER_KEY,
-      order_id: data.orderId || undefined,
+      key: data.keyId || "rzp_test_S1mk723Rt4DSsp",
       amount: data.amountPaise,
-      currency: data.currency,
-      name: "AS DANCE",
-      description: "639-Step Bundle",
+      currency: data.currency || "INR",
+      name: "As Dance",
+      description: "Unlock Premium Content",
+      image: bundlePreview,
+      order_id: data.orderId,
+      handler: async (response) => {
+        let verifyRes;
+        try {
+          verifyRes = await verifyPayment({
+            orderId: response.razorpay_order_id || data.orderId,
+            paymentId: response.razorpay_payment_id,
+            signature: response.razorpay_signature
+          });
+        } catch (err) {
+          const failurePayload = { reason: "Payment verification failed. Please try again." };
+          saveFailure(failurePayload, user?.id);
+          setProcessing(false);
+          processingRef.current = false;
+          navigate("/payment-failed", { state: failurePayload });
+          return;
+        }
+        if (verifyRes.ok) {
+          const receiptPayload = {
+            orderId: response.razorpay_order_id || data.orderId,
+            paymentId: response.razorpay_payment_id,
+            amountPaise: data.amountPaise,
+            googleDriveUrl: verifyRes.data?.unlockedVideoUrl
+          };
+          saveReceipt(receiptPayload, user?.id);
+          setProcessing(false);
+          processingRef.current = false;
+          navigate("/payment-success", { state: receiptPayload });
+        } else {
+          const reason = verifyRes.data?.message || "Payment failed. Please try again.";
+          const failurePayload = { reason };
+          saveFailure(failurePayload, user?.id);
+          setProcessing(false);
+          processingRef.current = false;
+          navigate("/payment-failed", { state: failurePayload });
+        }
+      },
       prefill: {
-        name: user.fullName || "AS DANCE User",
-        email: user.email,
-        contact: normalizedPhone
+        name: prefillName,
+        email: user?.email || undefined,
+        contact: phone
+      },
+      theme: {
+        color: "#3399cc"
       },
       modal: {
-        ondismiss: () => setIsProcessing(false)
-      },
-      handler: (response) => {
-        const payload = {
-          order_id: data.orderId,
-          payment_id: response?.razorpay_payment_id || `pay_test_${Date.now()}`
-        };
-        finalizePayment(payload).finally(() => setIsProcessing(false));
+        ondismiss: () => {
+          setProcessing(false);
+          processingRef.current = false;
+        }
       }
     };
 
-    const rzp = new window.Razorpay(options);
-    rzp.on("payment.failed", (response) => {
-      setMsg(response?.error?.description || "Payment failed. Please try again.");
-      setIsProcessing(false);
-    });
-    rzp.open();
-  }
-
-  async function completeMockPayment() {
-    if (!order?.orderId) return;
-    const payload = {
-      order_id: order.orderId,
-      payment_id: "pay_mock_" + Date.now()
-    };
-    setIsProcessing(true);
-    await finalizePayment(payload);
-    setIsProcessing(false);
-  }
-
-  const unlocked = status?.unlocked || user?.unlocked;
-  const handleOpenVideo = () => {
-    apiFetch("/api/payment/downloaded", { method: "POST" }).catch(() => { });
-    const url = unlockedUrl || status?.unlockedVideoUrl;
-    if (!url) {
-      setMsg("Unlocked video link is not configured yet.");
-      return;
+    try {
+      const rzp = new window.Razorpay(options);
+      rzp.on("payment.failed", (response) => {
+        const reason = response?.error?.description || "Payment failed. Please try again.";
+        const failurePayload = { reason };
+        saveFailure(failurePayload, user?.id);
+        setProcessing(false);
+        processingRef.current = false;
+        navigate("/payment-failed", { state: failurePayload });
+      });
+      rzp.open();
+    } catch (err) {
+      setMessages(["Failed to open payment gateway. Please try again."]);
+      setProcessing(false);
+      processingRef.current = false;
     }
-    window.open(url, "_blank", "noopener,noreferrer");
   };
 
-  useEffect(() => {
-    if (!user?.email) return;
-    const normalizedPhone = validatePhone(phone);
-    if (!normalizedPhone) return;
-    if (normalizedPhone === lastOrderPhoneRef.current) return;
-    if (prefetchTimerRef.current) {
-      clearTimeout(prefetchTimerRef.current);
-    }
-    prefetchTimerRef.current = setTimeout(() => {
-      const latest = validatePhone(phoneRef.current);
-      if (!latest || latest === lastOrderPhoneRef.current) return;
-      if (prefetchingRef.current) return;
-      prefetchingRef.current = true;
-      requestOrder(latest, { silent: true })
-        .finally(() => {
-          prefetchingRef.current = false;
-        });
-    }, 450);
-    return () => {
-      if (prefetchTimerRef.current) {
-        clearTimeout(prefetchTimerRef.current);
-      }
-    };
-  }, [phone, user?.email]);
-
   return (
-    <div className="checkout-page section" ref={rootRef}>
-      <div className="container-max checkout-shell">
-        <div className="checkout-top-actions checkout-anim">
+    <section className="checkout-page">
+      <div className="checkout-shell container-max">
+        <div className="checkout-top-actions">
           <Link className="btn btn-outline-light" to="/">Home</Link>
-          <button className="btn btn-outline-light" onClick={logout}>Logout</button>
+          <button className="btn btn-outline-light" type="button" onClick={() => navigate(-1)}>
+            Back
+          </button>
         </div>
 
         <div className="checkout-float">
-          <div className="checkout-left checkout-anim">
-            <div className="checkout-brandline">AS DANCE — 639-Step Bundle</div>
-            <div className="checkout-micro-stats">
-              639 Steps (Easy 196 • Medium 219 • Hard 226)
-            </div>
-            <div className="checkout-subtitle">Secure Checkout – ₹499 Offer</div>
+          <div className="checkout-left">
+            <div className="checkout-micro-stats">Secure Checkout</div>
+            <div className="checkout-brandline">AS DANCE</div>
+            <div className="checkout-title-sm">Unlock the 639-Step Bundle</div>
+            <div className="checkout-subtitle">One-time payment. Instant unlock. Lifetime access.</div>
 
-            <div className="checkout-title-sm">Payment</div>
+            <div className="checkout-steps">
+              <span className="checkout-step is-complete">Details</span>
+              <span className="checkout-step-divider">•</span>
+              <span className="checkout-step is-active">Payment</span>
+              <span className="checkout-step-divider">•</span>
+              <span className="checkout-step">Unlock</span>
+            </div>
+
             <p className="checkout-body">
-              Finish your payment to unlock the bundle instantly.
+              Your bundle unlocks 639 curated steps across easy, medium, and hard routines.
+              Fill in optional contact details so we can reach you instantly after payment.
             </p>
 
-            {msg && <div className="checkout-message">{msg}</div>}
-
-            <div className="checkout-field">
-              <label className="checkout-field-label" htmlFor="buyer-phone">WhatsApp Number</label>
-              <input
-                id="buyer-phone"
-                type="tel"
-                className="checkout-input"
-                placeholder="+91 88256 02356"
-                value={phone}
-                onChange={(e) => handlePhoneChange(e.target.value)}
-                inputMode="tel"
-                autoComplete="tel"
-              />
-              <span className="checkout-hint">Use the number where you want payment confirmation.</span>
-            </div>
-
-            <div className="checkout-actions-row">
-              <button className="checkout-btn checkout-btn-primary" onClick={createOrder} disabled={isProcessing}>
-                <span className="btn-icon" aria-hidden>⚡</span>
-                <span>Buy Now</span>
-              </button>
-              <button
-                className="checkout-btn checkout-btn-secondary"
-                onClick={completeMockPayment}
-                disabled={order?.mode !== "MOCK" || isProcessing}
-              >
-                <span className="btn-icon" aria-hidden>🔒</span>
-                <span>Complete Mock Payment</span>
-              </button>
-            </div>
-
-            <div className="checkout-trust-divider" aria-hidden="true"></div>
-            <div className="checkout-trust-row">
-              <div className="checkout-trust-item">
-                <ShieldCheck size={16} />
-                Secure Payment
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handlePayment();
+              }}
+            >
+              <div className="checkout-field-grid">
+                <div className="checkout-field">
+                  <label className="checkout-field-label" htmlFor="checkout-name">
+                    Full Name <span className="checkout-optional">(optional)</span>
+                  </label>
+                  <input
+                    id="checkout-name"
+                    ref={nameRef}
+                    type="text"
+                    className="checkout-input"
+                    placeholder="Your name"
+                    autoComplete="name"
+                  />
+                </div>
+                <div className="checkout-field">
+                  <label className="checkout-field-label" htmlFor="checkout-phone">
+                    WhatsApp <span className="checkout-optional">(optional)</span>
+                  </label>
+                  <input
+                    id="checkout-phone"
+                    ref={phoneRef}
+                    type="tel"
+                    className="checkout-input"
+                    placeholder="WhatsApp number"
+                    inputMode="tel"
+                    autoComplete="tel"
+                  />
+                  <span className="checkout-hint">Enter 10+ digits or leave blank.</span>
+                </div>
               </div>
-              <div className="checkout-trust-item">
-                <Clock size={16} />
-                Lifetime Access
-              </div>
-              <div className="checkout-trust-item">
-                <Zap size={16} />
-                Instant Unlock
-              </div>
-            </div>
-            <div className="checkout-receipt">
-              Email receipt will be sent automatically after payment.
-            </div>
 
-            <div className="checkout-status-line">
-              <span className="checkout-label-inline">Status:</span>
-              <span className="checkout-status-value">{unlocked ? "Unlocked" : "Locked"}</span>
-            </div>
+              <div className="checkout-actions-row">
+                <button
+                  className="checkout-btn checkout-btn-primary"
+                  type="submit"
+                  disabled={processing}
+                >
+                  {processing ? "Processing..." : "Buy Now"}
+                </button>
+              </div>
+            </form>
 
-            {unlocked && (
-              <button className="checkout-btn checkout-btn-primary checkout-open" onClick={handleOpenVideo}>
-                <span className="btn-icon" aria-hidden>⚡</span>
-                <span>Preview</span>
-              </button>
+            {processing && (
+              <div className="checkout-processing" aria-live="polite">
+                <span className="checkout-spinner" aria-hidden="true"></span>
+                Payment window is loading...
+              </div>
             )}
+
+            {messages.map((msg, i) => (
+              <div key={`checkout-msg-${i}`} className="checkout-message" role="alert">
+                {msg}
+              </div>
+            ))}
           </div>
 
-          <aside className="checkout-right">
-            <div className="checkout-summary-card checkout-anim">
-              <div className="summary-image">
+          <div className="checkout-right">
+            <div className="checkout-summary-card">
+              <div className="checkout-label">Order Summary</div>
+              <div className="bundle-preview">
                 <img
                   src={bundlePreview}
-                  alt="AS DANCE bundle preview"
+                  alt="Bundle Preview"
                   loading="lazy"
                   decoding="async"
                   width="640"
                   height="360"
                 />
               </div>
-              <div className="checkout-label">Order Summary</div>
               <div className="checkout-summary-row">
-                <span>Bundle</span>
+                <span>Bundle Access</span>
                 <span className="checkout-summary-value">₹499</span>
               </div>
               <div className="checkout-summary-row total">
                 <span>Total</span>
                 <span className="checkout-summary-value">₹499</span>
               </div>
+              <button
+                className="checkout-summary-cta"
+                type="button"
+                onClick={handlePayment}
+                disabled={processing}
+              >
+                {processing ? "Processing..." : "Pay ₹499"}
+              </button>
+
+              <div className="checkout-trust-divider"></div>
+              <div className="checkout-trust-row">
+                <span className="checkout-trust-item">Secure Payment</span>
+                <span className="checkout-trust-item">Instant Unlock</span>
+                <span className="checkout-trust-item">Lifetime Access</span>
+              </div>
+              <div className="checkout-receipt">Receipt delivered instantly after payment.</div>
 
               <div className="checkout-support">
-                <div className="checkout-label">Support</div>
                 <div className="checkout-support-item">
-                  <span className="support-icon"><WhatsApp size={16} color="currentColor" /></span>
-                  <span className="support-label">WhatsApp</span>
-                  <span className="support-value">{SUPPORT_WHATSAPP}</span>
+                  <div>
+                    <div className="support-label">WhatsApp Support</div>
+                    <div className="support-value">+91 88256 02356</div>
+                  </div>
                 </div>
                 <div className="checkout-support-item">
-                  <span className="support-icon"><Mail size={16} /></span>
-                  <span className="support-label">Email</span>
-                  <span className="support-value">{SUPPORT_EMAIL}</span>
+                  <div>
+                    <div className="support-label">Email</div>
+                    <div className="support-value">businessaswin@gmail.com</div>
+                  </div>
                 </div>
               </div>
+              <div className="checkout-trust-note">Complete payment to unlock your dashboard.</div>
             </div>
-          </aside>
+          </div>
         </div>
       </div>
-    </div>
+    </section>
   );
-}
+};
+
+export default Checkout;

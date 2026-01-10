@@ -5,6 +5,9 @@ import Home from "./pages/Home.jsx";
 import Login from "./pages/Login.jsx";
 import Register from "./pages/Register.jsx";
 import Checkout from "./pages/Checkout.jsx";
+import PaymentSuccess from "./pages/PaymentSuccess.jsx";
+import PaymentFailed from "./pages/PaymentFailed.jsx";
+import Dashboard from "./pages/Dashboard.jsx";
 import Admin from "./pages/Admin.jsx";
 import Preview from "./pages/Preview.jsx";
 import NotFound from "./pages/NotFound.jsx";
@@ -12,8 +15,9 @@ import NotFound from "./pages/NotFound.jsx";
 function ProtectedRoute({ children }) {
   const { loading, user } = useAuth();
   const loc = useLocation();
+  const from = `${loc.pathname}${loc.search || ""}`;
   if (loading) return <div className="page-center text-white-50">Loading...</div>;
-  if (!user) return <Navigate to="/login" replace state={{ from: loc.pathname }} />;
+  if (!user) return <Navigate to="/login" replace state={{ from }} />;
   return children;
 }
 
@@ -37,6 +41,30 @@ export default function App() {
             element={(
               <ProtectedRoute>
                 <Checkout />
+              </ProtectedRoute>
+            )}
+          />
+          <Route
+            path="/payment-success"
+            element={(
+              <ProtectedRoute>
+                <PaymentSuccess />
+              </ProtectedRoute>
+            )}
+          />
+          <Route
+            path="/payment-failed"
+            element={(
+              <ProtectedRoute>
+                <PaymentFailed />
+              </ProtectedRoute>
+            )}
+          />
+          <Route
+            path="/dashboard"
+            element={(
+              <ProtectedRoute>
+                <Dashboard />
               </ProtectedRoute>
             )}
           />

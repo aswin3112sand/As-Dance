@@ -1,7 +1,9 @@
 package com.asdance.security;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -13,17 +15,24 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import jakarta.servlet.http.HttpServletResponse;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Configuration
+@Profile("!test")
 public class SecurityConfig {
 
   private final GuestAuthFilter guestAuthFilter;
   private final JwtAuthFilter jwtAuthFilter;
+  private final String corsAllowedOriginPatterns;
 
-  public SecurityConfig(GuestAuthFilter guestAuthFilter, JwtAuthFilter jwtAuthFilter) {
+  public SecurityConfig(
+      GuestAuthFilter guestAuthFilter,
+      JwtAuthFilter jwtAuthFilter,
+      @Value("${app.cors.allowedOriginPatterns:http://localhost:*}") String corsAllowedOriginPatterns) {
     this.guestAuthFilter = guestAuthFilter;
     this.jwtAuthFilter = jwtAuthFilter;
+    this.corsAllowedOriginPatterns = corsAllowedOriginPatterns;
   }
 
   @Bean
@@ -58,7 +67,14 @@ public class SecurityConfig {
   @Bean
   public CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration config = new CorsConfiguration();
-    config.setAllowedOriginPatterns(List.of("http://localhost:*"));
+    List<String> allowedOrigins = Arrays.stream(corsAllowedOriginPatterns.split(","))
+        .map(String::trim)
+        .filter(origin -> !origin.isEmpty())
+        .toList();
+    if (allowedOrigins.isEmpty()) {
+      allowedOrigins = List.of("http://localhost:*");
+    }
+    config.setAllowedOriginPatterns(allowedOrigins);
     config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "HEAD"));
     config.setAllowedHeaders(List.of("*"));
     config.setAllowCredentials(true);

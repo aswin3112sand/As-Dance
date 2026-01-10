@@ -57,14 +57,14 @@ public class AllowedUserSeeder implements ApplicationRunner {
         userRepository.save(user);
       }
     }, () -> {
-      AppUser user = AppUser.builder()
-          .email(email)
-          .passwordHash(passwordService.hash(allowedPassword))
-          .fullName("AS DANCE User")
-          .externalId(accessPolicy.getAllowedUserId())
-          .hasAccess(false)
-          .enabled(true)
-          .build();
+    var user = AppUser.builder()
+        .email(email)
+        .passwordHash(passwordService.hash(allowedPassword))
+        .fullName("AS DANCE User")
+        .externalId(accessPolicy.getAllowedUserId())
+        .hasAccess(false)
+        .enabled(true)
+        .build();
       userRepository.save(user);
     });
   }

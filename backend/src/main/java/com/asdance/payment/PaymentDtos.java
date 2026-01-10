@@ -41,7 +41,8 @@ public class PaymentDtos {
 
   public record WebhookRequest(
     String order_id,
-    String payment_id
+    String payment_id,
+    String razorpay_signature
   ) {}
 
   public record VerifyResponse(boolean ok, boolean unlocked, String message, String unlockedVideoUrl) {}

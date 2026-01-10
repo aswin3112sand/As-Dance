@@ -5,7 +5,12 @@ import lombok.*;
 
 @Entity
 @Table(name="users", uniqueConstraints = @UniqueConstraint(columnNames = "email"))
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class AppUser {
   @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;

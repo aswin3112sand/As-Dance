@@ -13,20 +13,40 @@ const DEMO_THUMBS = [
   [t12, t12, t12, t12]
 ];
 
+const DRIVE_PREVIEW_BASE = "https://drive.google.com/file/d/";
+
 const DEFAULT_DEMO_LINKS = [
-  "https://drive.google.com/uc?export=download&id=1CsFWUhFZJk8Y0nsuWHYYiY_2a9g3U6xK",
-  "https://drive.google.com/uc?export=download&id=1BPMWXzPvsDl5b6HTkVV8Ki4qGD2cSLl7",
-  "https://drive.google.com/uc?export=download&id=1OrR392BpNAJEnaNcpI4p8UTC8uuzb0_V",
-  "https://drive.google.com/uc?export=download&id=1LhTBZCCFSl2G06pCceKbXJes41Tzn4Wx"
+  `${DRIVE_PREVIEW_BASE}1dkL6iaRXUeun2_HuO1tUVuRO-mljaHTX/preview`,
+  `${DRIVE_PREVIEW_BASE}1BVU36dGDBsn5Xh8dROo03LDo2VQga8MU/preview`,
+  `${DRIVE_PREVIEW_BASE}1m3kWgB6fY4a0mW7UKhka0N6lmGL-sfX3/preview`,
+  `${DRIVE_PREVIEW_BASE}1Xn5B0pgojpFT3Yzy9Ei3TmGIr1VXRDWp/preview`
 ];
+
+const extractDriveId = (value) => {
+  const fileMatch = value.match(/\/file\/d\/([a-zA-Z0-9_-]+)/i);
+  if (fileMatch) return fileMatch[1];
+  const idMatch = value.match(/[?&]id=([a-zA-Z0-9_-]+)/i);
+  if (idMatch) return idMatch[1];
+  return null;
+};
+
+const toPreviewUrl = (fileId) => `${DRIVE_PREVIEW_BASE}${fileId}/preview`;
 
 const normalizeDemoUrl = (value) => {
   if (!value) return null;
   if (typeof value === "string") {
     const trimmed = value.trim();
     if (!trimmed) return null;
-    if (/^https?:\/\//i.test(trimmed)) return trimmed;
-    if (/^drive\.google\.com\//i.test(trimmed)) return `https://${trimmed}`;
+    if (/^[a-zA-Z0-9_-]{20,}$/.test(trimmed)) return toPreviewUrl(trimmed);
+    if (/^https?:\/\//i.test(trimmed)) {
+      const driveId = extractDriveId(trimmed);
+      return driveId ? toPreviewUrl(driveId) : trimmed;
+    }
+    if (/^drive\.google\.com\//i.test(trimmed)) {
+      const withProtocol = `https://${trimmed}`;
+      const driveId = extractDriveId(withProtocol);
+      return driveId ? toPreviewUrl(driveId) : withProtocol;
+    }
     return null;
   }
   if (typeof value === "object") {

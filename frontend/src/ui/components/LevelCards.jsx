@@ -67,7 +67,14 @@ export default function LevelCards() {
                 </div>
               </div>
               <div className="service-media">
-                <img src={card.image} alt={`${card.label} choreo preview`} loading="lazy" />
+                <img
+                  src={card.image}
+                  alt={`${card.label} choreo preview`}
+                  loading="lazy"
+                  decoding="async"
+                  width="1280"
+                  height="720"
+                />
               </div>
 
               <div className="service-info-row">

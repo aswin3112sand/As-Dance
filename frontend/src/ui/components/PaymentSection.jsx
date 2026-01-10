@@ -1,58 +1,104 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { WhatsApp, Mail } from "../icons.jsx";
+import { CreditCard } from "../icons.jsx";
 import { useAuth } from "../auth.jsx";
+import profileImage from "../../assets/bg/poster.webp";
 
 export default function PaymentSection() {
-  const { user, loading } = useAuth();
+  const { user } = useAuth();
   const nav = useNavigate();
+  const displayName = user?.fullName || user?.email?.split("@")[0] || "AS DANCE Learner";
 
   const handleCheckout = () => {
-    if (loading) return;
-    if (user) {
-      nav("/checkout");
+    const target = "/checkout?pay=1";
+    if (!user) {
+      nav("/login", { state: { from: target } });
       return;
     }
-    nav("/login", { state: { from: "/checkout" } });
+    nav(target);
   };
 
   return (
     <section className="section section-compact bg-payment section-anim" id="payment">
       <div className="container-max">
-        <div className="payment-card card-3d card-float card-anim">
-          <div className="payment-header">
-            <div className="payment-title">AS DANCE 639-Step Bundle</div>
-            <div className="payment-subtitle">₹499 Only • One-Time Payment • Lifetime Access</div>
-            <div className="payment-subtitle">Instant Unlock After Payment</div>
+        <div className="payment-card payment-card-modern card-3d card-anim">
+          <div className="payment-profile">
+            <div className="payment-avatar-frame">
+              <img
+                src={profileImage}
+                alt={`${displayName} profile`}
+                className="payment-avatar"
+                loading="lazy"
+                decoding="async"
+                width="100"
+                height="100"
+              />
+            </div>
+            <div className="payment-user">{displayName}</div>
+            <div className="payment-plan">639-Step Stage-Ready Bundle</div>
+            <div className="payment-price">₹499</div>
           </div>
 
-          <div className="payment-icons">
-            <span className="payment-chip">
-              <WhatsApp size={16} />
-              WhatsApp Support
-            </span>
-            <span className="payment-chip">
-              <Mail size={16} />
-              Email Receipt
-            </span>
-          </div>
+          <div className="payment-form">
+            <label className="payment-label" htmlFor="card-number">Card Number</label>
+            <div className="payment-input-wrap">
+              <CreditCard size={16} />
+              <input
+                id="card-number"
+                className="payment-input"
+                type="text"
+                inputMode="numeric"
+                autoComplete="cc-number"
+                placeholder="1234 5678 9012 3456"
+                aria-label="Card number"
+              />
+            </div>
 
-          <div className="payment-actions">
+            <div className="payment-row">
+              <div className="payment-field">
+                <label className="payment-label" htmlFor="card-exp">Expiry</label>
+                <div className="payment-input-wrap">
+                  <input
+                    id="card-exp"
+                    className="payment-input"
+                    type="text"
+                    inputMode="numeric"
+                    autoComplete="cc-exp"
+                    placeholder="MM/YY"
+                    aria-label="Expiry date"
+                  />
+                </div>
+              </div>
+              <div className="payment-field">
+                <label className="payment-label" htmlFor="card-cvv">CVV</label>
+                <div className="payment-input-wrap">
+                  <input
+                    id="card-cvv"
+                    className="payment-input"
+                    type="password"
+                    inputMode="numeric"
+                    autoComplete="cc-csc"
+                    placeholder="***"
+                    aria-label="CVV"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="payment-methods" aria-label="Payment methods">
+              <span className="payment-method payment-visa">VISA</span>
+              <span className="payment-method payment-master">MASTERCARD</span>
+              <span className="payment-method payment-upi">UPI</span>
+            </div>
+
             <button
+              id="payBtn"
               type="button"
-              className="btn btn-cta btn-hero btn-cta-primary payment-cta"
+              className="buy-now-btn"
               onClick={handleCheckout}
-              disabled={loading}
             >
-              UNLOCK 639-STEP BUNDLE FOR ₹499
+              Buy Now
             </button>
-          </div>
-
-          <div className="payment-note">
-            Video opens instantly in Google Drive after payment
-          </div>
-          <div className="payment-note">
-            Email receipt will be sent automatically
           </div>
         </div>
       </div>

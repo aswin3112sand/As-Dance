@@ -118,7 +118,7 @@ public class WhatsAppService {
 
   private String normalizePhone(String raw) {
     if (raw == null) return null;
-    String digits = raw.replaceAll("[^0-9]", "");
+    String digits = raw.replaceAll("\\D", "");
     if (digits.length() < 10) return null;
     return digits;
   }

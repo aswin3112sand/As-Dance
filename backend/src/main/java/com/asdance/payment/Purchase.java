@@ -6,7 +6,12 @@ import java.time.Instant;
 
 @Entity
 @Table(name="purchases")
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Purchase {
   @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
