@@ -41,7 +41,7 @@
   --grad-mist: linear-gradient(135deg,
       rgba(159, 175, 209, 0.18),
       rgba(116, 88, 228, 0.18));
-  --font-display: "Syne", "Outfit", sans-serif;
+  --font-display: "Outfit", "Urbanist", sans-serif;
   --font-sans: "Urbanist", "Outfit", sans-serif;
 }
 
@@ -191,7 +191,7 @@ a:hover {
 }
 
 .hero-title {
-  font-family: "Orbitron", sans-serif;
+  font-family: var(--font-display);
   font-size: clamp(40px, 6vw, 64px);
   font-weight: 700;
   letter-spacing: 0.015em;
@@ -213,12 +213,12 @@ a:hover {
 }
 
 .hero-content-advanced {
-  font-family: "Inter", sans-serif;
+  font-family: var(--font-sans);
 }
 
 .hero-copy,
 .hero-copy-advanced {
-  font-family: "Inter", sans-serif;
+  font-family: var(--font-sans);
   font-size: clamp(16px, 1.2vw, 18px);
   opacity: 0.85;
 }

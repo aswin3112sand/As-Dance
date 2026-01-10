@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /api
+Disallow: /h2-console
+Sitemap: https://asdance.com/sitemap.xml

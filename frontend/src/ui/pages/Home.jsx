@@ -200,10 +200,10 @@ export default function Home() {
 
       {/* NAVBAR */}
       <nav className={`navbar-glass${loaded ? " is-nav-animated" : ""}`}>
-        <div className="container-max d-flex align-items-center justify-content-between">
+        <div className="container-max">
           <div className="brand fs-4 text-white fw-bold tracking-wider" style={{ fontFamily: "var(--font-display)" }}>AS DANCE</div>
 
-          <div className="d-none d-md-flex align-items-center gap-5 nav-center">
+          <div className="nav-center">
             <a href="#bundle" className="nav-link">
               <span className="nav-label">Bundle</span>
               <span className="nav-emoji" aria-hidden="true">📦</span>
@@ -226,7 +226,7 @@ export default function Home() {
             </a>
           </div>
 
-          <div className="d-flex align-items-center gap-2 header-actions">
+          <div className="header-actions">
             <Link to="/login" className="btn nav-cta nav-cta-primary">
               Login
             </Link>
@@ -237,7 +237,7 @@ export default function Home() {
         </div>
       </nav>
 
-      <main>
+      <div className="page-content">
         <BannerStrip />
 
         {/* 1. HERO SECTION */}
@@ -264,14 +264,14 @@ export default function Home() {
           </Suspense>
         </LazyMount>
 
-      </main>
+      </div>
 
       {/* 9. SUPPORT BUTTONS (Floating Container) */}
       <div className="fab-container">
-        <a href="mailto:businessaswin@gmail.com" className="mail-float" title="Email Support">
+        <a href="mailto:bussinessaswin@gmail.com" className="mail-float" title="Email Support" aria-label="Email Support">
           <Mail size={20} />
         </a>
-        <a href="https://wa.me/918825602356" target="_blank" rel="noreferrer" className="wa-float" title="Support on WhatsApp">
+        <a href="https://wa.me/918825602356" target="_blank" rel="noopener noreferrer" className="wa-float" title="Support on WhatsApp" aria-label="Support on WhatsApp">
           <WhatsApp size={24} color="#fff" />
         </a>
       </div>
@@ -285,10 +285,10 @@ export default function Home() {
               Fast skill progression for students, fitness dancers, wedding choreo learners, and stage performers.
             </p>
             <div className="footer-icons">
-              <a href="https://wa.me/918825602356" target="_blank" rel="noreferrer" className="footer-icon">
+              <a href="https://wa.me/918825602356" target="_blank" rel="noopener noreferrer" className="footer-icon" aria-label="WhatsApp">
                 <WhatsApp size={18} color="#fff" />
               </a>
-              <a href="mailto:businessaswin@gmail.com" className="footer-icon">
+              <a href="mailto:bussinessaswin@gmail.com" className="footer-icon" aria-label="Email">
                 <Mail size={18} />
               </a>
             </div>
@@ -298,7 +298,7 @@ export default function Home() {
             <div className="footer-list footer-contact">
               <div className="footer-contact-item">
                 <Mail size={16} />
-                <span>Email: businessaswin@gmail.com</span>
+                <span>Email: bussinessaswin@gmail.com</span>
               </div>
               <div className="footer-contact-item">
                 <PhoneCall size={16} />

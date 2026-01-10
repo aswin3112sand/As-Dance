@@ -1,3 +1,19 @@
+// EXACT CODE TO ADD TO App.jsx FOR ACCESSIBILITY
+
+// ============================================
+// STEP 1: Add this import at the top
+// ============================================
+// (Already in your file, just verify)
+import React, { useEffect } from "react";
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { AuthProvider, useAuth } from "./auth.jsx";
+// ... rest of imports
+
+
+// ============================================
+// STEP 2: Replace the entire App.jsx with this:
+// ============================================
+
 import React, { useEffect } from "react";
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { AuthProvider, useAuth } from "./auth.jsx";
@@ -26,6 +42,7 @@ function RootRoute() {
 }
 
 export default function App() {
+  // Keyboard navigation support (Alt+M to skip to main content)
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.altKey && e.key === 'm') {
@@ -36,6 +53,7 @@ export default function App() {
         }
       }
     };
+
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
@@ -43,9 +61,12 @@ export default function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
+        {/* Skip to main content link - visible on focus */}
         <a href="#main-content" className="skip-to-content">
           Skip to main content
         </a>
+
+        {/* Main content landmark for accessibility */}
         <main id="main-content" role="main" tabIndex="-1">
           <Routes>
             <Route path="/" element={<RootRoute />} />
@@ -94,3 +115,46 @@ export default function App() {
     </AuthProvider>
   );
 }
+
+
+// ============================================
+// WHAT CHANGED:
+// ============================================
+// 1. Added useEffect hook for keyboard navigation
+// 2. Added skip-to-content link (styled in responsive-fixes.css)
+// 3. Wrapped Routes in <main> element with id="main-content"
+// 4. Added role="main" for semantic HTML
+// 5. Added tabIndex="-1" to allow focus management
+// 6. Added keyboard shortcut: Alt+M to skip to main content
+
+
+// ============================================
+// CSS ALREADY ADDED (in responsive-fixes.css):
+// ============================================
+/*
+.skip-to-content {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: var(--neon-blue);
+  color: #000;
+  padding: 8px 16px;
+  text-decoration: none;
+  z-index: 100;
+  border-radius: 0 0 8px 0;
+  font-weight: 600;
+}
+
+.skip-to-content:focus {
+  top: 0;
+}
+*/
+
+
+// ============================================
+// TESTING:
+// ============================================
+// 1. Press Tab key - skip-to-content link should appear
+// 2. Press Enter - should scroll to main content
+// 3. Press Alt+M - should also skip to main content
+// 4. Run Lighthouse - Accessibility score should be 100

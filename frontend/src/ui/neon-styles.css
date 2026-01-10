@@ -541,7 +541,7 @@ body::after {
     border-radius: 999px;
     background: rgba(5, 8, 13, 0.9);
     color: var(--banner-aqua);
-    font-family: "Inter", sans-serif;
+    font-family: var(--font-sans);
     font-weight: 600;
     font-size: 0.65rem;
     letter-spacing: 0.05em;

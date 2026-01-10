@@ -1,0 +1,815 @@
+/* ===== CRITICAL MOBILE RESPONSIVENESS FIXES ===== */
+
+:root {
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --container-max: 1200px;
+  --line-base: 1.6;
+}
+
+body {
+  line-height: var(--line-base);
+}
+
+/* 1. NAVBAR - Responsive Height & Touch Targets */
+.navbar-glass {
+  padding: clamp(var(--space-1), 1.5vw, var(--space-2)) 0 !important;
+  min-height: 64px !important;
+  height: auto !important;
+}
+
+.navbar-glass .container-max {
+  width: 100%;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: var(--space-3);
+  row-gap: var(--space-1);
+}
+
+.navbar-glass .container-max > :last-child {
+  justify-self: end;
+}
+
+.brand {
+  font-size: clamp(16px, 2.5vw, 24px) !important;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+}
+
+.nav-link {
+  font-size: clamp(0.7rem, 1.5vw, 0.82rem);
+  min-height: 44px;
+  padding: var(--space-1) var(--space-2);
+  border-radius: 8px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.nav-link:focus-visible {
+  outline: 2px solid var(--neon-blue);
+  outline-offset: 2px;
+  background: rgba(76, 201, 255, 0.1);
+}
+
+.nav-cta {
+  height: clamp(36px, 5vw, 44px) !important;
+  padding: 0 clamp(var(--space-1), 2vw, var(--space-2)) !important;
+  font-size: clamp(0.7rem, 1.2vw, 0.85rem);
+  min-width: clamp(90px, 15vw, 110px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.nav-cta:focus-visible {
+  outline: 2px solid var(--neon-blue);
+  outline-offset: 2px;
+}
+
+.nav-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3) !important;
+  row-gap: var(--space-1);
+  padding-inline: var(--space-2);
+  min-width: 0;
+}
+
+.header-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2) !important;
+  flex-wrap: wrap;
+  justify-self: end;
+}
+
+@media (max-width: 768px) {
+  .navbar-glass .container-max {
+    grid-template-columns: auto 1fr;
+    row-gap: var(--space-1);
+  }
+
+  .nav-center {
+    grid-column: 1 / -1;
+    flex-wrap: wrap;
+    overflow: visible;
+    padding-inline: 0;
+    transform: none;
+    animation: none !important;
+  }
+
+  .nav-center::before,
+  .nav-center::after {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar-glass {
+    min-height: 56px !important;
+  }
+
+  .navbar-glass .container-max {
+    grid-template-columns: 1fr;
+  }
+
+  .header-actions {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* 2. HERO SECTION - Layout */
+.hero-grid,
+.hero-grid-advanced {
+  grid-template-columns: repeat(12, minmax(0, 1fr)) !important;
+  gap: clamp(var(--space-3), 3.5vw, var(--space-4)) !important;
+  min-height: auto !important;
+}
+
+.hero-content,
+.hero-content-advanced {
+  grid-column: span 6 !important;
+  align-items: flex-start;
+  text-align: left;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.hero-visual,
+.hero-visual-advanced {
+  grid-column: span 6 !important;
+  min-width: 0;
+  order: 0;
+}
+
+.hero-full {
+  min-height: auto !important;
+}
+
+.hero-title {
+  font-size: clamp(24px, 7vw, 52px) !important;
+}
+
+.hero-count-value {
+  font-size: clamp(36px, 10vw, 72px) !important;
+}
+
+.hero-levels {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-2);
+}
+
+.hero-level-pill {
+  min-height: clamp(70px, 12vw, 88px);
+  padding: clamp(10px, 2vw, 14px);
+  letter-spacing: 0.12em;
+  font-size: clamp(0.7rem, 1.5vw, 0.85rem);
+}
+
+.hero-headline-row {
+  align-items: baseline;
+  gap: var(--space-2);
+}
+
+.hero-cta-row {
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+}
+
+.hero-cta-row .btn,
+.hero-primary-cta {
+  width: auto;
+  min-height: 44px;
+}
+
+.hero-poster-frame {
+  max-width: min(480px, 44vw) !important;
+  width: 100%;
+}
+
+@media (max-width: 1024px) {
+  .hero-grid,
+  .hero-grid-advanced {
+    grid-template-columns: 1fr !important;
+    gap: clamp(24px, 5vw, 40px) !important;
+  }
+
+  .hero-content,
+  .hero-content-advanced {
+    grid-column: 1 / -1 !important;
+    align-items: center;
+    text-align: center;
+  }
+
+  .hero-visual,
+  .hero-visual-advanced {
+    grid-column: 1 / -1 !important;
+    min-height: auto;
+    order: 2;
+  }
+
+  .hero-headline-row {
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .hero-count-panel {
+    align-items: center;
+    text-align: center;
+  }
+
+  .hero-price-stack {
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .hero-offer-icons,
+  .hero-trust,
+  .hero-trust-advanced {
+    justify-content: center;
+  }
+
+  .hero-cta-row .btn,
+  .hero-primary-cta {
+    width: 100%;
+  }
+
+  .hero-levels {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .hero-poster-frame {
+    max-width: min(360px, 80vw) !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-levels {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-levels {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* 3. BUTTONS - Minimum Touch Target Size */
+.btn {
+  min-height: 44px;
+  min-width: 44px;
+  padding: clamp(10px, 2vw, 16px) clamp(16px, 3vw, 28px);
+  font-size: clamp(0.85rem, 1.2vw, 1rem);
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--neon-blue);
+  outline-offset: 2px;
+}
+
+/* 4. IMAGES - Add width/height to prevent CLS */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+.hero-preview-image,
+.banner-image {
+  width: 100%;
+  height: auto;
+}
+
+/* 5. REDUCE BACKDROP-FILTER for Performance */
+@media (max-width: 768px) {
+  .navbar-glass,
+  .card-3d,
+  .card-glass,
+  .glass-panel {
+    backdrop-filter: blur(6px) !important;
+    -webkit-backdrop-filter: blur(6px) !important;
+  }
+}
+
+/* 6. DISABLE ANIMATIONS on Mobile/Reduced Motion */
+@media (max-width: 768px), (prefers-reduced-motion: reduce) {
+  .banner-poster-3d,
+  .banner-image-layer,
+  .marquee-content,
+  .hero-level-pill,
+  .hero-difficulty-item,
+  .hero-offer-chip,
+  .card-float,
+  .shine-effect,
+  .neon-border-glow {
+    animation: none !important;
+  }
+
+  .banner-poster-3d::after,
+  .banner-image-layer::after,
+  .banner-image-layer::before {
+    animation: none !important;
+  }
+}
+
+/* 7. RESPONSIVE SPACING */
+.section {
+  padding: clamp(48px, 6vw, 80px) 0 !important;
+}
+
+.section-tight {
+  padding: clamp(40px, 6vw, 72px) 0 !important;
+}
+
+.section-compact {
+  padding: clamp(32px, 5vw, 64px) 0 !important;
+}
+
+.section-head {
+  margin-bottom: var(--space-3) !important;
+}
+
+.container-max {
+  max-width: var(--container-max) !important;
+  margin: 0 auto;
+  width: 100%;
+  padding: 0 clamp(var(--space-2), 4vw, var(--space-4)) !important;
+}
+
+/* 8. BANNER STRIP - Layout */
+.banner-strip-advanced {
+  padding: clamp(32px, 5vw, 64px) 0 !important;
+}
+
+.banner-shell {
+  grid-template-columns: repeat(12, minmax(0, 1fr)) !important;
+  gap: clamp(var(--space-3), 3vw, var(--space-4)) !important;
+  align-items: center;
+}
+
+.banner-copy {
+  grid-column: span 6 !important;
+  text-align: left;
+  align-items: flex-start;
+  max-width: 100% !important;
+}
+
+.banner-visual {
+  grid-column: span 6 !important;
+  justify-content: flex-end;
+  order: 0;
+}
+
+.banner-copy,
+.banner-visual {
+  min-width: 0;
+}
+
+.banner-title-advanced {
+  font-size: clamp(2rem, 5vw, 2.8rem) !important;
+}
+
+.banner-poster-3d {
+  width: min(360px, 42vw) !important;
+}
+
+@media (max-width: 1024px) {
+  .banner-shell {
+    grid-template-columns: 1fr !important;
+    gap: clamp(20px, 4vw, 32px) !important;
+  }
+
+  .banner-copy {
+    grid-column: 1 / -1 !important;
+    text-align: center;
+    align-items: center;
+  }
+
+  .banner-visual {
+    grid-column: 1 / -1 !important;
+    justify-content: center;
+    order: 2;
+  }
+
+  .banner-poster-3d {
+    width: min(300px, 75vw) !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .banner-poster-3d {
+    width: min(260px, 80vw) !important;
+  }
+}
+
+/* 9. FORMS - Touch-Friendly */
+.auth-input,
+.checkout-input,
+.service-input {
+  min-height: 44px;
+  font-size: 16px;
+  padding: 12px 14px;
+}
+
+.auth-input:focus,
+.checkout-input:focus,
+.service-input:focus {
+  outline: 2px solid var(--neon-blue);
+  outline-offset: 2px;
+}
+
+/* 10. SKIP TO CONTENT LINK */
+.skip-to-content {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: var(--neon-blue);
+  color: #000;
+  padding: 8px 16px;
+  text-decoration: none;
+  z-index: 100;
+  border-radius: 0 0 8px 0;
+  font-weight: 600;
+}
+
+.skip-to-content:focus {
+  top: 0;
+}
+
+/* 11. FOCUS VISIBLE STATES */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--neon-blue);
+  outline-offset: 2px;
+}
+
+/* 12. RESPONSIVE GRID LAYOUTS */
+.grid-3,
+.grid-2,
+.grid-4 {
+  grid-template-columns: 1fr !important;
+  gap: clamp(16px, 4vw, 24px) !important;
+}
+
+@media (min-width: 640px) {
+  .grid-2 {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  .grid-3 {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+
+  .grid-4 {
+    grid-template-columns: repeat(4, 1fr) !important;
+  }
+}
+
+/* 13. DASHBOARD GRID */
+.dashboard-grid {
+  grid-template-columns: 1fr !important;
+}
+
+@media (min-width: 768px) {
+  .dashboard-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+@media (min-width: 1100px) {
+  .dashboard-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+}
+
+/* 14. PRACTICE GRID */
+.practice-grid {
+  grid-template-columns: 1fr !important;
+}
+
+@media (min-width: 640px) {
+  .practice-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+@media (min-width: 1100px) {
+  .practice-grid {
+    grid-template-columns: repeat(4, 1fr) !important;
+  }
+}
+
+/* 15. REVIEW GRID */
+.review-grid {
+  grid-template-columns: 1fr !important;
+}
+
+@media (min-width: 640px) {
+  .review-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  .review-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+}
+
+/* 16. CHECKOUT LAYOUT */
+.checkout-float {
+  grid-template-columns: 1fr !important;
+}
+
+@media (min-width: 900px) {
+  .checkout-float {
+    grid-template-columns: 1.4fr 1fr !important;
+  }
+}
+
+.checkout-left,
+.checkout-summary-card {
+  padding: clamp(16px, 4vw, 32px) !important;
+}
+
+/* 17. FOOTER RESPONSIVE */
+.footer-grid {
+  grid-template-columns: 1fr !important;
+  text-align: left !important;
+}
+
+@media (min-width: 768px) {
+  .footer-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+}
+
+/* 18. STATS GRID */
+.stats-grid {
+  grid-template-columns: 1fr !important;
+}
+
+@media (min-width: 640px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  .stats-grid {
+    grid-template-columns: repeat(4, 1fr) !important;
+  }
+}
+
+/* 19. SERVICES GRID */
+.services-row {
+  gap: var(--space-3) !important;
+  align-items: stretch;
+  grid-auto-rows: 1fr;
+  margin-top: var(--space-4) !important;
+  position: relative;
+}
+
+.services-row::before {
+  content: "";
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 1px dashed rgba(127, 232, 255, 0.35);
+  background: radial-gradient(circle at 30% 30%, rgba(127, 232, 255, 0.2), transparent 60%);
+  top: -16px;
+  left: -12px;
+  opacity: 0.6;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.service-card {
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width: 1024px) {
+  .services-row::before {
+    width: 96px;
+    height: 96px;
+    top: -10px;
+    left: -8px;
+  }
+}
+
+@media (max-width: 768px) {
+  .services-row::before {
+    display: none;
+  }
+}
+
+.services-row {
+  grid-template-columns: 1fr !important;
+}
+
+@media (min-width: 768px) {
+  .services-row {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+@media (min-width: 1100px) {
+  .services-row {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+}
+
+/* 20. DEMO GRID */
+.demo-grid {
+  grid-template-columns: 1fr !important;
+}
+
+@media (min-width: 768px) {
+  .demo-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  .demo-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+}
+
+/* 21. MOBILE FONT SIZES */
+@media (max-width: 640px) {
+  .display-title {
+    font-size: clamp(1.8rem, 6vw, 2.2rem) !important;
+  }
+
+  .section-head {
+    font-size: clamp(1.4rem, 5vw, 1.8rem) !important;
+  }
+
+  .hero-copy,
+  .hero-copy-advanced {
+    font-size: clamp(0.9rem, 2vw, 1.05rem) !important;
+  }
+
+  .banner-stats {
+    font-size: clamp(0.9rem, 2vw, 1rem) !important;
+  }
+
+  .text-body {
+    font-size: clamp(0.85rem, 1.8vw, 0.98rem) !important;
+  }
+}
+
+/* 22. PREVENT HORIZONTAL OVERFLOW */
+html,
+body {
+  overflow-x: hidden !important;
+  max-width: 100vw;
+}
+
+* {
+  max-width: 100%;
+}
+
+/* 23. MARQUEE RESPONSIVE */
+.marquee-content {
+  animation-duration: clamp(20s, 40vw, 40s) !important;
+}
+
+@media (max-width: 768px) {
+  .marquee-content {
+    gap: clamp(1.5rem, 3vw, 2rem) !important;
+    font-size: clamp(0.7rem, 1.5vw, 0.85rem) !important;
+  }
+
+  .marquee-item {
+    padding-right: clamp(1.5rem, 3vw, 2rem) !important;
+  }
+}
+
+/* 24. FLOATING ACTION BUTTONS */
+.fab-container {
+  right: clamp(12px, 3vw, 24px) !important;
+  bottom: clamp(12px, 3vw, 24px) !important;
+}
+
+.wa-float,
+.mail-float {
+  width: clamp(44px, 10vw, 60px) !important;
+  height: clamp(44px, 10vw, 60px) !important;
+  min-width: 44px;
+  min-height: 44px;
+}
+
+/* 25. MODAL/DIALOG RESPONSIVE */
+.modal-content,
+.dialog-content {
+  max-width: min(90vw, 600px) !important;
+  margin: auto !important;
+  padding: clamp(16px, 4vw, 32px) !important;
+}
+
+/* 26. CARD RESPONSIVE */
+.card-3d,
+.card-glass,
+.demo-card,
+.service-card {
+  padding: clamp(14px, 3vw, 24px) !important;
+}
+
+/* 27. PERFORMANCE - Reduce Motion by Default on Mobile */
+@media (max-width: 768px) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  *:not(.marquee-content):not(.scrolling-text) {
+    animation: none !important;
+  }
+}
+
+/* 28. PREFERS REDUCED MOTION */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* 29. LANDSCAPE MODE ADJUSTMENTS */
+@media (max-height: 500px) and (orientation: landscape) {
+  .navbar-glass {
+    min-height: 48px;
+  }
+
+  .section {
+    padding: 0.75rem 0 !important;
+  }
+
+  .hero-section {
+    min-height: auto;
+  }
+}
+
+/* 30. VERY SMALL SCREENS (320px) */
+@media (max-width: 360px) {
+  .brand {
+    font-size: 14px;
+    letter-spacing: 0.06em;
+  }
+
+  .nav-link {
+    font-size: 0.6rem;
+    padding: 4px 6px;
+  }
+
+  .nav-cta {
+    min-width: 60px;
+    height: 36px;
+    font-size: 0.6rem;
+    padding: 0 8px;
+  }
+
+  .hero-title {
+    font-size: 20px;
+  }
+
+  .hero-level-pill {
+    min-height: 60px;
+    padding: 8px;
+    font-size: 0.65rem;
+  }
+
+  .btn {
+    font-size: 0.8rem;
+    padding: 10px 14px;
+  }
+
+  .container-max {
+    padding: 0 12px !important;
+  }
+}

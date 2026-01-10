@@ -261,10 +261,10 @@ export default function BannerStrip() {
 
           <div className="banner-kicker banner-content-item">AS DANCE PRESENTS</div>
 
-          <h1 className="banner-title-advanced banner-content-item" ref={titleRef}>
+          <h2 className="banner-title-advanced banner-content-item" ref={titleRef}>
             639-Step Premium <br />
             Neon Dance Curriculum
-          </h1>
+          </h2>
 
           <div className="banner-stats banner-content-item">
             <span className="banner-stats-digits">639</span> Steps —

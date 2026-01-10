@@ -33,7 +33,7 @@ const LEVELS = [
 
 export default function ExploreCategories() {
     return (
-        <div className="explore-grid" style={{ border: "2px solid red" }}>
+        <div className="explore-grid">
             {LEVELS.map((level) => (
                 <div
                     className="explore-card instruction-card"

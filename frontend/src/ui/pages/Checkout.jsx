@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth.jsx";
+import { Mail, WhatsApp } from "../icons.jsx";
 import { createPaymentOrder, verifyPayment, fetchPaymentStatus } from "../paymentApi.js";
 import { clearFailure, clearReceipt, saveFailure, saveReceipt } from "../paymentStorage.js";
 import bundlePreview from "../../assets/bg/poster.webp";
@@ -368,15 +369,21 @@ const Checkout = () => {
 
               <div className="checkout-support">
                 <div className="checkout-support-item">
+                  <WhatsApp size={18} className="support-icon" aria-hidden="true" />
                   <div>
                     <div className="support-label">WhatsApp Support</div>
                     <div className="support-value">+91 88256 02356</div>
                   </div>
                 </div>
                 <div className="checkout-support-item">
+                  <Mail size={18} className="support-icon" aria-hidden="true" />
                   <div>
                     <div className="support-label">Email</div>
-                    <div className="support-value">businessaswin@gmail.com</div>
+                    <div className="support-value">
+                      <a href="mailto:bussinessaswin@gmail.com" aria-label="Email support">
+                        bussinessaswin@gmail.com
+                      </a>
+                    </div>
                   </div>
                 </div>
               </div>

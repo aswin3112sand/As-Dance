@@ -7,7 +7,7 @@ export default function Preview() {
   return (
     <>
       <nav className="navbar-glass">
-        <div className="container-max d-flex align-items-center justify-content-between">
+        <div className="container-max">
           <div className="brand fs-4 text-white fw-bold tracking-wider" style={{ fontFamily: "var(--font-display)" }}>
             AS DANCE
           </div>
@@ -17,7 +17,7 @@ export default function Preview() {
         </div>
       </nav>
 
-      <main>
+      <div className="page-content">
         <Suspense fallback={(
           <section id="preview" className="section section-compact section-anim" aria-busy="true">
             <div className="container-max text-center text-white-50 small" style={{ opacity: 0.8 }}>
@@ -27,7 +27,7 @@ export default function Preview() {
         )}>
           <DemoSection />
         </Suspense>
-      </main>
+      </div>
     </>
   );
 }

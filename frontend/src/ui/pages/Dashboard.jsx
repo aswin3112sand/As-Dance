@@ -65,7 +65,7 @@ export default function Dashboard() {
             <button className="btn btn-ghost btn-neo" onClick={scrollToRoutines}>
               My Routines
             </button>
-            <a className="btn btn-ghost btn-neo" href="https://wa.me/918825602356" target="_blank" rel="noreferrer">
+            <a className="btn btn-ghost btn-neo" href="https://wa.me/918825602356" target="_blank" rel="noopener noreferrer">
               Support
             </a>
             <button className="btn btn-ghost btn-neo" onClick={handleLogout}>

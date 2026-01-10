@@ -1,18 +1,73 @@
 /* Light-speed performance overrides */
 :root {
   --scroll-progress: 0;
+  --cosmic-void: #0a0b12;
+  --cosmic-void-2: #0e111a;
+  --cosmic-surface: #151826;
+  --cosmic-border: #22263a;
+  --cosmic-text-hi: #e9ecf4;
+  --cosmic-text-lo: #a1a9b8;
+  --cosmic-energy-0: #2f3c7a;
+  --cosmic-energy-1: #5f6fc7;
+  --cosmic-energy-2: #9a79c0;
+  --cosmic-indigo: #2b2247;
+  --cosmic-mist: #aeb9d4;
+  --cosmic-fog: #c5cedf;
+  --cosmic-glow: rgba(104, 124, 205, 0.28);
+  --neon-blue: #8fc1de;
+  --neon-purple: #b08fd8;
+  --grad-btn: linear-gradient(115deg, #5f6fc7 0%, #9a79c0 100%);
+  --grad-text: linear-gradient(to right, #ffffff, #b9d7e6);
 }
 
 body {
   background:
-    radial-gradient(120% 120% at 16% 8%, rgba(116, 88, 228, 0.1), transparent 60%),
-    linear-gradient(180deg, #0C0D13 0%, #11131B 60%, #0C0D13 100%) !important;
+    radial-gradient(120% 120% at 18% 10%, rgba(95, 111, 199, 0.14), transparent 60%),
+    radial-gradient(140% 120% at 82% 12%, rgba(154, 121, 192, 0.12), transparent 58%),
+    linear-gradient(180deg, var(--cosmic-void) 0%, var(--cosmic-void-2) 60%, var(--cosmic-void) 100%) !important;
 }
 
-body::before,
+body::before {
+  background-image:
+    var(--noise-texture),
+    radial-gradient(1200px 900px at 18% 14%, rgba(104, 124, 205, 0.12), transparent 65%),
+    radial-gradient(900px 700px at 85% 82%, rgba(140, 170, 210, 0.08), transparent 70%);
+  background-size: 140px 140px, 100% 100%, 100% 100%;
+  filter: none;
+  opacity: 0.08;
+  animation: none;
+}
+
 body::after {
-  opacity: 0.2;
-  animation-duration: 140s, 36s;
+  background-image:
+    radial-gradient(1px 1px at 18px 24px, rgba(188, 206, 255, 0.55), transparent 60%),
+    radial-gradient(1px 1px at 72px 120px, rgba(140, 176, 255, 0.38), transparent 60%),
+    radial-gradient(1.5px 1.5px at 140px 70px, rgba(170, 150, 255, 0.32), transparent 60%),
+    radial-gradient(1px 1px at 40px 160px, rgba(160, 200, 230, 0.28), transparent 60%),
+    radial-gradient(260px 260px at 20% 18%, rgba(120, 150, 210, 0.08), transparent 70%),
+    radial-gradient(320px 320px at 80% 82%, rgba(110, 140, 200, 0.06), transparent 75%);
+  background-size: 220px 220px, 280px 280px, 340px 340px, 400px 400px, 100% 100%, 100% 100%;
+  background-position: 0 0, 40px 60px, -30px 80px, 20px -40px, 0 0, 0 0;
+  -webkit-mask-image: none;
+  mask-image: none;
+  opacity: 0.3;
+  filter: blur(0.2px);
+  animation: particleDrift 160s linear infinite;
+  will-change: background-position;
+}
+
+@keyframes particleDrift {
+  0% {
+    background-position: 0 0, 40px 60px, -30px 80px, 20px -40px, 0 0, 0 0;
+  }
+
+  50% {
+    background-position: 60px -40px, -20px 120px, 40px 120px, -60px 30px, 0 0, 0 0;
+  }
+
+  100% {
+    background-position: 120px -80px, -80px 180px, 80px 160px, -120px 60px, 0 0, 0 0;
+  }
 }
 
 .scroll-progress {
@@ -131,6 +186,145 @@ body::after {
   filter: none;
 }
 
+.banner-strip-advanced {
+  --banner-energy-0: #2f3c7a;
+  --banner-energy-1: #5f6fc7;
+  --banner-energy-2: #9a79c0;
+  --banner-energy-3: #2b2247;
+  --banner-glow: rgba(104, 124, 205, 0.25);
+}
+
+.night-stars-container {
+  animation-duration: 140s;
+}
+
+.night-star {
+  background: rgba(240, 245, 255, 0.6);
+  box-shadow: 0 0 4px rgba(143, 193, 222, 0.35);
+}
+
+.btn-cta,
+.nav-cta,
+.auth-cta,
+.hero-primary-cta,
+.service-whatsapp {
+  border-color: rgba(95, 111, 199, 0.38);
+  box-shadow: 0 10px 26px rgba(95, 111, 199, 0.22);
+}
+
+.btn-cta:hover,
+.nav-cta:hover,
+.auth-cta:hover,
+.hero-primary-cta:hover,
+.service-whatsapp:hover {
+  box-shadow: 0 14px 34px rgba(95, 111, 199, 0.28);
+}
+
+.btn-cta-primary {
+  color: var(--cosmic-text-hi);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+  animation: cta-pulse 5s ease-in-out infinite;
+}
+
+.btn-neon {
+  background: linear-gradient(135deg, #5f6fc7 0%, #9a79c0 100%);
+  color: #f7f8fd;
+  border: 1px solid rgba(233, 236, 244, 0.18);
+  box-shadow: 0 8px 24px rgba(95, 111, 199, 0.3), 0 0 16px rgba(154, 121, 192, 0.18);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+}
+
+.btn-neon:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(95, 111, 199, 0.35), 0 0 20px rgba(154, 121, 192, 0.24);
+  filter: brightness(1.05);
+}
+
+.btn-neon-primary::before {
+  background: linear-gradient(90deg, #6b79c9 0%, #8fc1de 100%);
+}
+
+.btn-neon-primary:hover {
+  box-shadow: 0 0 18px rgba(143, 193, 222, 0.35);
+}
+
+.btn-neon-outline:hover {
+  background: rgba(143, 193, 222, 0.1);
+  box-shadow: 0 0 14px rgba(143, 193, 222, 0.25);
+}
+
+.btn-ghost {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.btn-ghost:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(143, 193, 222, 0.25);
+}
+
+.btn-neo {
+  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.45), 0 0 14px rgba(143, 193, 222, 0.2);
+}
+
+.btn-neo:hover {
+  box-shadow: 0 5px 0 rgba(0, 0, 0, 0.5), 0 0 20px rgba(143, 193, 222, 0.28);
+}
+
+.btn-neo:active {
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.6), 0 0 10px rgba(143, 193, 222, 0.18);
+}
+
+.banner-buy-btn,
+.banner-strip-advanced .banner-buy-btn {
+  box-shadow: 0 10px 24px rgba(95, 111, 199, 0.25), 0 0 0 1px rgba(95, 111, 199, 0.3);
+}
+
+.buy-now-btn {
+  background: linear-gradient(135deg, #5f6fc7, #9a79c0);
+  box-shadow: 0 0 16px rgba(95, 111, 199, 0.3);
+}
+
+.buy-now-btn:hover {
+  box-shadow: 0 0 22px rgba(95, 111, 199, 0.4);
+}
+
+@keyframes cta-pulse {
+  0%,
+  100% {
+    box-shadow:
+      0 10px 30px rgba(95, 111, 199, 0.22),
+      0 0 18px rgba(154, 121, 192, 0.18);
+  }
+
+  50% {
+    box-shadow:
+      0 14px 38px rgba(95, 111, 199, 0.3),
+      0 0 26px rgba(154, 121, 192, 0.28);
+  }
+}
+
+@keyframes starfieldDrift {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  100% {
+    transform: translate3d(6px, -10px, 0);
+  }
+}
+
+@keyframes starTwinkle {
+  0%,
+  100% {
+    opacity: 0.2;
+  }
+
+  50% {
+    opacity: 0.6;
+  }
+}
+
 .section {
   content-visibility: auto;
   contain-intrinsic-size: 700px;
@@ -160,6 +354,8 @@ body::after {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  body::before,
+  body::after,
   .galaxy-nebula-layer,
   .banner-image-rotator,
   .hero-poster-frame,

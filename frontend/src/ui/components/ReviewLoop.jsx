@@ -173,7 +173,7 @@ export default function ReviewLoop() {
         }
 
         .reviews-title {
-          font-family: 'Outfit Condensed', sans-serif;
+          font-family: var(--font-display);
           font-size: clamp(1.8rem, 4vw, 3rem);
           font-weight: 800;
           color: #fff;
@@ -196,7 +196,7 @@ export default function ReviewLoop() {
         }
 
         .reviews-subhead {
-          font-family: 'Inter', sans-serif;
+          font-family: var(--font-sans);
           font-size: 1rem;
           color: rgba(255, 255, 255, 0.65);
           max-width: 700px;
@@ -337,7 +337,7 @@ export default function ReviewLoop() {
         }
 
         .review-card-name {
-          font-family: 'Outfit Condensed', sans-serif;
+          font-family: var(--font-display);
           font-size: 1rem;
           font-weight: 700;
           color: rgba(255, 255, 255, 0.95);
@@ -346,7 +346,7 @@ export default function ReviewLoop() {
         }
 
         .review-card-tagline {
-          font-family: 'Inter', sans-serif;
+          font-family: var(--font-sans);
           font-size: 0.75rem;
           font-weight: 700;
           color: rgba(0, 242, 234, 0.8);
@@ -356,7 +356,7 @@ export default function ReviewLoop() {
         }
 
         .review-card-text {
-          font-family: 'Inter', sans-serif;
+          font-family: var(--font-sans);
           font-size: 0.95rem;
           color: rgba(255, 255, 255, 0.75);
           line-height: 1.6;

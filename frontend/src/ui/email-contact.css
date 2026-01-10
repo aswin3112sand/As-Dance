@@ -1,0 +1,228 @@
+/* Email Contact Styles - Full Section Alignment */
+
+/* Container wrapper for proper alignment */
+.email-contact-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 0;
+}
+
+.email-contact-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  background: rgba(76, 201, 255, 0.1);
+  border: 1px solid rgba(76, 201, 255, 0.3);
+  color: #00e5ff;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  font-weight: 600;
+  font-size: 0.9rem;
+  min-height: 44px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.email-contact-link:hover {
+  background: rgba(76, 201, 255, 0.2);
+  border-color: rgba(76, 201, 255, 0.6);
+  box-shadow: 0 0 15px rgba(76, 201, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+.email-contact-link:focus-visible {
+  outline: 2px solid var(--neon-blue);
+  outline-offset: 2px;
+}
+
+.email-icon {
+  color: #00e5ff;
+  filter: drop-shadow(0 0 6px rgba(76, 201, 255, 0.5));
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.email-text {
+  word-break: break-word;
+  display: inline-block;
+}
+
+/* Inline Email */
+.email-inline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  color: #00e5ff;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.email-icon-inline {
+  color: #00e5ff;
+  filter: drop-shadow(0 0 4px rgba(76, 201, 255, 0.4));
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Email Badge */
+.email-badge {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 12px;
+  background: rgba(76, 201, 255, 0.08);
+  border: 1px solid rgba(76, 201, 255, 0.25);
+  min-height: 60px;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.email-badge svg {
+  color: #00e5ff;
+  filter: drop-shadow(0 0 8px rgba(76, 201, 255, 0.4));
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.email-badge-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+}
+
+.email-label {
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.6);
+  margin: 0;
+}
+
+.email-value {
+  color: #00e5ff;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+  word-break: break-word;
+  margin: 0;
+}
+
+.email-value:hover {
+  text-shadow: 0 0 10px rgba(76, 201, 255, 0.5);
+}
+
+.email-value:focus-visible {
+  outline: 2px solid var(--neon-blue);
+  outline-offset: 2px;
+}
+
+/* Responsive - Tablet */
+@media (max-width: 992px) {
+  .email-contact-link {
+    font-size: 0.85rem;
+    padding: 8px 12px;
+  }
+
+  .email-badge {
+    gap: 10px;
+    padding: 14px;
+  }
+}
+
+/* Responsive - Mobile */
+@media (max-width: 640px) {
+  .email-contact-wrapper {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .email-contact-link {
+    font-size: 0.8rem;
+    padding: 8px 12px;
+    min-height: 40px;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .email-icon {
+    width: 16px;
+    height: 16px;
+  }
+
+  .email-badge {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 8px;
+    padding: 12px;
+    width: 100%;
+  }
+
+  .email-badge svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .email-badge-content {
+    align-items: center;
+    text-align: center;
+  }
+
+  .email-value {
+    font-size: 0.85rem;
+    word-break: break-word;
+  }
+}
+
+/* Responsive - Small Mobile */
+@media (max-width: 480px) {
+  .email-contact-link {
+    font-size: 0.75rem;
+    padding: 6px 10px;
+    min-height: 36px;
+  }
+
+  .email-icon {
+    width: 14px;
+    height: 14px;
+  }
+
+  .email-badge {
+    padding: 10px;
+    gap: 6px;
+  }
+
+  .email-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+  }
+
+  .email-value {
+    font-size: 0.8rem;
+  }
+}

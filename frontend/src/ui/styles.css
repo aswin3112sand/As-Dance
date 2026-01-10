@@ -812,8 +812,10 @@ button {
   height: 100%;
   align-items: center !important;
   display: grid !important;
-  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-columns: auto 1fr auto;
   column-gap: clamp(12px, 2vw, 24px);
+  grid-auto-flow: column;
+  justify-items: stretch;
 }
 
 .navbar-glass::before {
@@ -893,14 +895,17 @@ button {
 .navbar-glass .brand {
   justify-self: start;
   white-space: nowrap;
+  grid-column: 1;
+  padding-right: clamp(8px, 1vw, 12px);
 }
 
 .nav-center {
   /* நடுப்பு லிங்க் பட்டை */
-  flex: 1;
   justify-self: center;
+  grid-column: 2;
   min-width: 0;
-  width: min(680px, 100%);
+  width: 100%;
+  max-width: 680px;
   padding-inline: clamp(8px, 2vw, 28px);
   /* நடுவில் பரவ */
   display: flex;
@@ -1125,14 +1130,15 @@ button {
   /* inline flex */
   align-items: center;
   /* மையம் */
-  gap: 12px !important;
+  gap: clamp(8px, 1.5vw, 12px) !important;
   /* இடைவெளி */
   flex-wrap: nowrap;
   /* wrap */
-  order: 3;
   justify-self: end;
+  grid-column: 3;
   white-space: nowrap;
   /* layout order */
+  padding-left: clamp(8px, 1vw, 12px);
 }
 
 .navbar-glass .container-max > .nav-cta {
@@ -1182,13 +1188,13 @@ button {
 
 .nav-cta {
   /* CTA button */
-  height: 32px;
+  height: clamp(28px, 5vw, 32px);
   /* உயரம் */
-  padding: 0 14px;
+  padding: 0 clamp(10px, 2vw, 14px);
   /* பக்கம் இடம் */
   border-radius: 999px;
   /* pill shape */
-  font-size: 0.85rem;
+  font-size: clamp(0.7rem, 1.5vw, 0.85rem);
   /* எழுத்து அளவு */
   font-weight: 700;
   /* தடிமன் */
@@ -1198,8 +1204,10 @@ button {
   /* uppercase */
   box-shadow: var(--depth-z1);
   /* shadow */
-  min-width: 110px;
+  min-width: auto;
   /* குறைந்த அகலம் */
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .header-actions>.nav-cta+.nav-cta {
@@ -1733,6 +1741,8 @@ button {
   /* base */
   z-index: 1;
   /* above bg */
+  max-width: 1080px;
+  margin: 0 auto;
 }
 
 .checkout-top-actions {
@@ -1747,6 +1757,32 @@ button {
   /* wrap */
   margin-bottom: 16px;
   /* spacing */
+}
+
+.checkout-top-actions .btn {
+  padding: 10px 18px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: #e9f7ff;
+  background: linear-gradient(135deg, rgba(14, 22, 40, 0.85), rgba(10, 18, 30, 0.85));
+  border: 1px solid rgba(127, 232, 255, 0.28);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.38), 0 0 18px rgba(127, 232, 255, 0.18);
+  backdrop-filter: blur(10px);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.checkout-top-actions .btn:hover {
+  transform: translateY(-2px);
+  border-color: rgba(127, 232, 255, 0.55);
+  box-shadow: 0 18px 36px rgba(0, 0, 0, 0.45), 0 0 24px rgba(127, 232, 255, 0.28);
+}
+
+.checkout-top-actions .btn:focus-visible {
+  outline: 2px solid rgba(127, 232, 255, 0.65);
+  outline-offset: 2px;
 }
 
 /* 3D Floating Cards for Checkout */
@@ -1794,6 +1830,10 @@ button {
   /* depth */
   transition: transform 0.4s ease-out, box-shadow 0.4s ease-out, border-color 0.4s ease;
   /* smooth */
+}
+
+.checkout-left {
+  align-self: start;
 }
 
 .checkout-left:hover,
@@ -2941,6 +2981,38 @@ button {
 }
 
 @media (max-width: 768px) {
+  .navbar-glass .container-max {
+    grid-template-columns: auto 1fr auto;
+    gap: 6px;
+  }
+
+  .brand {
+    font-size: clamp(14px, 4vw, 18px);
+    letter-spacing: 0.08em;
+  }
+
+  .nav-center {
+    gap: clamp(6px, 1vw, 10px) !important;
+    padding-inline: clamp(4px, 1vw, 8px);
+  }
+
+  .nav-link {
+    font-size: clamp(0.65rem, 1.2vw, 0.8rem);
+    padding: 0 clamp(4px, 1vw, 6px);
+  }
+
+  .header-actions {
+    gap: clamp(4px, 1vw, 8px) !important;
+    padding-left: clamp(4px, 1vw, 8px);
+  }
+
+  .nav-cta {
+    height: clamp(26px, 4vw, 30px);
+    padding: 0 clamp(8px, 1.5vw, 10px);
+    font-size: clamp(0.65rem, 1.2vw, 0.75rem);
+    min-width: auto;
+  }
+
   .display-title {
     font-size: 2.5rem;
   }
@@ -3728,7 +3800,7 @@ button {
   /* அதிகபட்ச அகலம் */
   width: 100%;
   /* முழு அகலம் */
-  font-family: "Outfit", "Poppins", system-ui, -apple-system, sans-serif;
+  font-family: var(--font-display), system-ui, -apple-system, sans-serif;
   /* font */
 }
 
@@ -7380,10 +7452,55 @@ button {
   }
 }
 
+@media (max-width: 480px) {
+  .navbar-glass {
+    height: auto;
+    min-height: 50px;
+    padding: 6px 0;
+  }
+
+  .navbar-glass .container-max {
+    grid-template-columns: auto 1fr auto;
+    gap: 4px;
+  }
+
+  .brand {
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    padding-right: 4px;
+  }
+
+  .nav-center {
+    gap: 4px !important;
+    padding-inline: 2px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .nav-link {
+    font-size: 0.6rem;
+    padding: 0 2px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .header-actions {
+    gap: 4px !important;
+    padding-left: 4px;
+  }
+
+  .nav-cta {
+    height: 24px;
+    padding: 0 6px;
+    font-size: 0.6rem;
+    min-width: auto;
+  }
+}
+
 @media (max-width: 640px) {
   .nav-cta {
-    width: 132px;
-    height: 38px;
+    width: auto;
+    height: auto;
     font-size: 0.75rem;
   }
 
@@ -7493,7 +7610,7 @@ button {
   /* hide */
   color: #f4f7ff;
   /* text */
-  font-family: var(--font-sans, "Outfit", "Poppins", system-ui, sans-serif);
+  font-family: var(--font-sans, "Urbanist", "Outfit", system-ui, sans-serif);
   /* font */
   isolation: isolate;
   /* isolate */
@@ -10270,3 +10387,624 @@ video {
 /* ============================================
    CINEMATIC AUTH PAGES
    ============================================ */
+
+
+/* ===== CRITICAL MOBILE RESPONSIVENESS FIXES ===== */
+
+/* 1. NAVBAR - Responsive Height */
+@media (max-width: 768px) {
+  .navbar-glass {
+    height: auto;
+    padding: 8px 0;
+    min-height: 56px;
+  }
+
+  .navbar-glass .container-max {
+    grid-template-columns: auto 1fr auto;
+    gap: 8px;
+    row-gap: 0;
+  }
+
+  .brand {
+    font-size: clamp(16px, 4vw, 20px);
+    white-space: nowrap;
+  }
+
+  .nav-center {
+    order: 3;
+    width: 100%;
+    grid-column: 1 / -1;
+    margin-top: 8px;
+    gap: clamp(8px, 1.5vw, 12px);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+  }
+
+  .nav-center::before,
+  .nav-center::after {
+    width: 20px;
+  }
+
+  .nav-link {
+    font-size: 0.7rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .header-actions {
+    order: 2;
+    gap: 6px;
+  }
+
+  .nav-cta {
+    height: 36px;
+    padding: 0 10px;
+    font-size: 0.7rem;
+    min-width: 80px;
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar-glass {
+    padding: 6px 0;
+  }
+
+  .brand {
+    font-size: 14px;
+    letter-spacing: 0.08em;
+  }
+
+  .nav-link {
+    font-size: 0.65rem;
+    padding: 4px 8px;
+  }
+
+  .nav-cta {
+    height: 32px;
+    padding: 0 8px;
+    font-size: 0.65rem;
+    min-width: 70px;
+  }
+}
+
+/* 2. TOUCH TARGETS - Minimum 44px */
+@media (pointer: coarse) {
+  .btn,
+  .nav-cta,
+  .demo-cta,
+  .checkout-btn,
+  .auth-cta,
+  .service-whatsapp,
+  a[role="button"],
+  button {
+    min-height: 44px;
+    min-width: 44px;
+    padding: clamp(10px, 2vw, 16px) clamp(14px, 3vw, 24px);
+  }
+
+  .btn-header {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  .nav-link {
+    padding: 8px 12px;
+  }
+
+  .card-3d,
+  .demo-card,
+  .service-card {
+    min-height: 200px;
+  }
+}
+
+/* 3. IMAGES - Add Width/Height to Prevent CLS */
+img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.hero-preview-image,
+.hero-poster-frame img,
+.banner-image,
+.demo-thumb img,
+.service-media img,
+.dashboard-card-media img,
+.practice-thumb img,
+.summary-image img,
+.pricing-preview img,
+.instruction-thumb img,
+.work-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* Aspect ratio containers */
+.hero-poster-frame,
+.hero-preview,
+.banner-image-wrap,
+.demo-thumb,
+.service-media,
+.dashboard-card-media,
+.practice-thumb,
+.pricing-preview,
+.instruction-thumb,
+.work-thumb {
+  aspect-ratio: auto;
+  overflow: hidden;
+}
+
+/* 4. MARQUEE - Prevent Overflow on Small Screens */
+@media (max-width: 640px) {
+  .marquee-content {
+    animation-duration: 30s;
+    font-size: 0.75rem;
+  }
+
+  .marquee-item {
+    padding: 0 12px;
+    font-size: 0.7rem;
+  }
+
+  .banner-marquee-strip {
+    font-size: 0.75rem;
+    padding: 8px 0;
+  }
+}
+
+/* 5. ANIMATIONS - Disable on Mobile/Reduced Motion */
+@media (max-width: 768px) {
+  .card-float,
+  .card-3d:hover,
+  .demo-card:hover,
+  .service-card:hover,
+  .hero-poster-frame:hover,
+  .practice-card:hover {
+    animation: none;
+    transform: none;
+  }
+
+  .marquee-content {
+    animation-play-state: running;
+  }
+
+  .btn:hover,
+  .btn-cta:hover,
+  .demo-cta:hover {
+    transform: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .card-3d,
+  .demo-card,
+  .service-card,
+  .hero-poster-frame,
+  .practice-card {
+    transition: none;
+  }
+
+  .btn,
+  .btn-cta,
+  .demo-cta,
+  .checkout-btn {
+    transition: opacity 0.2s ease;
+  }
+}
+
+/* 6. BACKDROP FILTER - Reduce on Mobile */
+@media (max-width: 768px) {
+  .card-3d,
+  .card-glass,
+  .checkout-left,
+  .checkout-summary-card,
+  .auth-card,
+  .demo-card,
+  .service-card {
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+  }
+
+  .navbar-glass {
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+  }
+}
+
+/* 7. FOCUS STATES - Keyboard Navigation */
+.btn:focus-visible,
+.nav-link:focus-visible,
+.nav-cta:focus-visible,
+.demo-cta:focus-visible,
+.checkout-btn:focus-visible,
+.auth-input:focus-visible,
+a:focus-visible {
+  outline: 2px solid rgba(127, 232, 255, 0.8);
+  outline-offset: 2px;
+}
+
+.nav-link:focus-visible {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+
+/* 8. HERO SECTION - Mobile Collapse */
+@media (max-width: 768px) {
+  .hero-grid-advanced {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    min-height: auto;
+  }
+
+  .hero-content-advanced {
+    grid-column: 1;
+    text-align: center;
+    align-items: center;
+  }
+
+  .hero-visual-advanced {
+    grid-column: 1;
+    order: 2;
+    min-height: 300px;
+  }
+
+  .hero-headline-row {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .hero-count-panel {
+    align-items: center;
+    text-align: center;
+  }
+
+  .hero-levels {
+    grid-template-columns: repeat(2, 1fr);
+    justify-items: center;
+  }
+
+  .hero-title {
+    font-size: clamp(24px, 7vw, 36px);
+  }
+
+  .hero-count-value {
+    font-size: clamp(32px, 8vw, 48px);
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-levels {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-level-pill {
+    min-height: 60px;
+    padding: 10px;
+  }
+
+  .hero-title {
+    font-size: clamp(20px, 6vw, 28px);
+  }
+
+  .hero-count-value {
+    font-size: clamp(28px, 7vw, 40px);
+  }
+
+  .hero-difficulty-line {
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .hero-difficulty-item {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* 9. BANNER SECTION - Mobile Collapse */
+@media (max-width: 768px) {
+  .banner-shell {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .banner-copy {
+    grid-column: 1;
+    text-align: center;
+    align-items: center;
+  }
+
+  .banner-visual {
+    grid-column: 1;
+    order: 2;
+  }
+
+  .banner-title {
+    font-size: clamp(20px, 6vw, 28px);
+  }
+
+  .banner-stats {
+    font-size: 0.9rem;
+  }
+
+  .banner-poster-3d {
+    width: min(240px, 65vw);
+  }
+}
+
+@media (max-width: 480px) {
+  .banner-poster-3d {
+    width: min(200px, 60vw);
+  }
+
+  .banner-title {
+    font-size: clamp(18px, 5vw, 24px);
+  }
+
+  .banner-kicker {
+    font-size: 0.75rem;
+  }
+
+  .curriculum-pills {
+    justify-content: center;
+  }
+
+  .pill {
+    font-size: 0.75rem;
+    padding: 6px 12px;
+  }
+}
+
+/* 10. CARDS & GRIDS - Responsive Columns */
+@media (max-width: 1024px) {
+  .grid-4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .grid-3 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .practice-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .review-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .grid-4,
+  .grid-3,
+  .grid-2,
+  .practice-grid,
+  .review-grid,
+  .stats-grid,
+  .dashboard-grid,
+  .services-row {
+    grid-template-columns: 1fr;
+  }
+
+  .card-3d,
+  .demo-card,
+  .service-card,
+  .practice-card,
+  .review-card,
+  .dashboard-card {
+    min-height: auto;
+  }
+}
+
+/* 11. CHECKOUT - Mobile Responsive */
+@media (max-width: 768px) {
+  .checkout-float {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .checkout-left {
+    order: 2;
+  }
+
+  .checkout-right {
+    order: 1;
+    justify-content: stretch;
+  }
+
+  .checkout-summary-card {
+    width: 100%;
+    max-width: none;
+    margin-bottom: 0;
+  }
+
+  .checkout-field-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .checkout-btn {
+    width: 100%;
+  }
+
+  .checkout-btn-primary {
+    width: 100%;
+  }
+}
+
+/* 12. FOOTER - Mobile Responsive */
+@media (max-width: 768px) {
+  .footer-grid {
+    grid-template-columns: 1fr;
+    text-align: left;
+    gap: 20px;
+  }
+
+  .footer-brand,
+  .footer-center,
+  .footer-right {
+    grid-column: auto;
+    text-align: left;
+  }
+
+  .footer-contact {
+    flex-direction: column;
+  }
+}
+
+/* 13. ACCESSIBILITY - Color Contrast Fix (No Color Change) */
+.hero-title-highlight {
+  font-weight: 900;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+
+.text-gradient {
+  font-weight: 700;
+}
+
+.section-head::after {
+  height: 6px;
+  box-shadow: 0 0 20px rgba(0, 242, 234, 0.6);
+}
+
+/* 14. PERFORMANCE - Reduce Motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .card-float,
+  .card-3d,
+  .demo-card,
+  .service-card,
+  .hero-poster-frame,
+  .practice-card,
+  .marquee-content,
+  .banner-poster-3d,
+  .banner-image-layer {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* 15. SAFE AREA INSETS - Notch Support */
+@supports (padding: max(0px)) {
+  body {
+    padding-left: max(0px, env(safe-area-inset-left));
+    padding-right: max(0px, env(safe-area-inset-right));
+    padding-top: max(0px, env(safe-area-inset-top));
+    padding-bottom: max(0px, env(safe-area-inset-bottom));
+  }
+
+  .navbar-glass {
+    padding-left: max(0px, env(safe-area-inset-left));
+    padding-right: max(0px, env(safe-area-inset-right));
+  }
+
+  .fab-container {
+    right: max(16px, calc(16px + env(safe-area-inset-right)));
+    bottom: max(16px, calc(16px + env(safe-area-inset-bottom)));
+  }
+}
+
+/* 16. HORIZONTAL SCROLL FIX - No X-Overflow */
+html,
+body {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
+.container-max,
+.banner-shell,
+.hero-grid,
+.hero-grid-advanced {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* 17. TEXT SIZING - Prevent Zoom on Input Focus (iOS) */
+input,
+textarea,
+select {
+  font-size: 16px;
+}
+
+@media (max-width: 768px) {
+  input,
+  textarea,
+  select,
+  .auth-input,
+  .checkout-input,
+  .service-input {
+    font-size: 16px;
+  }
+}
+
+/* 18. BUTTON STATES - Better Mobile Feedback */
+@media (pointer: coarse) {
+  .btn,
+  .btn-cta,
+  .demo-cta,
+  .checkout-btn,
+  .auth-cta {
+    active-color: rgba(127, 232, 255, 0.3);
+  }
+
+  .btn:active,
+  .btn-cta:active,
+  .demo-cta:active,
+  .checkout-btn:active,
+  .auth-cta:active {
+    opacity: 0.85;
+    transform: scale(0.98);
+  }
+}
+
+/* 19. SCROLLBAR - Hide on Mobile */
+@media (max-width: 768px) {
+  ::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: rgba(127, 232, 255, 0.3);
+    border-radius: 2px;
+  }
+}
+
+/* 20. FORM INPUTS - Mobile Friendly */
+@media (max-width: 768px) {
+  .auth-input,
+  .checkout-input,
+  .service-input {
+    height: 48px;
+    font-size: 16px;
+    padding: 0 14px;
+  }
+
+  .auth-cta,
+  .checkout-btn-primary {
+    height: 48px;
+    font-size: 16px;
+  }
+}

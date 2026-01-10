@@ -30,7 +30,7 @@ const OfferCard = () => {
                             <span className="badge bg-neon-pink text-white px-4 py-2 rounded-pill fs-6 shadow-lg text-uppercase tracking-wider border border-white border-opacity-25">Premium Bundle</span>
                         </div>
 
-                        <h2 className="display-2 fw-bold text-white mb-2 neon-text-purple" style={{ fontFamily: 'Orbitron, sans-serif' }}>
+                        <h2 className="display-2 fw-bold text-white mb-2 neon-text-purple" style={{ fontFamily: "var(--font-display)" }}>
                             ₹499 <span className="fs-4 text-muted fw-normal">Only</span>
                         </h2>
                         <p className="text-white-50 mb-4 pb-2 border-bottom border-secondary d-inline-block" style={{ minWidth: '280px' }}>One-Time Payment • Lifetime Access</p>

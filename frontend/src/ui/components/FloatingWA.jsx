@@ -7,7 +7,7 @@ export default function FloatingWA() {
       className="wa-float"
       href="https://wa.me/918825602356"
       target="_blank"
-      rel="noreferrer"
+      rel="noopener noreferrer"
       aria-label="Chat on WhatsApp"
     >
       <MessageCircle size={20} />
