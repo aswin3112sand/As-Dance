@@ -95,23 +95,7 @@
     animation-delay: 1s;
   }
   
-  .scroll-to-top-rocket {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 30px;
-    height: 30px;
-    background-image: url("path/to/rocket-icon.png");
-    background-size: contain;
-    background-repeat: no-repeat;
-    opacity: 0;
-    transition: opacity 0.3s ease-in-out;
-  }
-  
-  .scroll-to-top.visible:hover .scroll-to-top-rocket {
-    opacity: 1;
-  }
+
   
   .scroll-to-top-trail {
     position: absolute;
@@ -191,22 +175,7 @@
     opacity: 0.3;
   }
   
-  .scroll-to-top-stars {
-    position: absolute;
-    top: -50px;
-    left: -50px;
-    right: -50px;
-    bottom: -50px;
-    background-image: url("path/to/stars-background.png");
-    background-size: cover;
-    opacity: 0;
-    transition: opacity 0.3s ease-in-out;
-  }
-  
-  .scroll-to-top.visible:hover .scroll-to-top-stars {
-    opacity: 0.5;
-    animation: stars 2s infinite linear;
-  }
+
   
   @keyframes stars {
     0% {
@@ -419,7 +388,32 @@
       transform: translate(-5px, 5px);
       opacity: 0;
     }
-.scroll-to-top-3d {
+  }
+
+  @keyframes glitch-2 {
+    0% {
+      transform: translate(0, 0);
+      opacity: 0;
+    }
+    25% {
+      transform: translate(-5px, 5px);
+      opacity: 1;
+    }
+    50% {
+      transform: translate(5px, -5px);
+      opacity: 0;
+    }
+    75% {
+      transform: translate(-5px, -5px);
+      opacity: 1;
+    }
+    100% {
+      transform: translate(5px, 5px);
+      opacity: 0;
+    }
+  }
+
+  .scroll-to-top-3d {
     transform-style: preserve-3d;
     transition: transform 0.5s ease-in-out;
   }
