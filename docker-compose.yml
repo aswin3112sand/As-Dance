@@ -1,28 +1,40 @@
+version: '3.8'
+
 services:
   mysql:
     image: mysql:8.0
+    container_name: as-dance-mysql
     environment:
-      MYSQL_DATABASE: asdance
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: as_dance
       MYSQL_USER: asdance
       MYSQL_PASSWORD: asdance123
-      MYSQL_ROOT_PASSWORD: root123
     ports:
-      - "3307:3306"
+      - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
 
   backend:
-    build: ./backend
-    ports:
-      - "8085:8085"
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: as-dance-backend
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/asdance?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/as_dance
       SPRING_DATASOURCE_USERNAME: asdance
       SPRING_DATASOURCE_PASSWORD: asdance123
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
-      APP_PAYMENT_MOCK: "true"
+      SPRING_PROFILES_ACTIVE: prod
+    ports:
+      - "8085:8085"
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
+    restart: unless-stopped
 
 volumes:
   mysql_data:
