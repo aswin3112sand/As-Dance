@@ -30,7 +30,9 @@ import {
   Music,
   Disc,
   Move,
-  Mail
+  Mail,
+  Menu,
+  X
 } from "lucide-react";
 
 export const WhatsApp = ({ size = 24, color = "currentColor", ...props }) => (
@@ -77,5 +79,7 @@ export {
   Music,
   Disc,
   Move,
-  Mail
+  Mail,
+  Menu,
+  X
 };

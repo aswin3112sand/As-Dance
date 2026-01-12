@@ -256,19 +256,23 @@ export default function ReviewLoop() {
           border: 1px solid rgba(0, 242, 234, 0.12);
           border-radius: 16px;
           padding: clamp(1.25rem, 3.5vw, 2rem);
-          transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease;
+          transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+            box-shadow 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+            border-color 0.35s ease,
+            background 0.35s ease;
           cursor: pointer;
           display: flex;
           flex-direction: column;
           box-shadow: 0 8px 32px rgba(0, 242, 234, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.1);
-          will-change: transform, box-shadow, border-color;
+          will-change: transform, box-shadow, border-color, opacity;
         }
 
         .review-card:hover {
           border-color: rgba(0, 242, 234, 0.4);
           background: rgba(10, 18, 25, 0.6);
-          box-shadow: 0 16px 48px rgba(0, 242, 234, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.15);
-          transform: translateY(-3px);
+          box-shadow: 0 18px 50px rgba(0, 0, 0, 0.35), 0 0 18px rgba(0, 242, 234, 0.16),
+            inset 0 1px 0 rgba(255, 255, 255, 0.15);
+          transform: translateY(-6px);
         }
 
         .review-card-inner {

@@ -1,0 +1,394 @@
+/* Enhanced Navbar Animations */
+.navbar-glass {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: linear-gradient(115deg, rgba(8, 20, 40, 0.92) 0%, rgba(5, 14, 26, 0.92) 60%, rgba(8, 26, 44, 0.92) 100%);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(0, 242, 234, 0.15);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4), 0 1px 0 rgba(0, 242, 234, 0.08);
+  padding: 12px 0;
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  overflow: hidden;
+  height: 80px;
+  display: flex !important;
+  align-items: center !important;
+  transform: translateY(0);
+  will-change: transform, background, box-shadow;
+}
+
+/* Navbar scroll animations */
+.navbar-glass.scrolled {
+  background: linear-gradient(115deg, rgba(8, 20, 40, 0.95) 0%, rgba(5, 14, 26, 0.95) 60%, rgba(8, 26, 44, 0.95) 100%);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6), 0 2px 0 rgba(0, 242, 234, 0.12);
+  border-bottom-color: rgba(0, 242, 234, 0.25);
+}
+
+.navbar-glass.hide {
+  transform: translateY(-100%);
+}
+
+.navbar-glass.show {
+  transform: translateY(0);
+}
+
+/* Enhanced nav link animations */
+.nav-link {
+  font-size: 0.82rem;
+  color: var(--txt-muted);
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  position: relative;
+  padding: 8px 12px;
+  border-radius: 8px;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transform: translateY(0);
+  will-change: transform, color, background;
+}
+
+.nav-link::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 242, 234, 0.1);
+  border-radius: 8px;
+  opacity: 0;
+  transform: scale(0.8);
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.nav-link:hover::before {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.nav-link:hover {
+  color: #fff;
+  transform: translateY(-2px);
+  text-shadow: 0 0 12px rgba(0, 242, 234, 0.45);
+}
+
+/* Enhanced Review Section Animations */
+.review-section {
+  background: #000000 !important;
+  position: relative;
+  overflow: hidden;
+}
+
+.review-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, #000000 0%, #0a0015 50%, #000000 100%),
+    radial-gradient(circle at 50% 50%, rgba(0, 242, 234, 0.08), transparent 70%);
+  filter: blur(80px);
+  opacity: 0.15;
+  pointer-events: none;
+  z-index: 0;
+  animation: softRadialGlow 8s ease-in-out infinite;
+}
+
+/* Enhanced review card animations */
+.review-card {
+  position: relative;
+  flex: 0 0 clamp(260px, 70vw, 340px);
+  min-width: clamp(260px, 70vw, 340px);
+  height: 100%;
+  background: rgba(10, 18, 25, 0.4);
+  border: 1px solid rgba(0, 242, 234, 0.12);
+  border-radius: 16px;
+  padding: clamp(1.25rem, 3.5vw, 2rem);
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 8px 32px rgba(0, 242, 234, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  will-change: transform, box-shadow, border-color;
+  transform: translateY(0) scale(1);
+}
+
+.review-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(0, 242, 234, 0.05), transparent 60%);
+  border-radius: 16px;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+
+.review-card:hover {
+  border-color: rgba(0, 242, 234, 0.4);
+  background: rgba(10, 18, 25, 0.6);
+  box-shadow: 0 16px 48px rgba(0, 242, 234, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  transform: translateY(-8px) scale(1.02);
+}
+
+.review-card:hover::before {
+  opacity: 1;
+}
+
+/* Smooth review track animation */
+.review-track {
+  display: flex;
+  gap: 1.5rem;
+  padding: 1rem 0;
+  width: max-content;
+  will-change: transform;
+  transition: transform 0.3s ease;
+}
+
+.review-track.is-animating {
+  animation: reviewMarqueeSmooth 70s linear infinite;
+}
+
+@keyframes reviewMarqueeSmooth {
+  from { 
+    transform: translateX(0); 
+  }
+  to { 
+    transform: translateX(-50%); 
+  }
+}
+
+/* Pause animation on hover */
+.review-scroller:hover .review-track.is-animating {
+  animation-play-state: paused;
+}
+
+/* Enhanced keyframes */
+@keyframes softRadialGlow {
+  0%, 100% {
+    background-color: #000000;
+    filter: brightness(1);
+    transform: scale(1);
+  }
+  50% {
+    background-color: #0a0015;
+    filter: brightness(1.05);
+    transform: scale(1.01);
+  }
+}
+
+/* Enhanced navbar scroll behavior */
+@keyframes navSlideIn {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes navSlideOut {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+}
+
+/* Smooth section transitions */
+@keyframes sectionFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.section-anim {
+  animation: sectionFadeIn 0.8s ease-out;
+}
+
+/* Enhanced button hover effects */
+.btn {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.btn::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: all 0.6s ease;
+}
+
+.btn:hover::before {
+  width: 300px;
+  height: 300px;
+}
+
+/* Enhanced card animations */
+.card-3d {
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transform: translateY(0) rotateX(0) rotateY(0);
+}
+
+.card-3d:hover {
+  transform: translateY(-12px) rotateX(5deg) rotateY(-5deg) scale(1.02);
+  box-shadow:
+    0 25px 50px rgba(0, 0, 0, 0.4),
+    0 0 30px rgba(76, 201, 255, 0.2),
+    inset 0 0 0 1px rgba(127, 232, 255, 0.3);
+}
+
+/* Enhanced Floating Buttons */
+.fab-container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 1000;
+}
+
+.wa-float,
+.mail-float {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transform: translateY(0) scale(1);
+  will-change: transform, box-shadow;
+  position: relative;
+  overflow: hidden;
+}
+
+.wa-float {
+  background: linear-gradient(135deg, #25d366, #128c7e);
+}
+
+.mail-float {
+  background: linear-gradient(135deg, #4cc9ff, #00ff94);
+}
+
+.wa-float::before,
+.mail-float::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  transform: scale(0);
+  transition: transform 0.3s ease;
+}
+
+.wa-float:hover,
+.mail-float:hover {
+  transform: translateY(-4px) scale(1.1);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+}
+
+.wa-float:hover::before,
+.mail-float:hover::before {
+  transform: scale(1);
+}
+
+.wa-float:active,
+.mail-float:active {
+  transform: translateY(-2px) scale(1.05);
+}
+
+.wa-float span,
+.mail-float span {
+  display: none !important;
+}
+
+/* Enhanced Interactive Elements */
+.interactive-element {
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  will-change: transform;
+}
+
+.interactive-element:hover {
+  transform: translateY(-2px);
+}
+
+/* Smooth page transitions */
+.page-transition {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: pageEnter 0.6s ease-out forwards;
+}
+
+@keyframes pageEnter {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Enhanced loading states */
+.loading-shimmer {
+  background: linear-gradient(90deg, 
+    rgba(255, 255, 255, 0.1) 0%, 
+    rgba(255, 255, 255, 0.2) 50%, 
+    rgba(255, 255, 255, 0.1) 100%);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Performance optimization */
+@media (prefers-reduced-motion: reduce) {
+  .banner-poster-3d,
+  .banner-poster-3d .banner-image-layer,
+  .marquee-content,
+  .banner-realistic-moon,
+  .moon-realistic-glow,
+  .banner-nebula-haze,
+  .banner-edge-smoke,
+  .banner-sky-fog,
+  .review-track,
+  .nav-center,
+  .navbar-glass,
+  .review-card,
+  .card-3d,
+  .btn {
+    animation: none !important;
+    transition: none !important;
+  }
+  
+  .nav-link:hover,
+  .review-card:hover,
+  .card-3d:hover {
+    transform: none !important;
+  }
+}

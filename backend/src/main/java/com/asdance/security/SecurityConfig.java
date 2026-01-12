@@ -55,7 +55,8 @@ public class SecurityConfig {
           response.setStatus(HttpServletResponse.SC_OK);
         }))
         .authorizeHttpRequests(auth -> auth
-            .requestMatchers("/api/auth/checkout", "/api/payment/**").authenticated()
+            .requestMatchers("/api/payment/order", "/api/payment/verify", "/api/payment/downloaded", "/api/payment/webhook/**").authenticated()
+            .requestMatchers("/api/payment/status", "/api/payment/service-order").permitAll()
             .anyRequest().permitAll());
 
     http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);

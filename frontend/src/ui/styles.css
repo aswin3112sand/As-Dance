@@ -779,87 +779,55 @@ button {
 
 /* Navbar */
 .navbar-glass {
-  /* navbar wrapper */
-  position: sticky;
-  /* மேலே ஒட்டும் */
+  position: fixed;
   top: 0;
-  /* மேல் இடம் */
+  left: 0;
+  right: 0;
   z-index: 1000;
-  /* மேல்தட்டு முன்னுரிமை */
-  background: linear-gradient(115deg, rgba(8, 20, 40, 0.92) 0%, rgba(5, 14, 26, 0.92) 60%, rgba(8, 26, 44, 0.92) 100%);
-  /* neon bg */
-  backdrop-filter: blur(10px);
-  /* பின்னணி blur */
-  -webkit-backdrop-filter: blur(10px);
-  /* Safari blur */
-  border-bottom: 1px solid rgba(0, 242, 234, 0.1);
-  /* கீழ் வரி */
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4), 0 1px 0 rgba(0, 242, 234, 0.08);
-  /* depth shadow */
-  padding: 12px 0;
-  /* மேல்கீழ் இடைவெளி */
-  transition: 0.3s;
-  /* மென்மையான மாற்றம் */
-  overflow: hidden;
-  /* glow வெளியே போகாமல் */
-  height: 80px;
-  /* Fixed height for alignment */
-  display: flex !important;
-  align-items: center !important;
+  background: linear-gradient(115deg, rgba(8, 20, 40, 0.95) 0%, rgba(5, 14, 26, 0.95) 60%, rgba(8, 26, 44, 0.95) 100%);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(0, 242, 234, 0.15);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5), 0 1px 0 rgba(0, 242, 234, 0.1);
+  padding: 0;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  transition: all 0.3s ease;
+  overflow: visible;
 }
 
 .navbar-glass .container-max {
   height: 100%;
-  align-items: center !important;
-  display: grid !important;
+  width: 100%;
+  display: grid;
   grid-template-columns: auto 1fr auto;
-  column-gap: clamp(12px, 2vw, 24px);
-  grid-auto-flow: column;
-  justify-items: stretch;
+  gap: clamp(12px, 2vw, 20px);
+  align-items: center;
+  padding: 0 var(--container-pad);
 }
 
 .navbar-glass::before {
-  /* மேலே ஒளி layer */
   content: "";
-  /* pseudo content */
   position: absolute;
-  /* absolute layer */
-  inset: -30%;
-  /* வெளியே விரிவு */
-  background: radial-gradient(120% 80% at 50% 20%, rgba(14, 165, 233, 0.08), transparent 60%);
-  /* நெப்யுலா glow */
-  filter: blur(18px);
-  /* மங்கல் */
-  opacity: 0.9;
-  /* வெளிச்ச அளவு */
-  animation: auroraSweep 18s linear infinite;
-  /* மெதுவான அசைவு */
+  inset: 0;
+  background: radial-gradient(120% 80% at 50% 20%, rgba(14, 165, 233, 0.06), transparent 60%);
+  filter: blur(15px);
+  opacity: 0.7;
   pointer-events: none;
-  /* கிளிக் தடை */
   z-index: 0;
-  /* பின்னணி */
 }
 
 .navbar-glass::after {
-  /* கீழ் ஒளி கோடு */
   content: '';
-  /* pseudo content */
   position: absolute;
-  /* absolute line */
   bottom: 0;
-  /* கீழ் ஒட்ட */
   left: 0;
-  /* இடது தொடக்கம் */
   right: 0;
-  /* வலது வரை */
   height: 1px;
-  /* மெலிந்த கோடு */
-  background: linear-gradient(90deg, transparent, rgba(0, 242, 234, 0.4), transparent);
-  /* glow line */
-  box-shadow: 0 0 8px rgba(0, 242, 234, 0.3);
-  /* shadow */
-  animation: neonBloom 3s ease-in-out infinite;
-  /* துடிப்பு */
+  background: linear-gradient(90deg, transparent, rgba(0, 242, 234, 0.5), transparent);
+  box-shadow: 0 0 10px rgba(0, 242, 234, 0.3);
+  pointer-events: none;
 }
 
 @keyframes neonBloom {
@@ -893,214 +861,47 @@ button {
 }
 
 .navbar-glass .brand {
-  justify-self: start;
   white-space: nowrap;
   grid-column: 1;
-  padding-right: clamp(8px, 1vw, 12px);
+  flex-shrink: 0;
+  padding: 0 clamp(8px, 1vw, 12px) 0 0;
 }
 
 .nav-center {
-  /* நடுப்பு லிங்க் பட்டை */
-  justify-self: center;
   grid-column: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(12px, 2vw, 20px);
+  flex-wrap: nowrap;
+  overflow: hidden;
+  position: relative;
   min-width: 0;
   width: 100%;
-  max-width: 680px;
-  padding-inline: clamp(8px, 2vw, 28px);
-  /* நடுவில் பரவ */
-  display: flex;
-  /* row layout */
-  align-items: center;
-  /* சென்டர் */
-  justify-content: center;
-  /* நடுவில் */
-  gap: clamp(12px, 2vw, 22px) !important;
-  /* இடைவெளி */
-  flex-wrap: nowrap;
-  /* ஒரே வரியில் */
-  overflow: hidden;
-  /* வெளியே மறை */
-  position: relative;
-  /* overlayக்கு base */
-  --nav-glide-x: 0px;
-  /* slide variable */
-  transform: translate3d(var(--nav-glide-x), 0, 0);
-  /* glide move */
-  transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
-  /* smooth glide */
-  will-change: transform;
-  /* perf hint */
-  backface-visibility: hidden;
-  /* flicker குறை */
-  animation: navDrift 18s ease-in-out infinite;
-  /* மெதுவான அசைவு */
+  max-width: 600px;
+  padding: 0 clamp(8px, 1vw, 16px);
 }
 
-.nav-center::before {
-  /* இடது fade */
-  content: '';
-  /* pseudo */
-  position: absolute;
-  /* overlay */
-  left: 0;
-  /* இடது */
-  top: 0;
-  /* மேல் */
-  bottom: 0;
-  /* கீழ் வரை */
-  width: 40px;
-  /* அகலம் */
-  background: linear-gradient(90deg, rgba(2, 6, 10, 0.85), transparent);
-  /* fade mask */
-  z-index: 1;
-  /* மேல் layer */
-  pointer-events: none;
-  /* கிளிக் pass */
-}
-
+.nav-center::before,
 .nav-center::after {
-  /* வலது fade */
-  content: '';
-  /* pseudo */
-  position: absolute;
-  /* overlay */
-  right: 0;
-  /* வலது */
-  top: 0;
-  /* மேல் */
-  bottom: 0;
-  /* கீழ் வரை */
-  width: 40px;
-  /* அகலம் */
-  background: linear-gradient(270deg, rgba(2, 6, 10, 0.85), transparent);
-  /* fade mask */
-  z-index: 1;
-  /* மேல் layer */
-  pointer-events: none;
-  /* கிளிக் pass */
+  display: none;
 }
 
 
 .navbar-glass .nav-center .nav-link {
-  /* nav item */
-  opacity: 0;
-  /* ஆரம்பத்தில் மறை */
-  transform: translate3d(-18px, 0, 0);
-  /* இடது தள்ள */
-  will-change: transform, opacity;
-  /* perf hint */
-  backface-visibility: hidden;
-  /* flicker குறை */
-  transition: transform 0.25s ease, color 0.25s ease, text-shadow 0.25s ease;
-  /* hover smooth */
+  opacity: 1;
+  transform: none;
+  transition: color 0.3s ease, text-shadow 0.3s ease;
+  flex-shrink: 0;
 }
 
 .navbar-glass .nav-center .nav-link:hover,
-/* hover state */
 .navbar-glass .nav-center .nav-link:focus-visible {
-  /* keyboard focus */
-  transform: translate3d(0, -1px, 0);
-  /* சிறு lift */
   color: #e9f8ff;
-  /* روشن நிறம் */
-  text-shadow: 0 0 12px rgba(0, 242, 234, 0.45);
-  /* glow */
+  text-shadow: 0 0 12px rgba(0, 242, 234, 0.5);
 }
 
-.navbar-glass.is-nav-animated .nav-center .nav-link {
-  /* initial animate */
-  animation: asdNavLinkSlide 650ms cubic-bezier(0.22, 1, 0.36, 1) both;
-  /* slide in */
-}
 
-.navbar-glass.is-nav-animated .nav-center .nav-link:nth-child(1) {
-  animation-delay: 0ms;
-}
-
-/* முதல் லிங்க் */
-.navbar-glass.is-nav-animated .nav-center .nav-link:nth-child(2) {
-  animation-delay: 80ms;
-}
-
-/* இரண்டாம் */
-.navbar-glass.is-nav-animated .nav-center .nav-link:nth-child(3) {
-  animation-delay: 160ms;
-}
-
-/* மூன்றாம் */
-.navbar-glass.is-nav-animated .nav-center .nav-link:nth-child(4) {
-  animation-delay: 240ms;
-}
-
-/* நான்காம் */
-.navbar-glass.is-nav-animated .nav-center .nav-link:nth-child(5) {
-  animation-delay: 320ms;
-}
-
-/* ஐந்தாம் */
-
-@keyframes asdNavLinkSlide {
-
-  /* link slide */
-  from {
-    /* தொடக்கம் */
-    opacity: 0;
-    /* மறை */
-    transform: translate3d(-18px, 0, 0);
-    /* இடது */
-  }
-
-  to {
-    /* முடிவு */
-    opacity: 1;
-    /* காண்பி */
-    transform: translate3d(0, 0, 0);
-    /* இயல்பு */
-  }
-}
-
-@keyframes auroraSweep {
-
-  /* aurora move */
-  0% {
-    transform: translateX(-20%);
-    opacity: 0.7;
-  }
-
-  /* ஆரம்பம் */
-  50% {
-    transform: translateX(10%);
-    opacity: 1;
-  }
-
-  /* நடுவில் */
-  100% {
-    transform: translateX(40%);
-    opacity: 0.7;
-  }
-
-  /* முடிவு */
-}
-
-@keyframes navDrift {
-
-  /* மெது அசைவு */
-  0% {
-    transform: translate3d(var(--nav-glide-x), 0, 0) translateX(-6px);
-  }
-
-  /* இடது */
-  50% {
-    transform: translate3d(var(--nav-glide-x), 0, 0) translateX(6px);
-  }
-
-  /* வலது */
-  100% {
-    transform: translate3d(var(--nav-glide-x), 0, 0) translateX(-6px);
-  }
-
-  /* மீண்டும் இடது */
-}
 
 @media (prefers-reduced-motion: reduce) {
 
@@ -1125,51 +926,30 @@ button {
 }
 
 .header-actions {
-  /* right buttons */
-  display: inline-flex;
-  /* inline flex */
-  align-items: center;
-  /* மையம் */
-  gap: clamp(8px, 1.5vw, 12px) !important;
-  /* இடைவெளி */
-  flex-wrap: nowrap;
-  /* wrap */
-  justify-self: end;
   grid-column: 3;
+  display: flex;
+  align-items: center;
+  gap: clamp(8px, 1.5vw, 12px);
+  flex-wrap: nowrap;
   white-space: nowrap;
-  /* layout order */
+  flex-shrink: 0;
   padding-left: clamp(8px, 1vw, 12px);
 }
 
-.navbar-glass .container-max > .nav-cta {
-  justify-self: end;
-  grid-column: 3;
-}
-
 .nav-link {
-  /* nav text */
-  font-size: 0.82rem;
-  /* எழுத்து அளவு */
+  font-size: clamp(0.7rem, 1.2vw, 0.85rem);
   color: var(--txt-muted);
-  /* மங்கலான நிறம் */
   font-weight: 600;
-  /* தடிமன் */
   display: inline-flex;
-  /* inline flex */
   align-items: center;
-  /* மையம் */
   gap: 6px;
-  /* ஐகான் இடம் */
   text-transform: uppercase;
-  /* பெரிய எழுத்து */
   letter-spacing: 0.08em;
-  /* இடைவெளி */
+  white-space: nowrap;
 }
 
 .nav-link:hover {
-  /* hover */
   color: #fff;
-  /* வெள்ளை */
 }
 
 .nav-label {
@@ -1187,74 +967,142 @@ button {
 }
 
 .nav-cta {
-  /* CTA button */
-  height: clamp(28px, 5vw, 32px);
-  /* உயரம் */
+  height: 36px;
   padding: 0 clamp(10px, 2vw, 14px);
-  /* பக்கம் இடம் */
   border-radius: 999px;
-  /* pill shape */
-  font-size: clamp(0.7rem, 1.5vw, 0.85rem);
-  /* எழுத்து அளவு */
+  font-size: clamp(0.7rem, 1.2vw, 0.8rem);
   font-weight: 700;
-  /* தடிமன் */
   letter-spacing: 0.04em;
-  /* இடைவெளி */
   text-transform: uppercase;
-  /* uppercase */
-  box-shadow: var(--depth-z1);
-  /* shadow */
-  min-width: auto;
-  /* குறைந்த அகலம் */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   white-space: nowrap;
   flex-shrink: 0;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
-.header-actions>.nav-cta+.nav-cta {
-  /* இரண்டாவது button */
-  margin-left: 0;
-  /* கூடுதல் margin இல்லை */
-}
+
 
 .brand {
-  /* brand text */
-  font-size: clamp(18px, 2.4vw, 24px);
-  /* responsive size */
+  font-size: clamp(16px, 2.2vw, 22px);
   line-height: 1;
-  /* tight line */
   font-weight: 700;
-  /* bold */
+  letter-spacing: 0.08em;
 }
 
-@media (max-width: 900px) {
-
-  /* tablet layout */
-  .nav-center {
-    /* center links */
-    order: 2;
-    /* order change */
-    width: 100%;
-    /* full width */
-    justify-content: center;
-    /* center align */
+@media (max-width: 1024px) {
+  .navbar-glass .container-max {
+    grid-template-columns: auto 1fr auto;
+    gap: clamp(8px, 1.5vw, 16px);
   }
 
-  .header-actions {
-    /* right buttons */
-    order: 3;
-    /* order change */
-    width: auto;
-    /* width fixed */
-    margin-left: auto;
-    /* push right */
-    justify-content: flex-end;
-    /* right align */
+  .nav-center {
+    max-width: 500px;
+    gap: clamp(10px, 1.5vw, 16px);
+  }
+
+  .nav-link {
+    font-size: clamp(0.65rem, 1vw, 0.8rem);
   }
 
   .nav-cta {
-    /* CTA height */
+    height: 34px;
+    padding: 0 clamp(8px, 1.5vw, 12px);
+    font-size: clamp(0.65rem, 1vw, 0.75rem);
+  }
+}
+
+@media (max-width: 768px) {
+  .navbar-glass {
+    height: 64px;
+    padding: 0;
+  }
+
+  .navbar-glass .container-max {
+    grid-template-columns: auto 1fr auto;
+    gap: clamp(6px, 1vw, 12px);
+    padding: 0 clamp(12px, 3vw, 16px);
+  }
+
+  .brand {
+    font-size: clamp(14px, 3vw, 18px);
+    letter-spacing: 0.06em;
+  }
+
+  .nav-center {
+    max-width: 350px;
+    gap: clamp(8px, 1vw, 12px);
+    padding: 0 clamp(6px, 1vw, 10px);
+  }
+
+  .nav-link {
+    font-size: clamp(0.6rem, 0.9vw, 0.75rem);
+    gap: 4px;
+  }
+
+  .nav-emoji {
+    font-size: 0.85rem;
+  }
+
+  .header-actions {
+    gap: clamp(6px, 1vw, 10px);
+    padding-left: clamp(6px, 1vw, 8px);
+  }
+
+  .nav-cta {
     height: 32px;
-    /* same height */
+    padding: 0 clamp(8px, 1.5vw, 10px);
+    font-size: clamp(0.6rem, 0.9vw, 0.7rem);
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar-glass {
+    height: 56px;
+  }
+
+  .navbar-glass .container-max {
+    grid-template-columns: auto 1fr auto;
+    gap: 4px;
+    padding: 0 clamp(10px, 2vw, 12px);
+  }
+
+  .brand {
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    padding-right: 4px;
+  }
+
+  .nav-center {
+    max-width: 200px;
+    gap: 4px;
+    padding: 0 2px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .nav-link {
+    font-size: 0.6rem;
+    padding: 0 2px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .nav-emoji {
+    display: none;
+  }
+
+  .header-actions {
+    gap: 4px;
+    padding-left: 4px;
+  }
+
+  .nav-cta {
+    height: 28px;
+    padding: 0 6px;
+    font-size: 0.55rem;
+    min-width: auto;
   }
 }
 

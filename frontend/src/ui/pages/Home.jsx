@@ -2,19 +2,29 @@ import React, { Suspense, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useRealTimeAnimations } from "../hooks/useRealTimeAnimations.js";
 
 import BannerStrip from "../components/BannerStrip.jsx";
 import HeroSection from "../components/HeroSection.jsx";
 import LevelCards from "../components/LevelCards.jsx";
 
+
 const DemoSection = React.lazy(() => import("../components/DemoSection.jsx"));
 const ReviewLoop = React.lazy(() => import("../components/ReviewLoop.jsx"));
-import { WhatsApp, Mail, ShieldCheck, Infinity, Zap, Headphones, PhoneCall } from "../icons.jsx";
+import Navbar from "../components/Navbar.jsx";
+import Footer from "../components/Footer.jsx";
 
 gsap.registerPlugin(ScrollTrigger);
 
+const NAV_SECTIONS = ["bundle", "services", "preview", "reviews", "contacts"];
+
 export default function Home() {
   const [loaded, setLoaded] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isNavHidden, setIsNavHidden] = useState(false);
+  const [activeSection, setActiveSection] = useState(NAV_SECTIONS[0]);
+  const lastScrollYRef = useRef(0);
+  const navHiddenRef = useRef(false);
   const SectionSkeleton = ({ title, id, minHeight }) => (
     <section
       id={id}
@@ -66,49 +76,78 @@ export default function Home() {
     return () => clearTimeout(timer);
   }, []);
 
-  // --- 4. NAVBAR HORIZONTAL GLIDE (SCROLL REACTIVE) ---
   useEffect(() => {
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const isSmallScreen = window.matchMedia("(max-width: 768px)").matches;
-    const isCoarsePointer = window.matchMedia("(pointer: coarse)").matches;
-    const isSaveData = navigator?.connection?.saveData === true;
-    if (prefersReducedMotion || isSmallScreen || isCoarsePointer || isSaveData) return;
-
-    const glideTargets = Array.from(document.querySelectorAll(".nav-center, .nhh-nav-links"));
-    if (!glideTargets.length) return;
-
-    let lastY = window.scrollY || document.documentElement.scrollTop || 0;
+    const minDelta = 6;
+    const hideAfter = 90;
     let rafId = null;
-    let resetTimer = null;
 
-    const setShift = (value) => {
-      glideTargets.forEach((el) => el.style.setProperty("--nav-glide-x", `${value}px`));
+    const setHidden = (value) => {
+      if (navHiddenRef.current === value) return;
+      navHiddenRef.current = value;
+      setIsNavHidden(value);
     };
 
-    const onScroll = () => {
-      if (rafId) return;
-      rafId = window.requestAnimationFrame(() => {
+    const updateScrollState = () => {
+      const currentY = window.scrollY || document.documentElement.scrollTop || 0;
+      setIsScrolled(currentY > 12);
+
+      if (prefersReducedMotion) {
+        setHidden(false);
+        lastScrollYRef.current = currentY;
         rafId = null;
-        const y = window.scrollY || document.documentElement.scrollTop || 0;
-        const dy = y - lastY;
-        lastY = y;
-        const shift = Math.max(-18, Math.min(18, dy * 0.65));
-        setShift(shift);
+        return;
+      }
 
-        if (resetTimer) window.clearTimeout(resetTimer);
-        resetTimer = window.setTimeout(() => setShift(0), 140);
-      });
+      const lastY = lastScrollYRef.current;
+      const delta = currentY - lastY;
+
+      if (currentY <= 8) {
+        setHidden(false);
+      } else if (delta > minDelta && currentY > hideAfter) {
+        setHidden(true);
+      } else if (delta < -minDelta) {
+        setHidden(false);
+      }
+
+      lastScrollYRef.current = currentY;
+      rafId = null;
     };
 
-    setShift(0);
-    window.addEventListener("scroll", onScroll, { passive: true });
+    const handleScroll = () => {
+      if (rafId) return;
+      rafId = window.requestAnimationFrame(updateScrollState);
+    };
+
+    lastScrollYRef.current = window.scrollY || 0;
+    updateScrollState();
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => {
-      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("scroll", handleScroll);
       if (rafId) window.cancelAnimationFrame(rafId);
-      if (resetTimer) window.clearTimeout(resetTimer);
-      setShift(0);
     };
   }, []);
+
+  useEffect(() => {
+    const sections = NAV_SECTIONS.map((id) => document.getElementById(id)).filter(Boolean);
+    if (!sections.length) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActiveSection(entry.target.id);
+          }
+        });
+      },
+      { rootMargin: "-45% 0px -45% 0px", threshold: 0 }
+    );
+
+    sections.forEach((section) => observer.observe(section));
+    return () => observer.disconnect();
+  }, []);
+
+
 
   // --- 2. SCROLL PROGRESS LOGIC ---
   useEffect(() => {
@@ -147,19 +186,56 @@ export default function Home() {
     const isSaveData = navigator?.connection?.saveData === true;
     if (prefersReducedMotion || isSmallScreen || isCoarsePointer || isSaveData) return;
     const ctx = gsap.context(() => {
+      const cardReveal = {
+        from: { opacity: 0, y: 40, scale: 0.96 },
+        to: {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          duration: 0.7,
+          stagger: 0.09,
+          ease: "power2.out",
+          clearProps: "transform"
+        }
+      };
+      const reviewReveal = {
+        from: { opacity: 0, y: 30 },
+        to: {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+          stagger: 0.12,
+          ease: "cubic-bezier(0.4, 0, 0.2, 1)",
+          clearProps: "transform"
+        }
+      };
+      const sectionReveal = {
+        from: { opacity: 0, y: 40, scale: 0.98 },
+        to: { opacity: 1, y: 0, scale: 1, duration: 0.7, ease: "power2.out" }
+      };
+
       gsap.utils.toArray(".section-anim").forEach((section) => {
+        const reviewCards = section.querySelectorAll(".review-card");
         const cards = section.querySelectorAll(".card-anim");
-        if (cards.length) {
+        if (reviewCards.length) {
+          gsap.fromTo(
+            reviewCards,
+            reviewReveal.from,
+            {
+              ...reviewReveal.to,
+              scrollTrigger: {
+                trigger: section,
+                start: "top 80%",
+                toggleActions: "play none none none"
+              }
+            }
+          );
+        } else if (cards.length) {
           gsap.fromTo(
             cards,
-            { opacity: 0, y: 40 },
+            cardReveal.from,
             {
-              opacity: 1,
-              y: 0,
-              duration: 0.7,
-              stagger: 0.09,
-              ease: "power2.out",
-              clearProps: "transform",
+              ...cardReveal.to,
               scrollTrigger: {
                 trigger: section,
                 start: "top 80%"
@@ -169,12 +245,9 @@ export default function Home() {
         } else {
           gsap.fromTo(
             section,
-            { opacity: 0, y: 40 },
+            sectionReveal.from,
             {
-              opacity: 1,
-              y: 0,
-              duration: 0.7,
-              ease: "power2.out",
+              ...sectionReveal.to,
               scrollTrigger: {
                 trigger: section,
                 start: "top 80%"
@@ -199,43 +272,12 @@ export default function Home() {
       <div className="scroll-progress"></div>
 
       {/* NAVBAR */}
-      <nav className={`navbar-glass${loaded ? " is-nav-animated" : ""}`}>
-        <div className="container-max">
-          <div className="brand fs-4 text-white fw-bold tracking-wider" style={{ fontFamily: "var(--font-display)" }}>AS DANCE</div>
-
-          <div className="nav-center">
-            <a href="#bundle" className="nav-link">
-              <span className="nav-label">Bundle</span>
-              <span className="nav-emoji" aria-hidden="true">📦</span>
-            </a>
-            <a href="#services" className="nav-link">
-              <span className="nav-label">Services</span>
-              <span className="nav-emoji" aria-hidden="true">⚙</span>
-            </a>
-            <a href="#preview" className="nav-link">
-              <span className="nav-label">Preview</span>
-              <span className="nav-emoji" aria-hidden="true">▶</span>
-            </a>
-            <a href="#reviews" className="nav-link">
-              <span className="nav-label">Reviews</span>
-              <span className="nav-emoji" aria-hidden="true">⭐</span>
-            </a>
-            <a href="#contacts" className="nav-link">
-              <span className="nav-label">Contacts</span>
-              <span className="nav-emoji" aria-hidden="true">📞✉</span>
-            </a>
-          </div>
-
-          <div className="header-actions">
-            <Link to="/login" className="btn nav-cta nav-cta-primary">
-              Login
-            </Link>
-            <Link to="/register" className="btn nav-cta nav-cta-primary">
-              Create Account
-            </Link>
-          </div>
-        </div>
-      </nav>
+      <Navbar
+        activeSection={activeSection}
+        loaded={loaded}
+        isScrolled={isScrolled}
+        isNavHidden={isNavHidden}
+      />
 
       <div className="page-content">
         <BannerStrip />
@@ -277,70 +319,7 @@ export default function Home() {
       </div>
 
       {/* 10. FOOTER */}
-      <footer className="site-footer section-anim bg-contact" id="contacts">
-        <div className="container-max footer-grid">
-          <div className="footer-col footer-brand">
-            <div className="footer-title">AS DANCE — 639-Step Premium Curriculum</div>
-            <p className="footer-copy">
-              Fast skill progression for students, fitness dancers, wedding choreo learners, and stage performers.
-            </p>
-            <div className="footer-icons">
-              <a href="https://wa.me/918825602356" target="_blank" rel="noopener noreferrer" className="footer-icon" aria-label="WhatsApp">
-                <WhatsApp size={18} color="#fff" />
-              </a>
-              <a href="mailto:bussinessaswin@gmail.com" className="footer-icon" aria-label="Email">
-                <Mail size={18} />
-              </a>
-            </div>
-          </div>
-          <div className="footer-col">
-            <div className="footer-title">Contact</div>
-            <div className="footer-list footer-contact">
-              <div className="footer-contact-item">
-                <Mail size={16} />
-                <span>Email: bussinessaswin@gmail.com</span>
-              </div>
-              <div className="footer-contact-item">
-                <PhoneCall size={16} />
-                <span>Phone: +91 88256 02356</span>
-              </div>
-              <div className="footer-contact-item">Song Used: "Dance Dhoom Mix 2025"</div>
-              <div className="footer-contact-item">Beat Sync: Always Matching Step For Beaat</div>
-            </div>
-          </div>
-          <div className="footer-col">
-            <div className="footer-title">Support</div>
-            <div className="footer-list">
-              <span>Secure Payment</span>
-              <span>Lifetime Access</span>
-              <span>Instant Unlock</span>
-              <span>24/7 Support</span>
-            </div>
-          </div>
-        </div>
-        <div className="footer-divider" aria-hidden="true"></div>
-        <div className="footer-trust">
-          <div className="footer-trust-item">
-            <ShieldCheck size={16} />
-            Secure Payment
-          </div>
-          <div className="footer-trust-item">
-            <Infinity size={16} />
-            Lifetime Access
-          </div>
-          <div className="footer-trust-item">
-            <Zap size={16} />
-            Instant Unlock
-          </div>
-          <div className="footer-trust-item">
-            <Headphones size={16} />
-            24/7 Support
-          </div>
-        </div>
-        <div className="footer-signature">
-          Aswin —  AS DANCE Creator
-        </div>
-      </footer>
+      <Footer />
     </>
   );
 }

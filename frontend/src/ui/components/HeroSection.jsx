@@ -45,24 +45,44 @@ const HeroSection = () => {
 
     const ctx = gsap.context(() => {
       if (skipMotion) return;
-      gsap.fromTo(
-        textRef.current,
-        { opacity: 0, y: 30 },
-        { opacity: 1, y: 0, duration: 1, ease: "power3.out" }
-      );
-      gsap.fromTo(
-        imageRef.current,
-        { opacity: 0, scale: 0.92, y: 20 },
-        { opacity: 1, scale: 1, y: 0, duration: 1.2, ease: "power3.out", delay: 0.2 }
-      );
-      if (!isCoarsePointer) {
-        gsap.to(imageRef.current, {
-          y: -4,
-          duration: 12,
-          repeat: -1,
-          yoyo: true,
-          ease: "sine.inOut"
-        });
+      const heroText = textRef.current;
+      const introTargets = heroText
+        ? heroText.querySelectorAll(
+          ".hero-brand-row, .hero-count-panel, .hero-price-stack, .hero-levels, .hero-difficulty-line"
+        )
+        : [];
+      const ctaTargets = heroText ? heroText.querySelectorAll(".hero-cta-row .btn") : [];
+      const baseEase = "cubic-bezier(0.4, 0, 0.2, 1)";
+
+      const tl = gsap.timeline({ defaults: { ease: baseEase } });
+      tl.from(".hero-title", { opacity: 0, x: -40, duration: 0.6 });
+      if (introTargets.length) {
+        tl.from(introTargets, { opacity: 0, y: 18, duration: 0.55, stagger: 0.06 }, "-=0.3");
+      }
+      tl.from(".hero-copy", { opacity: 0, y: 12, duration: 0.5 }, "+=0.12")
+        .from(
+          ctaTargets,
+          { opacity: 0, scale: 0.95, duration: 0.5, ease: "power2.out", stagger: 0.12 },
+          "-=0.35"
+        )
+        .from(".hero-offer-icons", { opacity: 0, y: 12, duration: 0.5 }, "-=0.25")
+        .from(".hero-trust", { opacity: 0, y: 10, duration: 0.45 }, "-=0.2");
+
+      if (imageRef.current) {
+        gsap.fromTo(
+          imageRef.current,
+          { opacity: 0, scale: 0.92, y: 20 },
+          { opacity: 1, scale: 1, y: 0, duration: 1.2, ease: "power3.out", delay: 0.2 }
+        );
+        if (!isCoarsePointer) {
+          gsap.to(imageRef.current, {
+            y: -4,
+            duration: 12,
+            repeat: -1,
+            yoyo: true,
+            ease: "sine.inOut"
+          });
+        }
       }
     }, heroRef);
 
