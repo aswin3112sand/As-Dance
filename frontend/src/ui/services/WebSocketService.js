@@ -1,5 +1,7 @@
-import { Client } from '@stomp/stompjs';
-import SockJS from 'sockjs-client';
+import { Client } from "@stomp/stompjs";
+import SockJS from "sockjs-client";
+
+const isDev = import.meta.env.DEV;
 
 class WebSocketService {
   constructor() {
@@ -17,7 +19,7 @@ class WebSocketService {
       const socket = new SockJS('/ws');
       this.client = new Client({
         webSocketFactory: () => socket,
-        debug: (str) => console.log('STOMP: ' + str),
+        debug: isDev ? (str) => console.log("STOMP: " + str) : () => {},
         reconnectDelay: 5000,
         heartbeatIncoming: 4000,
         heartbeatOutgoing: 4000,
@@ -26,17 +28,23 @@ class WebSocketService {
       this.client.onConnect = () => {
         this.connected = true;
         this.reconnectAttempts = 0;
-        console.log('WebSocket connected');
+        if (isDev) {
+          console.log("WebSocket connected");
+        }
         resolve();
       };
 
       this.client.onDisconnect = () => {
         this.connected = false;
-        console.log('WebSocket disconnected');
+        if (isDev) {
+          console.log("WebSocket disconnected");
+        }
       };
 
       this.client.onStompError = (frame) => {
-        console.error('STOMP error:', frame);
+        if (isDev) {
+          console.error("STOMP error:", frame);
+        }
         reject(new Error('WebSocket connection failed'));
       };
 
@@ -54,7 +62,9 @@ class WebSocketService {
 
   subscribe(destination, callback) {
     if (!this.connected) {
-      console.warn('WebSocket not connected');
+      if (isDev) {
+        console.warn("WebSocket not connected");
+      }
       return null;
     }
 
@@ -63,7 +73,9 @@ class WebSocketService {
         const data = JSON.parse(message.body);
         callback(data);
       } catch (error) {
-        console.error('Error parsing message:', error);
+        if (isDev) {
+          console.error("Error parsing message:", error);
+        }
       }
     });
 
@@ -81,7 +93,9 @@ class WebSocketService {
 
   send(destination, data) {
     if (!this.connected) {
-      console.warn('WebSocket not connected');
+      if (isDev) {
+        console.warn("WebSocket not connected");
+      }
       return;
     }
 

@@ -1,9 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { ArrowUpRight } from 'lucide-react';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-
-gsap.registerPlugin(ScrollTrigger);
+import { loadScrollTrigger } from "../utils/gsapLoader.js";
+import { shouldReduceMotion } from "../utils/motion.js";
 
 const styles = [
     { id: 1, title: 'High Heels', img: 'https://images.unsplash.com/photo-1547153760-18fc86324498?q=80&w=1887&auto=format&fit=crop', desc: 'Femininity, confidence and grace on heels.' },
@@ -15,23 +13,48 @@ const styles = [
 const DanceStyles = () => {
     const gridRef = useRef(null);
 
+    const tiltEnabledRef = useRef(false);
+
     useEffect(() => {
-        gsap.fromTo(gridRef.current.children,
-            { opacity: 0, y: 40, rotationX: 10 },
-            {
-                opacity: 1, y: 0, rotationX: 0,
-                stagger: 0.15,
-                duration: 1,
-                ease: "power3.out",
-                scrollTrigger: {
-                    trigger: gridRef.current,
-                    start: "top 80%"
-                }
-            }
-        );
+        tiltEnabledRef.current = !shouldReduceMotion() && !window.matchMedia("(pointer: coarse)").matches;
+    }, []);
+
+    useEffect(() => {
+        if (!gridRef.current) return;
+        if (shouldReduceMotion()) return;
+        let ctx = null;
+        let cancelled = false;
+
+        const run = async () => {
+            const { gsap } = await loadScrollTrigger();
+            if (!gsap || cancelled) return;
+            ctx = gsap.context(() => {
+                gsap.fromTo(
+                    gridRef.current.children,
+                    { opacity: 0, y: 40, rotationX: 10 },
+                    {
+                        opacity: 1, y: 0, rotationX: 0,
+                        stagger: 0.15,
+                        duration: 1,
+                        ease: "power3.out",
+                        scrollTrigger: {
+                            trigger: gridRef.current,
+                            start: "top 80%"
+                        }
+                    }
+                );
+            }, gridRef);
+        };
+
+        run();
+        return () => {
+            cancelled = true;
+            if (ctx) ctx.revert();
+        };
     }, []);
 
     const handleTilt = (e, card) => {
+        if (!tiltEnabledRef.current) return;
         const rect = card.getBoundingClientRect();
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;

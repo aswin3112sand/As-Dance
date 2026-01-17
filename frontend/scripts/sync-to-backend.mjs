@@ -24,9 +24,12 @@ async function main() {
     throw new Error(`dist not found at ${distDir}. Run "npm run build" first.`);
   }
 
-  await fs.rm(backendStaticDir, { recursive: true, force: true });
+  const shouldClean = process.env.BACKEND_STATIC_CLEAN === "true";
+  if (shouldClean) {
+    await fs.rm(backendStaticDir, { recursive: true, force: true });
+  }
   await fs.mkdir(backendStaticDir, { recursive: true });
-  await fs.cp(distDir, backendStaticDir, { recursive: true });
+  await fs.cp(distDir, backendStaticDir, { recursive: true, force: true });
   console.log(`Synced ${distDir} -> ${backendStaticDir}`);
 }
 

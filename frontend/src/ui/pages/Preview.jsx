@@ -63,16 +63,18 @@ export default function Preview() {
 
   return (
     <>
-      <nav className={`navbar-glass${isScrolled ? " is-scrolled" : ""}${isNavHidden ? " is-hidden" : ""}`}>
-        <div className="container-max">
-          <div className="brand fs-4 text-white fw-bold tracking-wider" style={{ fontFamily: "var(--font-display)" }}>
-            AS DANCE
+      <header className="site-header">
+        <nav className={`navbar-glass${isScrolled ? " is-scrolled" : ""}${isNavHidden ? " is-hidden" : ""}`}>
+          <div className="container-max">
+            <div className="brand fs-4 text-white fw-bold tracking-wider" style={{ fontFamily: "var(--font-display)" }}>
+              AS DANCE
+            </div>
+            <Link to="/" className="btn btn--ghost">
+              Back to Home
+            </Link>
           </div>
-          <Link to="/" className="btn nav-cta nav-cta-secondary">
-            Back to Home
-          </Link>
-        </div>
-      </nav>
+        </nav>
+      </header>
 
       <div className="page-content">
         <Suspense fallback={(

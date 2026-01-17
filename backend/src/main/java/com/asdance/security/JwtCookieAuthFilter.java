@@ -16,7 +16,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.List;
 
-@Component
 @Profile("!test")
 public class JwtCookieAuthFilter extends OncePerRequestFilter {
 

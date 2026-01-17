@@ -103,23 +103,27 @@ export default function Admin() {
               <p className="subtle">Use your admin email and password to view purchases.</p>
               {error && <div className="alert alert-danger">{error}</div>}
               <div className="mb-3">
-                <label className="form-label subtle">Email</label>
+                <label className="form-label subtle" htmlFor="admin-email">Email</label>
                 <input
+                  id="admin-email"
                   className="form-control"
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
+                  autoComplete="username"
                 />
               </div>
               <div className="mb-3">
-                <label className="form-label subtle">Password</label>
+                <label className="form-label subtle" htmlFor="admin-password">Password</label>
                 <input
+                  id="admin-password"
                   className="form-control"
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
+                  autoComplete="current-password"
                 />
               </div>
               <button className="btn btn-neon w-100" type="submit">Sign In</button>

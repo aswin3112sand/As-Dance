@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import gsap from "gsap";
+import { shouldReduceMotion } from "../utils/motion.js";
 import { Star } from "../icons.jsx";
 import w1 from "../../assets/bg/w1.webp";
 import w2 from "../../assets/bg/w2.webp";
@@ -49,12 +49,11 @@ export default function ReviewLoop() {
   const reviews = REVIEWS;
   const [isAnimating, setIsAnimating] = useState(() => {
     if (typeof window === "undefined") return false;
-    const stored = localStorage.getItem(ANIMATION_STATE_KEY);
-    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const reduceMotion = shouldReduceMotion();
     const isSmallScreen = window.matchMedia("(max-width: 768px)").matches;
     const isCoarsePointer = window.matchMedia("(pointer: coarse)").matches;
-    const isSaveData = navigator?.connection?.saveData === true;
-    if (prefersReducedMotion || isSmallScreen || isCoarsePointer || isSaveData) return false;
+    if (reduceMotion || isSmallScreen || isCoarsePointer) return false;
+    const stored = localStorage.getItem(ANIMATION_STATE_KEY);
     return stored ? JSON.parse(stored) : true;
   });
   const loopReviews = isAnimating ? [...reviews, ...reviews] : reviews;
@@ -64,41 +63,6 @@ export default function ReviewLoop() {
       localStorage.setItem(ANIMATION_STATE_KEY, JSON.stringify(isAnimating));
     }
   }, [isAnimating]);
-
-  useEffect(() => {
-    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const isSmallScreen = window.matchMedia("(max-width: 768px)").matches;
-    const isSaveData = navigator?.connection?.saveData === true;
-    if (prefersReducedMotion || isSmallScreen || isSaveData) return;
-
-    const ctx = gsap.context(() => {
-      gsap.to(".review-fog-layer", {
-        opacity: 0.12,
-        duration: 24,
-        repeat: -1,
-        yoyo: true,
-        ease: "sine.inOut"
-      });
-
-      gsap.to(".review-nebula-tl, .review-nebula-br", {
-        scale: 1.02,
-        duration: 20,
-        repeat: -1,
-        yoyo: true,
-        ease: "sine.inOut"
-      });
-
-      gsap.to(".reviews-title-glow", {
-        opacity: 0.4,
-        duration: 12,
-        repeat: -1,
-        yoyo: true,
-        ease: "sine.inOut"
-      });
-    });
-
-    return () => ctx.revert();
-  }, []);
 
   const toggleAnimation = () => {
     setIsAnimating(!isAnimating);
@@ -137,6 +101,7 @@ export default function ReviewLoop() {
           z-index: 1;
           opacity: 0.12;
           will-change: opacity;
+          animation: reviewFogPulse 18s ease-in-out infinite;
         }
 
         .review-nebula-tl {
@@ -150,6 +115,7 @@ export default function ReviewLoop() {
           pointer-events: none;
           z-index: 1;
           will-change: transform;
+          animation: reviewNebulaPulse 22s ease-in-out infinite;
         }
 
         .review-nebula-br {
@@ -163,6 +129,7 @@ export default function ReviewLoop() {
           pointer-events: none;
           z-index: 1;
           will-change: transform;
+          animation: reviewNebulaPulse 24s ease-in-out infinite reverse;
         }
 
         .reviews-header {
@@ -193,6 +160,7 @@ export default function ReviewLoop() {
           opacity: 0;
           will-change: opacity;
           pointer-events: none;
+          animation: reviewTitleGlow 12s ease-in-out infinite;
         }
 
         .reviews-subhead {
@@ -240,12 +208,37 @@ export default function ReviewLoop() {
         }
 
         .review-track.is-animating {
-          animation: reviewMarquee 70s linear infinite;
+          animation: reviewMarquee 24s linear infinite;
         }
 
         @keyframes reviewMarquee {
-          from { transform: translateX(0); }
-          to { transform: translateX(-50%); }
+          from { transform: translate3d(0, 0, 0); }
+          to { transform: translate3d(-50%, 0, 0); }
+        }
+
+        @keyframes reviewFogPulse {
+          0%, 100% { opacity: 0.08; }
+          50% { opacity: 0.16; }
+        }
+
+        @keyframes reviewNebulaPulse {
+          0%, 100% { transform: scale(1); }
+          50% { transform: scale(1.04); }
+        }
+
+        @keyframes reviewTitleGlow {
+          0%, 100% { opacity: 0.08; }
+          50% { opacity: 0.45; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .review-track.is-animating,
+          .review-fog-layer,
+          .review-nebula-tl,
+          .review-nebula-br,
+          .reviews-title-glow {
+            animation: none !important;
+          }
         }
 
         .review-card {

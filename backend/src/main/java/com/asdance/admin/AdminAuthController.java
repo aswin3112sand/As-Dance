@@ -2,9 +2,13 @@ package com.asdance.admin;
 
 import com.asdance.security.CookieService;
 import com.asdance.security.JwtService;
-import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.time.Duration;
+import java.util.Locale;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -32,7 +36,7 @@ public class AdminAuthController {
   }
 
   @PostMapping("/login")
-  public ResponseEntity<?> login(@RequestBody AdminLoginRequest req, HttpServletResponse response) {
+  public ResponseEntity<?> login(@RequestBody AdminLoginRequest req, HttpServletRequest request, HttpServletResponse response) {
     if (req == null || req.email() == null || req.password() == null) {
       return ResponseEntity.status(400).body(new ApiResponse(false, "Missing credentials"));
     }
@@ -44,24 +48,41 @@ public class AdminAuthController {
     }
 
     String token = jwtService.createToken(0L, adminEmail);
-    Cookie cookie = new Cookie(CookieService.ADMIN_COOKIE, token);
-    cookie.setHttpOnly(true);
-    cookie.setSecure(false);
-    cookie.setPath("/");
-    cookie.setMaxAge(60 * 60 * 8);
-    response.addCookie(cookie);
+    addAdminCookie(response, request, token, Duration.ofHours(8));
 
     return ResponseEntity.ok(new ApiResponse(true, "Admin login success"));
   }
 
   @PostMapping("/logout")
-  public ResponseEntity<?> logout(HttpServletResponse response) {
-    Cookie cookie = new Cookie(CookieService.ADMIN_COOKIE, "");
-    cookie.setHttpOnly(true);
-    cookie.setSecure(false);
-    cookie.setPath("/");
-    cookie.setMaxAge(0);
-    response.addCookie(cookie);
+  public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
+    addAdminCookie(response, request, "", Duration.ZERO);
     return ResponseEntity.ok(new ApiResponse(true, "Admin logged out"));
+  }
+
+  private static boolean isSecureRequest(HttpServletRequest request) {
+    if (request == null) {
+      return false;
+    }
+    if (request.isSecure()) {
+      return true;
+    }
+    String forwardedProto = request.getHeader("X-Forwarded-Proto");
+    if (forwardedProto != null) {
+      return forwardedProto.toLowerCase(Locale.ROOT).startsWith("https");
+    }
+    String forwardedSsl = request.getHeader("X-Forwarded-Ssl");
+    return "on".equalsIgnoreCase(forwardedSsl);
+  }
+
+  private static void addAdminCookie(HttpServletResponse response, HttpServletRequest request, String value, Duration maxAge) {
+    boolean secure = isSecureRequest(request);
+    ResponseCookie cookie = ResponseCookie.from(CookieService.ADMIN_COOKIE, value)
+        .httpOnly(true)
+        .secure(secure)
+        .path("/")
+        .sameSite("Strict")
+        .maxAge(maxAge)
+        .build();
+    response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
   }
 }

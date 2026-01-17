@@ -1,11 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth.jsx";
+import { shouldReduceMotion } from "../utils/motion.js";
 
 export default function Register() {
   const { register } = useAuth();
   const nav = useNavigate();
   const loc = useLocation();
+  const params = new URLSearchParams(loc.search);
+  const redirectParam = params.get("redirect");
+  const redirectFromState = typeof loc.state?.redirect === "string" ? loc.state.redirect : "";
+  const redirectTarget = redirectParam || redirectFromState;
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -15,6 +20,20 @@ export default function Register() {
   const [ok, setOk] = useState("");
   const [loading, setLoading] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const particleCount = useMemo(() => {
+    if (typeof window === "undefined") return 10;
+    const reduceMotion = shouldReduceMotion();
+    const isSmallScreen = window.matchMedia("(max-width: 768px)").matches;
+    return reduceMotion || isSmallScreen ? 10 : 25;
+  }, []);
+  const particles = useMemo(
+    () => Array.from({ length: particleCount }, () => ({
+      left: `${Math.random() * 100}%`,
+      top: `${Math.random() * 100}%`,
+      delay: `${Math.random() * 6}s`
+    })),
+    [particleCount]
+  );
 
   useEffect(() => {
     setMounted(true);
@@ -38,8 +57,10 @@ export default function Register() {
       const safeName = normalizedName || fallbackName;
       await register(safeName, email, password);
       setOk("Account created! Redirecting...");
-      const redirectTarget = loc.state?.redirect || "/login";
-      setTimeout(() => nav(redirectTarget, { state: { email } }), 800);
+      const loginTarget = redirectTarget
+        ? `/login?redirect=${encodeURIComponent(redirectTarget)}`
+        : "/login";
+      setTimeout(() => nav(loginTarget, { state: { email } }), 800);
     } catch (ex) {
       if (ex?.message === "EMAIL_NOT_ALLOWED") {
         setErr("This email is not allowed for access.");
@@ -56,14 +77,14 @@ export default function Register() {
       <div className="cinematic-bg">
         <div className="bg-gradient register-gradient"></div>
         <div className="particle-field">
-          {Array.from({ length: 25 }).map((_, i) => (
+          {particles.map((particle, i) => (
             <div
               key={`register-p-${i}`}
               className="particle register-particle"
               style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                animationDelay: `${Math.random() * 6}s`
+                left: particle.left,
+                top: particle.top,
+                animationDelay: particle.delay
               }}
             ></div>
           ))}

@@ -1,9 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { Video, Layers, Calendar, Star } from 'lucide-react';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-
-gsap.registerPlugin(ScrollTrigger);
+import { loadScrollTrigger } from "../utils/gsapLoader.js";
+import { shouldReduceMotion } from "../utils/motion.js";
 
 const features = [
     {
@@ -37,20 +35,38 @@ const FeaturesGrid = () => {
 
     useEffect(() => {
         const el = sectionRef.current;
-        gsap.fromTo(el.children,
-            { y: 50, opacity: 0 },
-            {
-                y: 0,
-                opacity: 1,
-                stagger: 0.2,
-                duration: 0.8,
-                ease: "power2.out",
-                scrollTrigger: {
-                    trigger: el,
-                    start: "top 85%",
-                }
-            }
-        );
+        if (!el) return;
+        if (shouldReduceMotion()) return;
+        let ctx = null;
+        let cancelled = false;
+
+        const run = async () => {
+            const { gsap } = await loadScrollTrigger();
+            if (!gsap || cancelled) return;
+            ctx = gsap.context(() => {
+                gsap.fromTo(
+                    el.children,
+                    { y: 50, opacity: 0 },
+                    {
+                        y: 0,
+                        opacity: 1,
+                        stagger: 0.2,
+                        duration: 0.8,
+                        ease: "power2.out",
+                        scrollTrigger: {
+                            trigger: el,
+                            start: "top 85%",
+                        }
+                    }
+                );
+            }, el);
+        };
+
+        run();
+        return () => {
+            cancelled = true;
+            if (ctx) ctx.revert();
+        };
     }, []);
 
     return (

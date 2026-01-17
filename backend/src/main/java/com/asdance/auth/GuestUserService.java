@@ -3,6 +3,7 @@ package com.asdance.auth;
 import com.asdance.user.AppUser;
 import com.asdance.user.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +17,7 @@ public class GuestUserService {
   private final PasswordService passwordService;
   private final String guestEmail;
   private final String guestName;
+  private final Object guestLock = new Object();
   private volatile AppUser cachedGuest;
 
   public GuestUserService(
@@ -36,15 +38,28 @@ public class GuestUserService {
     if (cached != null) {
       return cached;
     }
-    AppUser user = userRepository.findByEmail(guestEmail)
-        .orElseGet(() -> userRepository.save(AppUser.builder()
-            .email(guestEmail)
-            .passwordHash(passwordService.hash(UUID.randomUUID().toString()))
-            .fullName(guestName)
-            .enabled(true)
-            .build()));
-    cachedGuest = user;
-    return user;
+    synchronized (guestLock) {
+      cached = cachedGuest;
+      if (cached != null) {
+        return cached;
+      }
+      AppUser user = userRepository.findByEmail(guestEmail).orElse(null);
+      if (user == null) {
+        try {
+          user = userRepository.save(AppUser.builder()
+              .email(guestEmail)
+              .passwordHash(passwordService.hash(UUID.randomUUID().toString()))
+              .fullName(guestName)
+              .enabled(true)
+              .build());
+        } catch (DataIntegrityViolationException ex) {
+          user = userRepository.findByEmail(guestEmail)
+              .orElseThrow(() -> new IllegalStateException("Guest user missing after duplicate insert", ex));
+        }
+      }
+      cachedGuest = user;
+      return user;
+    }
   }
 
   private String normalizeEmail(String value, String fallback) {

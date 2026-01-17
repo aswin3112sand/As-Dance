@@ -1,0 +1,97 @@
+/* ReviewLoop.jsx CSS Fixes */
+
+/* FIX 1: Review Controls - Fix floating toggle z-index and positioning */
+.review-controls {
+  flex-shrink: 0;
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  position: relative;
+  z-index: 10;
+}
+
+.review-control {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: clamp(40px, 10vw, 48px);
+  height: clamp(40px, 10vw, 48px);
+  background: rgba(0, 242, 234, 0.1);
+  border: 1.5px solid rgba(0, 242, 234, 0.3);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), 
+              background 0.2s ease, 
+              color 0.2s ease;
+  color: rgba(0, 242, 234, 0.8);
+  font-size: clamp(0.95rem, 2.5vw, 1.2rem);
+  font-weight: 700;
+  box-shadow: 0 0 16px rgba(0, 242, 234, 0.1);
+  will-change: transform, box-shadow, background;
+  padding: 0;
+  position: relative;
+  z-index: 10;
+}
+
+.review-control:hover {
+  background: rgba(0, 242, 234, 0.2);
+  border-color: rgba(0, 242, 234, 0.6);
+  color: rgba(0, 242, 234, 1);
+  box-shadow: 0 0 24px rgba(0, 242, 234, 0.3);
+  transform: translateY(-1px);
+}
+
+.review-control:active {
+  transform: translateY(1px);
+}
+
+.review-control.active {
+  background: rgba(0, 242, 234, 0.25);
+  border-color: rgba(0, 242, 234, 0.8);
+  color: rgba(0, 242, 234, 1);
+  box-shadow: 0 0 32px rgba(0, 242, 234, 0.4);
+}
+
+/* FIX 2: Smooth auto-scroll animation with premium feel */
+@keyframes reviewMarquee {
+  from { 
+    transform: translateX(0); 
+  }
+  to { 
+    transform: translateX(-50%); 
+  }
+}
+
+.review-track.is-animating {
+  animation: reviewMarquee 70s linear infinite;
+  animation-timing-function: linear;
+}
+
+/* Pause animation on hover for better UX */
+.review-scroller:hover .review-track.is-animating {
+  animation-play-state: paused;
+}
+
+/* Smooth transition when toggling animation */
+.review-track {
+  transition: animation 0.3s ease-in-out;
+}
+
+/* Mobile responsive fixes */
+@media (max-width: 640px) {
+  .review-scroller-wrapper {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .review-controls {
+    width: 100%;
+    justify-content: center;
+    z-index: 10;
+  }
+
+  .review-control {
+    z-index: 10;
+  }
+}

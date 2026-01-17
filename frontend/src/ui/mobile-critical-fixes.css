@@ -30,23 +30,23 @@ body {
 
 /* 3. NAVBAR - MOBILE FIRST */
 .navbar-glass {
-  position: fixed;
-  top: 0;
+  position: sticky;
+  top: var(--ticker-h);
   left: 0;
   right: 0;
   z-index: 1000;
-  height: auto;
-  min-height: 56px;
-  padding: 8px 0;
+  height: var(--nav-h);
+  min-height: var(--nav-h);
+  padding: 0;
   display: flex;
   align-items: center;
-  overflow: visible;
+  overflow: hidden;
 }
 
 .navbar-glass .container-max {
   width: 100%;
-  display: grid;
-  grid-template-columns: auto 1fr auto;
+  display: flex;
+  justify-content: space-between;
   gap: 8px;
   align-items: center;
   padding: 0 12px;
@@ -62,37 +62,38 @@ body {
   align-items: center;
 }
 
-.nav-center {
+.navbar-glass .nav-center {
   display: none;
 }
 
-.header-actions {
+.navbar-glass .header-actions {
   display: flex;
   gap: 6px;
   align-items: center;
   justify-self: end;
+  flex-wrap: nowrap;
 }
 
-.nav-cta {
-  height: 36px;
-  padding: 0 10px;
+.navbar-glass .btn {
+  height: 34px;
+  padding: 0 12px;
   font-size: 0.7rem;
   min-width: 80px;
-  border-radius: 999px;
-  border: none;
+  border-radius: 16px;
   font-weight: 700;
   cursor: pointer;
   white-space: nowrap;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.nav-cta:active {
+.navbar-glass .btn:active {
   transform: scale(0.95);
 }
 
-/* 4. BODY PADDING FOR FIXED NAVBAR */
-body {
-  padding-top: 56px;
+@media (max-width: 768px) {
+  :root {
+    --nav-height: calc(var(--ticker-h) + var(--nav-h));
+  }
 }
 
 /* 5. HERO SECTION - MOBILE LAYOUT */
@@ -256,7 +257,9 @@ select:focus {
 
 /* 12. BANNER STRIP */
 .banner-strip-advanced {
-  padding: 32px 0;
+  padding-top: calc(var(--ticker-h) + var(--nav-h) + 20px);
+  padding-bottom: 32px;
+  padding-inline: 0;
 }
 
 .banner-shell {
@@ -292,8 +295,6 @@ select:focus {
 
 /* 13. DISABLE ANIMATIONS ON MOBILE */
 @media (max-width: 768px) {
-  .banner-poster-3d,
-  .banner-image-layer,
   .marquee-content,
   .hero-level-pill,
   .hero-difficulty-item,
@@ -303,10 +304,6 @@ select:focus {
     animation: none !important;
   }
 
-  .banner-poster-3d::after,
-  .banner-image-layer::after {
-    animation: none !important;
-  }
 }
 
 /* 14. DASHBOARD GRID */
@@ -388,14 +385,21 @@ body {
 }
 
 /* 23. MARQUEE RESPONSIVE */
-.marquee-content {
-  animation-duration: 30s !important;
-  font-size: 0.75rem;
-}
+@media (max-width: 768px) {
+  .banner-strip-advanced .marquee-content {
+    animation-duration: 28s !important;
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+  }
 
-.marquee-item {
-  padding: 0 12px;
-  font-size: 0.7rem;
+  .banner-strip-advanced .marquee-item {
+    gap: 0.65rem;
+  }
+
+  .banner-strip-advanced .marquee-dot {
+    width: 3px;
+    height: 3px;
+  }
 }
 
 /* 24. FLOATING ACTION BUTTONS */
@@ -445,7 +449,7 @@ body {
 /* 27. TABLET BREAKPOINT (768px) */
 @media (min-width: 768px) {
   body {
-    padding-top: 72px;
+    padding-top: 0;
   }
 
   .navbar-glass {
@@ -454,7 +458,8 @@ body {
   }
 
   .navbar-glass .container-max {
-    grid-template-columns: auto minmax(0, 1fr) auto;
+    display: flex;
+    justify-content: space-between;
     gap: 20px;
     padding: 0 32px;
   }
@@ -463,23 +468,23 @@ body {
     font-size: 20px;
   }
 
-  .nav-center {
+  .navbar-glass .nav-center {
     display: flex;
     gap: 20px;
     justify-content: center;
     align-items: center;
   }
 
-  .nav-link {
+  .navbar-glass .nav-link {
     font-size: 0.85rem;
     white-space: nowrap;
   }
 
-  .header-actions {
+  .navbar-glass .header-actions {
     gap: 12px;
   }
 
-  .nav-cta {
+  .navbar-glass .btn {
     height: 36px;
     padding: 0 14px;
     font-size: 0.8rem;
@@ -629,7 +634,7 @@ body {
   }
 
   body {
-    padding-top: 48px;
+    padding-top: 0;
   }
 
   .section {
@@ -648,7 +653,7 @@ body {
     letter-spacing: 0.06em;
   }
 
-  .nav-cta {
+  .navbar-glass .btn {
     height: 36px;
     padding: 0 8px;
     font-size: 0.65rem;
@@ -689,7 +694,6 @@ body {
 /* 32. TOUCH DEVICE OPTIMIZATIONS */
 @media (pointer: coarse) {
   .btn,
-  .nav-cta,
   .demo-cta,
   .checkout-btn,
   .auth-cta,

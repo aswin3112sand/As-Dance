@@ -1,10 +1,20 @@
-import { useEffect, useRef, useCallback } from 'react';
-import gsap from 'gsap';
-import WebSocketService from '../services/WebSocketService.js';
+import { useEffect, useRef, useCallback } from "react";
+import { loadGsap } from "../utils/gsapLoader.js";
+import { shouldReduceMotion } from "../utils/motion.js";
+
+let wsPromise;
+const loadWebSocketService = () => {
+  if (!wsPromise) {
+    wsPromise = import("../services/WebSocketService.js").then((mod) => mod.default || mod);
+  }
+  return wsPromise;
+};
 
 export const useRealTimeAnimations = () => {
   const animationQueue = useRef([]);
   const isProcessing = useRef(false);
+  const realtimeEnabled = useRef(false);
+  const wsRef = useRef(null);
 
   const processAnimationQueue = useCallback(() => {
     if (isProcessing.current || animationQueue.current.length === 0) return;
@@ -25,6 +35,8 @@ export const useRealTimeAnimations = () => {
     const elements = document.querySelectorAll(target);
     
     if (!elements.length) return;
+    const gsap = await loadGsap();
+    if (!gsap) return;
 
     switch (type) {
       case 'pulse':
@@ -73,7 +85,10 @@ export const useRealTimeAnimations = () => {
         });
       
       default:
-        console.warn('Unknown animation type:', type);
+        if (import.meta.env.DEV) {
+          // eslint-disable-next-line no-console
+          console.warn("Unknown animation type:", type);
+        }
     }
   }, []);
 
@@ -82,31 +97,67 @@ export const useRealTimeAnimations = () => {
     animationQueue.current.push(event);
     processAnimationQueue();
     
-    // Also send to other users via WebSocket
-    WebSocketService.triggerAnimation(type, target, data);
+    if (realtimeEnabled.current && wsRef.current) {
+      wsRef.current.triggerAnimation(type, target, data);
+    }
   }, [processAnimationQueue]);
 
   useEffect(() => {
+    const reduceMotion = shouldReduceMotion();
+    realtimeEnabled.current = !reduceMotion;
+    if (reduceMotion) return undefined;
+
+    let active = true;
+
     const connectAndSubscribe = async () => {
       try {
-        await WebSocketService.connect();
+        const service = await loadWebSocketService();
+        if (!active) return;
+        wsRef.current = service;
+        await service.connect();
         
-        WebSocketService.subscribeToAnimations((event) => {
+        service.subscribeToAnimations((event) => {
           animationQueue.current.push(event);
           processAnimationQueue();
         });
         
       } catch (error) {
-        console.error('Failed to connect to WebSocket:', error);
+        if (import.meta.env.DEV) {
+          // eslint-disable-next-line no-console
+          console.error("Failed to connect to WebSocket:", error);
+        }
       }
     };
 
     connectAndSubscribe();
 
     return () => {
-      WebSocketService.disconnect();
+      active = false;
+      if (wsRef.current) {
+        wsRef.current.disconnect();
+      }
     };
   }, [processAnimationQueue]);
+
+  useEffect(() => {
+    if (!realtimeEnabled.current) return undefined;
+    const handlePageHide = () => {
+      if (wsRef.current) {
+        wsRef.current.disconnect();
+      }
+    };
+    const handlePageShow = () => {
+      if (wsRef.current && !wsRef.current.connected) {
+        wsRef.current.connect().catch(() => {});
+      }
+    };
+    window.addEventListener("pagehide", handlePageHide);
+    window.addEventListener("pageshow", handlePageShow);
+    return () => {
+      window.removeEventListener("pagehide", handlePageHide);
+      window.removeEventListener("pageshow", handlePageShow);
+    };
+  }, []);
 
   return { triggerAnimation };
 };

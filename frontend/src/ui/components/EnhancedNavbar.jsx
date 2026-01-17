@@ -134,11 +134,13 @@ const EnhancedNavbar = () => {
         )}
 
         <div className="header-actions">
-          <Link to="/login" className="btn nav-cta nav-cta-primary">
-            Login
+          <Link to="/login" className="btn btn--ghost">
+            <span className="cta-icon" aria-hidden="true">🔐</span>
+            <span className="cta-text">Login</span>
           </Link>
-          <Link to="/register" className="btn nav-cta nav-cta-primary">
-            Create Account
+          <Link to="/register" className="btn btn--primary">
+            <span className="cta-icon" aria-hidden="true">✨</span>
+            <span className="cta-text">Create Account</span>
           </Link>
         </div>
       </div>

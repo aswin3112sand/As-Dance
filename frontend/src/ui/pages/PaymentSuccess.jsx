@@ -23,6 +23,7 @@ export default function PaymentSuccess() {
   const googleDriveUrl = state.googleDriveUrl || storedReceipt?.googleDriveUrl || "";
   const paidAt = state.paidAt || storedReceipt?.paidAt || null;
   const [status, setStatus] = useState(null);
+  const resolvedGoogleDriveUrl = googleDriveUrl || status?.unlockedVideoUrl || "";
 
   useEffect(() => {
     let active = true;
@@ -43,13 +44,16 @@ export default function PaymentSuccess() {
   }, []);
 
   useEffect(() => {
-    if (googleDriveUrl && status?.unlocked !== false) {
+    if (resolvedGoogleDriveUrl && status?.unlocked !== false) {
       const timer = setTimeout(() => {
-        window.location.href = googleDriveUrl;
+        const opened = window.open(resolvedGoogleDriveUrl, "_blank", "noopener,noreferrer");
+        if (!opened) {
+          window.location.href = resolvedGoogleDriveUrl;
+        }
       }, 2000);
       return () => clearTimeout(timer);
     }
-  }, [googleDriveUrl, status?.unlocked]);
+  }, [resolvedGoogleDriveUrl, status?.unlocked]);
 
   const paidAtLabel = paidAt ? new Date(paidAt).toLocaleString() : "";
   const showVerifyWarning = status && !status.unlocked;
@@ -72,8 +76,8 @@ export default function PaymentSuccess() {
           </div>
 
           <div className="payment-result-actions">
-            {googleDriveUrl && (
-              <a href={googleDriveUrl} className="btn btn-cta btn-hero btn-cta-primary">
+            {resolvedGoogleDriveUrl && (
+              <a href={resolvedGoogleDriveUrl} className="btn btn-cta btn-hero btn-cta-primary">
                 Access Google Drive Folder
               </a>
             )}
@@ -84,7 +88,7 @@ export default function PaymentSuccess() {
               Back to Home
             </Link>
           </div>
-          {googleDriveUrl && status?.unlocked !== false && (
+          {resolvedGoogleDriveUrl && status?.unlocked !== false && (
             <p className="payment-result-subtitle" style={{ marginTop: "1rem", fontSize: "0.9rem" }}>
               Redirecting to Google Drive in 2 seconds...
             </p>

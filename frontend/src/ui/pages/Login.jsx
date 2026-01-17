@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth.jsx";
+import { shouldReduceMotion } from "../utils/motion.js";
 
 export default function Login() {
   const { login } = useAuth();
@@ -15,6 +16,20 @@ export default function Login() {
   const [err, setErr] = useState("");
   const [loading, setLoading] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const particleCount = useMemo(() => {
+    if (typeof window === "undefined") return 8;
+    const reduceMotion = shouldReduceMotion();
+    const isSmallScreen = window.matchMedia("(max-width: 768px)").matches;
+    return reduceMotion || isSmallScreen ? 8 : 20;
+  }, []);
+  const particles = useMemo(
+    () => Array.from({ length: particleCount }, () => ({
+      left: `${Math.random() * 100}%`,
+      top: `${Math.random() * 100}%`,
+      delay: `${Math.random() * 8}s`
+    })),
+    [particleCount]
+  );
 
   useEffect(() => {
     setMounted(true);
@@ -41,15 +56,15 @@ export default function Login() {
     <div className="cinematic-auth login-page">
       <div className="cinematic-bg">
         <div className="bg-gradient"></div>
-        <div className="particle-field">
-          {Array.from({ length: 20 }).map((_, i) => (
+        <div className="particle-field" aria-hidden="true">
+          {particles.map((particle, i) => (
             <div
               key={`login-p-${i}`}
               className="particle"
               style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                animationDelay: `${Math.random() * 8}s`
+                left: particle.left,
+                top: particle.top,
+                animationDelay: particle.delay
               }}
             ></div>
           ))}

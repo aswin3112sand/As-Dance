@@ -1,8 +1,10 @@
 import React from 'react';
 import { Mail } from '../icons.jsx';
 
+const SUPPORT_EMAIL = 'businessaswin@gmail.com';
+
 export default function EmailContact() {
-  const email = 'bussinessaswin@gmail.com';
+  const email = SUPPORT_EMAIL;
 
   return (
     <a 
@@ -18,7 +20,7 @@ export default function EmailContact() {
 }
 
 export function EmailContactInline() {
-  const email = 'bussinessaswin@gmail.com';
+  const email = SUPPORT_EMAIL;
   return (
     <span className="email-inline">
       <Mail size={16} className="email-icon-inline" />
@@ -28,7 +30,7 @@ export function EmailContactInline() {
 }
 
 export function EmailContactBadge() {
-  const email = 'bussinessaswin@gmail.com';
+  const email = SUPPORT_EMAIL;
   return (
     <div className="email-badge">
       <Mail size={20} />

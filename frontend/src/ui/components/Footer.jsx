@@ -14,7 +14,7 @@ export default function Footer() {
                         <a href="https://wa.me/918825602356" target="_blank" rel="noopener noreferrer" className="footer-icon" aria-label="WhatsApp">
                             <WhatsApp size={18} color="#fff" />
                         </a>
-                        <a href="mailto:bussinessaswin@gmail.com" className="footer-icon" aria-label="Email">
+                        <a href="mailto:businessaswin@gmail.com" className="footer-icon" aria-label="Email">
                             <Mail size={18} />
                         </a>
                     </div>
@@ -24,7 +24,7 @@ export default function Footer() {
                     <div className="footer-list footer-contact">
                         <div className="footer-contact-item">
                             <Mail size={16} />
-                            <span>Email: bussinessaswin@gmail.com</span>
+                            <span>Email: businessaswin@gmail.com</span>
                         </div>
                         <div className="footer-contact-item">
                             <PhoneCall size={16} />

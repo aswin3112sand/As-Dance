@@ -16,23 +16,168 @@
     <link rel="canonical" href="https://asdance.com" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Urbanist:wght@400;500;600;700;800&display=swap" />
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Urbanist:wght@400;500;600;700;800&display=swap" as="style" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; form-action 'self'; script-src 'self' 'unsafe-inline' https://checkout.razorpay.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https: blob:; font-src 'self' https://fonts.gstatic.com data:; connect-src 'self' https: ws: wss:; frame-src 'self' https://checkout.razorpay.com https://api.razorpay.com; media-src 'self' https: data: blob:;" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Urbanist:wght@400;500;600;700;800&display=swap" media="print" onload="this.media='all'" />
+    <link rel="stylesheet" href="data:text/css;base64,QGltcG9ydCAiYm9vdHN0cmFwL2Rpc3QvY3NzL2Jvb3RzdHJhcC5taW4uY3NzIjsKQGltcG9ydCAiLi9zdHlsZXMuY3NzIjsKQGltcG9ydCAiLi9tb2JpbGUtbWVudS5jc3MiOwpAaW1wb3J0ICIuL25lb24tc3R5bGVzLmNzcyI7CkBpbXBvcnQgIi4vZ2FsYXh5LXByZW1pdW0uY3NzIjsKQGltcG9ydCAiLi9iYW5uZXItY29zbWljLmNzcyI7CkBpbXBvcnQgIi4vcHJlbWl1bS13b3JrZmxvdy5jc3MiOwpAaW1wb3J0ICIuL2VuaGFuY2VkLWFuaW1hdGlvbnMuY3NzIjsKQGltcG9ydCAiLi9tb2JpbGUtY3JpdGljYWwtZml4ZXMuY3NzIjsKQGltcG9ydCAiLi9yZXNwb25zaXZlLWZpeGVzLmNzcyI7Cg==" media="print" onload="this.media='all';document.documentElement.dataset.cssLoaded='true';" />
+    <noscript>
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Urbanist:wght@400;500;600;700;800&display=swap" />
+      <style>
+        html #root > :not(#preloader) {
+          visibility: visible;
+        }
+      </style>
+    </noscript>
     <title>AS DANCE - 639 Premium Step Bundle</title>
     <style>
+      :root {
+        color-scheme: dark;
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
       body {
         padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
         margin: 0;
+        min-height: 100%;
+        background: #05000a;
+        color: #fff;
+        font-family: "Outfit", "Urbanist", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+        line-height: 1.5;
       }
+
       #root {
-        width: 100%;
-        height: 100%;
+        min-height: 100vh;
+      }
+
+      .skip-link {
+        position: absolute;
+        top: 0;
+        left: 0;
+        padding: 0.65rem 1rem;
+        background: #fff;
+        color: #000;
+        text-decoration: none;
+        border-radius: 0 0 6px 6px;
+        transform: translateY(-140%);
+        z-index: 10000;
+      }
+
+      .skip-link:focus {
+        transform: translateY(0);
+      }
+
+      #preloader {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        background: #000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+      }
+
+      .loader-content {
+        text-align: center;
+      }
+
+      .loader-text {
+        font-size: 2.5rem;
+        font-weight: 800;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .loader-subtext {
+        margin-top: 0.55rem;
+        font-size: 0.85rem;
+        letter-spacing: 0.3em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.78);
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        html {
+          scroll-behavior: auto;
+        }
       }
     </style>
-    <script type="module" crossorigin src="./index.C3YjEZo8.js"></script>
-    <link rel="stylesheet" crossorigin href="./index.Ct4Ugk56.css">
+    <script>
+      (function () {
+        try {
+          var conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+          var saveData = conn && conn.saveData === true;
+          var effectiveType = conn && conn.effectiveType ? conn.effectiveType : "";
+          var slowNetwork = /(slow-2g|2g)/.test(effectiveType);
+          var lowMem = typeof navigator.deviceMemory === "number" && navigator.deviceMemory <= 4;
+          var lowCpu = typeof navigator.hardwareConcurrency === "number" && navigator.hardwareConcurrency <= 4;
+          if (saveData || slowNetwork || lowMem || lowCpu) {
+            document.documentElement.dataset.motion = "reduced";
+          }
+        } catch (e) {}
+      })();
+    </script>
+    <script>
+      (function () {
+        var root = document.documentElement;
+        var links = document.querySelectorAll('link[rel="stylesheet"][media="print"]');
+        var fallback = window.setTimeout(function () {
+          root.dataset.cssLoaded = "true";
+          for (var i = 0; i < links.length; i += 1) {
+            links[i].media = "all";
+          }
+        }, 2000);
+        window.addEventListener("load", function () {
+          root.dataset.cssLoaded = "true";
+          for (var i = 0; i < links.length; i += 1) {
+            links[i].media = "all";
+          }
+          window.clearTimeout(fallback);
+        });
+      })();
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Product",
+        "name": "AS DANCE 639-Step Premium Bundle",
+        "description": "Master 639 premium dance steps with studio-grade choreography, lifetime access, and instant unlock.",
+        "brand": {
+          "@type": "Brand",
+          "name": "AS DANCE"
+        },
+        "offers": {
+          "@type": "Offer",
+          "priceCurrency": "INR",
+          "price": "499",
+          "availability": "https://schema.org/InStock",
+          "url": "https://asdance.com/"
+        }
+      }
+    </script>
+    <script type="module" crossorigin src="/assets/index-DqclkoKh.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/vendor-BptZdHlD.js">
+    <link rel="stylesheet" crossorigin href="/assets/index-DWFnJYm3.css">
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <div id="preloader" role="status" aria-live="polite">
+        <div class="loader-content">
+          <div class="loader-text">AS DANCE</div>
+          <div class="loader-subtext">639 STEP BUNDLE</div>
+        </div>
+      </div>
+    </div>
+    <script>
+      if (!window.$RefreshReg$) window.$RefreshReg$ = () => {};
+      if (!window.$RefreshSig$) window.$RefreshSig$ = () => (type) => type;
+    </script>
   </body>
 </html>
-

@@ -1,15 +1,15 @@
 import React, { useLayoutEffect, useRef } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-gsap.registerPlugin(ScrollTrigger);
+import { loadScrollTrigger } from "../utils/gsapLoader.js";
+import { shouldReduceMotion } from "../utils/motion.js";
 
 export default function ParallaxBackgrounds() {
     const rootRef = useRef(null);
 
     // Generate stars only once
     const stars = React.useMemo(() => {
-        return Array.from({ length: 60 }).map((_, i) => ({
+        const reduceMotion = typeof window !== "undefined" && shouldReduceMotion();
+        const count = reduceMotion ? 24 : 60;
+        return Array.from({ length: count }).map((_, i) => ({
             id: i,
             top: `${Math.random() * 100}%`,
             left: `${Math.random() * 100}%`,
@@ -21,10 +21,14 @@ export default function ParallaxBackgrounds() {
     }, []);
 
     useLayoutEffect(() => {
-        const ctx = gsap.context(() => {
-            const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        if (shouldReduceMotion()) return undefined;
+        let ctx = null;
+        let cancelled = false;
 
-            if (!prefersReducedMotion) {
+        const run = async () => {
+            const { gsap } = await loadScrollTrigger();
+            if (!gsap || cancelled) return;
+            ctx = gsap.context(() => {
                 // Animate Nebula Clouds instead of mesh-orbs
                 gsap.to(".nebula-cloud", {
                     y: -30,
@@ -34,47 +38,51 @@ export default function ParallaxBackgrounds() {
                     ease: "sine.inOut",
                     yoyo: true,
                     repeat: -1,
+                    force3D: true, // Hardware acceleration
                     stagger: {
                         each: 0.5,
                         from: "random"
                     }
                 });
-            }
 
-            // Section-specific background triggers
-            const sections = [
-                { id: "top", bgClass: ".bg-layer-hero" },
-                { id: "routines", bgClass: ".bg-layer-stats" },
-                { id: "styles", bgClass: ".bg-layer-offer" },
-                { id: "demos", bgClass: ".bg-layer-demo" },
-                { id: "reviews", bgClass: ".bg-layer-reviews" },
-                { id: "contact", bgClass: ".bg-layer-contact" }
-            ];
+                // Section-specific background triggers
+                const sections = [
+                    { id: "top", bgClass: ".bg-layer-hero" },
+                    { id: "routines", bgClass: ".bg-layer-stats" },
+                    { id: "styles", bgClass: ".bg-layer-offer" },
+                    { id: "demos", bgClass: ".bg-layer-demo" },
+                    { id: "reviews", bgClass: ".bg-layer-reviews" },
+                    { id: "contact", bgClass: ".bg-layer-contact" }
+                ];
 
-            sections.forEach(({ id, bgClass }) => {
-                const sectionEl = document.getElementById(id);
-                const bgEl = rootRef.current.querySelector(bgClass);
+                sections.forEach(({ id, bgClass }) => {
+                    const sectionEl = document.getElementById(id);
+                    const bgEl = rootRef.current.querySelector(bgClass);
 
-                if (sectionEl && bgEl) {
-                    gsap.fromTo(bgEl,
-                        { opacity: 0 },
-                        {
-                            opacity: 1,
-                            scrollTrigger: {
-                                trigger: sectionEl,
-                                start: "top center",
-                                end: "bottom center",
-                                toggleActions: "play reverse play reverse",
-                                scrub: 1
+                    if (sectionEl && bgEl) {
+                        gsap.fromTo(bgEl,
+                            { opacity: 0 },
+                            {
+                                opacity: 1,
+                                scrollTrigger: {
+                                    trigger: sectionEl,
+                                    start: "top center",
+                                    end: "bottom center",
+                                    toggleActions: "play reverse play reverse",
+                                    scrub: 1
+                                }
                             }
-                        }
-                    );
-                }
-            });
+                        );
+                    }
+                });
+            }, rootRef);
+        };
 
-        }, rootRef);
-
-        return () => ctx.revert();
+        run();
+        return () => {
+            cancelled = true;
+            if (ctx) ctx.revert();
+        };
     }, []);
 
     return (

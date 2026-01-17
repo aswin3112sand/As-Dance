@@ -1,21 +1,20 @@
-import React, { useEffect, useMemo, useRef } from "react";
-import gsap from "gsap";
+import React, { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../auth.jsx";
-import welcomeBanner from "../../assets/bg/dhanush.webp";
+import { shouldReduceMotion } from "../utils/motion.js";
+import bannerAvif420 from "../../assets/optimized/banner-420.avif";
+import bannerAvif840 from "../../assets/optimized/banner-840.avif";
+import bannerWebp420 from "../../assets/optimized/banner-420.webp";
+import bannerWebp840 from "../../assets/optimized/banner-840.webp";
 
 export default function BannerStrip() {
   const nav = useNavigate();
   const { user } = useAuth();
-  const containerRef = useRef(null);
-  const titleRef = useRef(null);
-  const imageRef = useRef(null);
-  const badgeRef = useRef(null);
   const starLayers = useMemo(() => {
     const reduceStars = typeof window !== "undefined" && (
+      shouldReduceMotion() ||
       window.matchMedia("(max-width: 768px)").matches ||
-      window.matchMedia("(pointer: coarse)").matches ||
-      navigator?.connection?.saveData === true
+      window.matchMedia("(pointer: coarse)").matches
     );
     const buildStars = (count, sizeMin, sizeMax, opacityMin, opacityMax, twinkleMin, twinkleMax, delayMax) => (
       Array.from({ length: count }, () => {
@@ -57,127 +56,8 @@ export default function BannerStrip() {
     nav(target);
   };
 
-  useEffect(() => {
-    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const isCoarsePointer = window.matchMedia("(pointer: coarse)").matches;
-    const isSmallScreen = window.matchMedia("(max-width: 768px)").matches;
-    const isSaveData = navigator?.connection?.saveData === true;
-    const skipMotion = prefersReducedMotion || isSmallScreen || isSaveData;
-    const ctx = gsap.context(() => {
-      gsap.set(".banner-content-item", { opacity: 0, y: 20 });
-      gsap.set(".banner-poster-3d", { opacity: 0, scale: 0.95, rotationY: 5 });
-
-      if (!skipMotion) {
-        const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
-
-        tl.to(".banner-content-item", {
-          y: 0,
-          opacity: 1,
-          stagger: 0.08,
-          duration: 1.0,
-          clearProps: "all"
-        })
-          .to(".banner-poster-3d", {
-            scale: 1,
-            opacity: 1,
-            rotationY: 0,
-            duration: 1.4,
-            ease: "elastic.out(1, 0.85)"
-          }, "-=0.8");
-      } else {
-        gsap.to([".banner-content-item", ".banner-poster-3d"], { opacity: 1, duration: 0.5 });
-      }
-
-    }, containerRef);
-
-    let rafId = null;
-    const updateVignette = () => {
-      const el = containerRef.current;
-      if (!el) return;
-      const rect = el.getBoundingClientRect();
-      const viewHeight = window.innerHeight || 1;
-      const progress = Math.min(Math.max((viewHeight - rect.top) / (viewHeight + rect.height), 0), 1);
-      const strength = 0.18 + progress * 0.18;
-      const depthShift = (progress - 0.5) * 2;
-      el.style.setProperty("--banner-vignette", strength.toFixed(3));
-      el.style.setProperty("--banner-scroll-depth", depthShift.toFixed(3));
-    };
-
-    updateVignette();
-
-    const handleScroll = () => {
-      if (rafId) return;
-      rafId = window.requestAnimationFrame(() => {
-        rafId = null;
-        updateVignette();
-      });
-    };
-
-    if (!skipMotion) {
-      window.addEventListener("scroll", handleScroll, { passive: true });
-      window.addEventListener("resize", handleScroll);
-    }
-
-    if (skipMotion || isCoarsePointer) {
-      return () => {
-        ctx.revert();
-        if (!skipMotion) {
-          window.removeEventListener("scroll", handleScroll);
-          window.removeEventListener("resize", handleScroll);
-        }
-        if (rafId) {
-          window.cancelAnimationFrame(rafId);
-        }
-      };
-    }
-
-    const imgContainer = imageRef.current;
-    const rotateXTo = imgContainer ? gsap.quickTo(imgContainer, "rotationX", { duration: 0.4, ease: "power2.out" }) : null;
-    const rotateYTo = imgContainer ? gsap.quickTo(imgContainer, "rotationY", { duration: 0.4, ease: "power2.out" }) : null;
-    const translateYTo = imgContainer ? gsap.quickTo(imgContainer, "y", { duration: 0.4, ease: "power2.out" }) : null;
-
-    const handleMouseMove = (e) => {
-      if (!imageRef.current || !rotateXTo || !rotateYTo || !translateYTo) return;
-
-      const { left, top, width, height } = imageRef.current.getBoundingClientRect();
-      const relativeX = (e.clientX - left) / width - 0.5;
-      const relativeY = (e.clientY - top) / height - 0.5;
-
-      rotateYTo(relativeX * 3.5);
-      rotateXTo(-relativeY * 3.5);
-      translateYTo(-4);
-    };
-
-    const handleMouseLeave = () => {
-      if (!rotateXTo || !rotateYTo || !translateYTo) return;
-      rotateYTo(0);
-      rotateXTo(0);
-      translateYTo(0);
-    };
-
-    if (imgContainer) {
-      imgContainer.addEventListener("mousemove", handleMouseMove);
-      imgContainer.addEventListener("mouseleave", handleMouseLeave);
-    }
-
-    return () => {
-      ctx.revert();
-      if (imgContainer) {
-        imgContainer.removeEventListener("mousemove", handleMouseMove);
-        imgContainer.removeEventListener("mouseleave", handleMouseLeave);
-      }
-      if (!skipMotion) {
-        window.removeEventListener("scroll", handleScroll);
-        window.removeEventListener("resize", handleScroll);
-      }
-      if (rafId) {
-        window.cancelAnimationFrame(rafId);
-      }
-    };
-  }, []);
-
   return (
-    <section className="banner-strip-advanced" id="bundle" ref={containerRef}>
+    <section className="banner-strip-advanced hero" id="bundle">
       {/* Advanced Galaxy Nebula Background */}
       <div className="galaxy-nebula-bg" aria-hidden="true">
         <div className="galaxy-nebula-layer" />
@@ -235,25 +115,10 @@ export default function BannerStrip() {
         </div>
       </div>
 
-      <div className="banner-marquee-strip">
-        <div className="marquee-content">
-          <span className="marquee-item">STAGE READY <span className="marquee-dot">•</span></span>
-          <span className="marquee-item">COMPETITION WORTHY <span className="marquee-dot">•</span></span>
-          <span className="marquee-item">CROWD IMPRESS GUARANTEED <span className="marquee-dot">•</span></span>
-          <span className="marquee-item">100% STUDIO GRADE <span className="marquee-dot">•</span></span>
-          <span className="marquee-item">NEON ENERGY <span className="marquee-dot">•</span></span>
-          <span className="marquee-item">STAGE READY <span className="marquee-dot">•</span></span>
-          <span className="marquee-item">COMPETITION WORTHY <span className="marquee-dot">•</span></span>
-          <span className="marquee-item">CROWD IMPRESS GUARANTEED <span className="marquee-dot">•</span></span>
-          <span className="marquee-item">100% STUDIO GRADE <span className="marquee-dot">•</span></span>
-          <span className="marquee-item">NEON ENERGY <span className="marquee-dot">•</span></span>
-        </div>
-      </div>
-
       <div className="container-max banner-shell">
         <div className="banner-copy">
           <div className="banner-content-item">
-            <div className="banner-welcome-badge" ref={badgeRef}>
+            <div className="banner-welcome-badge">
               <span style={{ fontSize: '1.1em' }} role="img" aria-label="headphones">🎧</span>
               Welcome to AS DANCE
             </div>
@@ -261,9 +126,11 @@ export default function BannerStrip() {
 
           <div className="banner-kicker banner-content-item">AS DANCE PRESENTS</div>
 
-          <h2 className="banner-title-advanced banner-content-item" ref={titleRef}>
-            639-Step Premium <br />
-            Neon Dance Curriculum
+          <h2 className="banner-title-advanced banner-content-item">
+            <span className="title-accent">639-Step</span>{" "}
+            <span className="title-strong">Premium</span>
+            <br />
+            <span className="title-neon">Neon</span> Dance Curriculum
           </h2>
 
           <div className="banner-stats banner-content-item">
@@ -292,34 +159,51 @@ export default function BannerStrip() {
         </div>
 
         <div className="banner-visual banner-content-item">
-          <div className="banner-poster-3d" ref={imageRef}>
+          <div className="banner-poster-3d">
             <div className="banner-image-layer">
               {/* Rotating Light Ring */}
               <div className="banner-image-rotator" aria-hidden="true" />
 
               <span className="ring-shimmer" aria-hidden="true" />
-              <img
-                src={welcomeBanner}
-                alt="AS DANCE welcome banner"
-                loading="eager"
-                decoding="async"
-                width="1280"
-                height="720"
-                className="banner-image banner-image-stable"
-                style={{ width: '100%', borderRadius: '50%', display: 'block' }}
-              />
+              <picture>
+                <source
+                  type="image/avif"
+                  srcSet={`${bannerAvif420} 420w, ${bannerAvif840} 840w`}
+                  sizes="(max-width: 900px) 70vw, 420px"
+                />
+                <source
+                  type="image/webp"
+                  srcSet={`${bannerWebp420} 420w, ${bannerWebp840} 840w`}
+                  sizes="(max-width: 900px) 70vw, 420px"
+                />
+                <img
+                  src={bannerWebp840}
+                  alt="AS DANCE welcome banner"
+                  loading="eager"
+                  decoding="async"
+                  fetchpriority="high"
+                  width="840"
+                  height="472"
+                  className="banner-image banner-image-stable"
+                  style={{ width: "100%", borderRadius: "50%", display: "block" }}
+                />
+              </picture>
               <div className="scanline-overlay" aria-hidden="true" />
               <div className="banner-reflection" aria-hidden="true" />
             </div>
           </div>
           <div className="banner-buy-wrap">
-            <div className="banner-buy-chip">₹499 • 639 Steps</div>
+            <div className="banner-buy-chip">
+              <span className="price">₹499</span>
+              <span className="sep">•</span>
+              <span className="steps">639 Steps</span>
+            </div>
             <button
               type="button"
               className="banner-buy-btn"
               onClick={handleCheckout}
             >
-              Buy Now
+              <span className="banner-buy-text">Buy Now</span>
             </button>
           </div>
         </div>

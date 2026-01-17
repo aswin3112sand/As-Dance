@@ -16,7 +16,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.List;
 
-@Component
 @Profile("!test")
 public class JwtAuthFilter extends OncePerRequestFilter {
 
@@ -34,6 +33,11 @@ public class JwtAuthFilter extends OncePerRequestFilter {
       @NonNull HttpServletResponse response,
       @NonNull FilterChain filterChain
   ) throws ServletException, IOException {
+    if (SecurityContextHolder.getContext().getAuthentication() != null) {
+      filterChain.doFilter(request, response);
+      return;
+    }
+
     try {
       var token = cookieService.readToken(request);
       if (token.isPresent()) {

@@ -2,7 +2,7 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
 export default defineConfig({
-  base: "./",
+  base: "/",
   plugins: [react()],
   server: {
     host: '0.0.0.0',
@@ -27,14 +27,27 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
-    minify: 'esbuild',
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true
+      }
+    },
     cssMinify: 'esbuild',
     sourcemap: false,
     rollupOptions: {
       output: {
-        entryFileNames: '[name].[hash].js',
-        chunkFileNames: '[name].[hash].js',
-        assetFileNames: '[name].[hash][extname]'
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('react') || id.includes('react-dom') || id.includes('react-router-dom')) {
+              return 'vendor';
+            }
+            if (id.includes('bootstrap') || id.includes('gsap') || id.includes('lucide-react')) {
+              return 'ui-libs';
+            }
+          }
+        }
       }
     }
   },
@@ -42,8 +55,5 @@ export default defineConfig({
     environment: 'jsdom',
     globals: true,
     setupFiles: './src/ui/test/setupTests.js'
-  },
-  esbuild: {
-    drop: ['console', 'debugger']
   }
 })

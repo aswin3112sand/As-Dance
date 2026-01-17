@@ -5,6 +5,7 @@ import { Mail, WhatsApp } from "../icons.jsx";
 import { createPaymentOrder, verifyPayment, fetchPaymentStatus } from "../paymentApi.js";
 import { clearFailure, clearReceipt, saveFailure, saveReceipt } from "../paymentStorage.js";
 import bundlePreview from "../../assets/bg/poster.webp";
+import "../checkout-styles.css";
 
 const Checkout = () => {
   const navigate = useNavigate();
@@ -380,8 +381,8 @@ const Checkout = () => {
                   <div>
                     <div className="support-label">Email</div>
                     <div className="support-value">
-                      <a href="mailto:bussinessaswin@gmail.com" aria-label="Email support">
-                        bussinessaswin@gmail.com
+                      <a href="mailto:businessaswin@gmail.com" aria-label="Email support">
+                        businessaswin@gmail.com
                       </a>
                     </div>
                   </div>

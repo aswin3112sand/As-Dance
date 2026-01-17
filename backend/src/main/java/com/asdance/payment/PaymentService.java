@@ -212,11 +212,11 @@ public class PaymentService {
       p.setDownloadedAt(Instant.now());
       purchaseRepository.save(p);
     }
-    return new VerifyResponse(true, true, "Download recorded", unlockedVideoUrl);
+    return new VerifyResponse(true, true, "Download recorded", resolveUnlockedUrl());
   }
 
   public String getUnlockedVideoUrl() {
-    return unlockedVideoUrl;
+    return resolveUnlockedUrl();
   }
 
   @Transactional
@@ -290,9 +290,16 @@ public class PaymentService {
       return;
     }
     AppUser user = userRepository.findById(userId).orElse(null);
-    notificationService.notifyPaymentSuccess(user, purchase, unlockedVideoUrl);
+    notificationService.notifyPaymentSuccess(user, purchase, resolveUnlockedUrl());
     purchase.setNotifiedAt(Instant.now());
     purchaseRepository.save(purchase);
+  }
+
+  private String resolveUnlockedUrl() {
+    if (unlockedVideoUrl != null && !unlockedVideoUrl.isBlank()) {
+      return unlockedVideoUrl;
+    }
+    return googleDriveFolder == null ? "" : googleDriveFolder;
   }
 
   private String normalizePhone(String raw) {

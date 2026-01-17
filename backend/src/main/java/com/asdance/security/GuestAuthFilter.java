@@ -17,14 +17,24 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.List;
 
-@Component
 @Profile("!test")
 public class GuestAuthFilter extends OncePerRequestFilter {
 
+  private static final java.util.regex.Pattern STATIC_FILE_PATTERN = java.util.regex.Pattern.compile(".*\\.(js|css|png|jpg|jpeg|gif|svg|ico|webp|mp4|webm|woff|woff2|ttf|eot)$");
   private final GuestUserService guestUserService;
 
   public GuestAuthFilter(GuestUserService guestUserService) {
     this.guestUserService = guestUserService;
+  }
+
+  @Override
+  protected boolean shouldNotFilter(@NonNull HttpServletRequest request) {
+    String path = request.getRequestURI();
+    return path.startsWith("/static/")
+        || path.startsWith("/assets/")
+        || STATIC_FILE_PATTERN.matcher(path).matches()
+        || path.equals("/")
+        || path.equals("/index.html");
   }
 
   @Override
@@ -33,11 +43,11 @@ public class GuestAuthFilter extends OncePerRequestFilter {
       @NonNull HttpServletResponse response,
       @NonNull FilterChain filterChain
   ) throws ServletException, IOException {
-    if (SecurityContextHolder.getContext().getAuthentication() == null) {
+    if (guestUserService != null && SecurityContextHolder.getContext().getAuthentication() == null) {
       var guest = guestUserService.getOrCreateGuestUser();
       var auth = new UsernamePasswordAuthenticationToken(
           guest.getId(),
-          guest.getEmail(),
+          null,
           List.of(new SimpleGrantedAuthority("ROLE_USER"))
       );
       auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
