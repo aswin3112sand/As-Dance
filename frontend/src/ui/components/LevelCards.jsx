@@ -8,7 +8,7 @@ const SERVICE_LEVELS = [
   {
     key: "easy",
     label: "Easy",
-    subtitle: "Choreo Preview",
+    subtitle: "Customized choreography",
     image: easyImg,
     durations: [
       { label: "30 sec", price: "₹300" },
@@ -21,7 +21,7 @@ const SERVICE_LEVELS = [
   {
     key: "medium",
     label: "Medium",
-    subtitle: "Choreo Pricing",
+    subtitle: "Choreography pricing",
     image: mediumImg,
     durations: [
       { label: "30 sec", price: "₹400" },
@@ -34,7 +34,7 @@ const SERVICE_LEVELS = [
   {
     key: "hard",
     label: "Hard",
-    subtitle: "Choreo Pricing",
+    subtitle: "Choreography pricing",
     image: hardImg,
     durations: [
       { label: "30 sec", price: "₹500" },
@@ -50,7 +50,7 @@ export default function LevelCards() {
   return (
     <section className="section section-compact bg-services section-anim" id="services">
       <div className="container-max">
-        <h2 className="section-head text-center">Service Pricing</h2>
+        <h2 className="section-head text-center">Custom Choreography Service</h2>
         <div className="services-row">
           {SERVICE_LEVELS.map((card, index) => (
             <article
@@ -97,18 +97,20 @@ export default function LevelCards() {
               </div>
 
               <div className="service-note compact">
-                <p>Duration | Price align for quick glance.</p>
-                <p>Choreo preview windows lock in real-time delivery.</p>
+                <p>Duration and pricing at a glance.</p>
+                <p>Delivery is within 24-48 hours after payment via Google Drive or private online access.</p>
               </div>
 
               <a href="https://wa.me/918825602356" className="service-whatsapp compact">
-                💬 WhatsApp Enquiry • +918825602356
+                WhatsApp Enquiry | +918825602356
               </a>
             </article>
           ))}
         </div>
-        <div className="services-trust">Duration • Price • Instant Support</div>
+        <div className="services-trust">Duration | Price | Online support</div>
       </div>
     </section>
   );
 }
+
+

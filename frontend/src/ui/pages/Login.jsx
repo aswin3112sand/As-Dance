@@ -78,9 +78,9 @@ export default function Login() {
 
         <div className="auth-header">
           <h1 className="auth-main-title">ENTER AS DANCE</h1>
-          <p className="auth-subtitle">Unlock Your 639-Step Performance System</p>
+          <p className="auth-subtitle">Access Your Online Dance Training</p>
           <p className="auth-micro-text">
-            One login. Lifetime access.<br />Built for stage, competition &amp; mastery.
+            Log in to manage course access and choreography requests.
           </p>
         </div>
 

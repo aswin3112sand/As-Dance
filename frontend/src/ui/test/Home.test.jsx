@@ -14,6 +14,13 @@ test("renders hero content", () => {
     </MemoryRouter>
   );
 
-  expect(screen.getByText(/639-STEP/i)).toBeInTheDocument();
+  expect(
+    screen.getByRole("heading", {
+      level: 1,
+      name: /customized.*online dance training/i
+    })
+  ).toBeInTheDocument();
+  expect(screen.getAllByRole("button", { name: /get course access/i }).length)
+    .toBeGreaterThan(0);
   expect(screen.getAllByText(/AS DANCE/i).length).toBeGreaterThan(0);
 });

@@ -2,14 +2,14 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Menu, X } from "../icons.jsx";
 
-const NAV_SECTIONS = ["bundle", "services", "preview", "reviews", "contacts"];
+const NAV_SECTIONS = ["about", "services", "preview", "reviews", "contacts"];
 const BANNER_POINTS = [
-    "639-Step Premium Neon Dance System",
-    "Stage-Ready Performance Training",
-    "Competition-Level Choreography",
-    "Power + Flow + Expression Mastery",
-    "Beginner to Pro Structured Path",
-    "Crowd-Impact Guarantee"
+    "Online service for customized choreography",
+    "Original dance steps for every song",
+    "Online dance training with guided lessons",
+    "Education service with course access",
+    "Delivery within 24-48 hours",
+    "Secure payments and support"
 ];
 
 export default function Navbar({ activeSection, loaded, isScrolled }) {
@@ -17,7 +17,7 @@ export default function Navbar({ activeSection, loaded, isScrolled }) {
 
     return (
         <>
-            <div className="scroll-banner" aria-label="AS DANCE premium highlights">
+            <div className="scroll-banner" aria-label="AS DANCE highlights">
                 <div className="track">
                     {BANNER_POINTS.concat(BANNER_POINTS).map((item, index) => (
                         <span className="scroll-item" key={`${item}-${index}`}>{item}</span>
@@ -32,11 +32,11 @@ export default function Navbar({ activeSection, loaded, isScrolled }) {
 
                     <div className="nav-center">
                         <a
-                            href="#bundle"
-                            className={`nav-link${activeSection === "bundle" ? " is-active" : ""}`}
-                            aria-current={activeSection === "bundle" ? "location" : undefined}
+                            href="#about"
+                            className={`nav-link${activeSection === "about" ? " is-active" : ""}`}
+                            aria-current={activeSection === "about" ? "location" : undefined}
                         >
-                            <span className="nav-label">Bundle</span>
+                            <span className="nav-label">About</span>
                             <span className="nav-emoji" aria-hidden="true">📦</span>
                         </a>
                         <a

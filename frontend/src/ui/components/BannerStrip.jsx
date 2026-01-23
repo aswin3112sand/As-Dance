@@ -57,7 +57,7 @@ export default function BannerStrip() {
   };
 
   return (
-    <section className="banner-strip-advanced hero" id="bundle">
+    <section className="banner-strip-advanced hero" id="about">
       {/* Advanced Galaxy Nebula Background */}
       <div className="galaxy-nebula-bg" aria-hidden="true">
         <div className="galaxy-nebula-layer" />
@@ -124,37 +124,37 @@ export default function BannerStrip() {
             </div>
           </div>
 
-          <div className="banner-kicker banner-content-item">AS DANCE PRESENTS</div>
+          <div className="banner-kicker banner-content-item">ABOUT US</div>
 
           <h2 className="banner-title-advanced banner-content-item">
-            <span className="title-accent">639-Step</span>{" "}
-            <span className="title-strong">Premium</span>
+            <span className="title-accent">Customized</span>{" "}
+            <span className="title-strong">Choreography</span>
             <br />
-            <span className="title-neon">Neon</span> Dance Curriculum
+            <span className="title-neon">Online</span> Dance Training
           </h2>
 
           <div className="banner-stats banner-content-item">
-            <span className="banner-stats-digits">639</span> Steps —
-            <span className="ms-2">196 Easy | 219 Medium | 226 Hard</span>
+            <span className="banner-stats-digits">Original</span> dance steps -
+            <span className="ms-2">Song matched | Style aligned | Level guided</span>
           </div>
 
           <div className="curriculum-pills banner-content-item">
-            <span className="curriculum-pill pill-easy">196 Easy</span>
-            <span className="curriculum-pill pill-medium">219 Medium</span>
-            <span className="curriculum-pill pill-hard">226 Hard</span>
+            <span className="curriculum-pill pill-easy">Song matched</span>
+            <span className="curriculum-pill pill-medium">Style matched</span>
+            <span className="curriculum-pill pill-hard">Guided videos</span>
           </div>
 
           <div className="badge-row banner-content-item">
-            <span>Stage Ready</span>
-            <span>Competition Worthy</span>
-            <span>Crowd Impress Guaranteed</span>
+            <span>Online service</span>
+            <span>Education service</span>
+            <span>Secure payment</span>
           </div>
 
           <div className="banner-meta banner-content-item mt-4">
-            ₹499 ONLY • ONE-TIME PAYMENT • LIFETIME ACCESS
+            Delivery within 24-48 hours after payment
           </div>
           <p className="banner-tagline banner-content-item mt-3 text-white-50">
-            Built for Stage, Battle & Audience Impact — 1 Video, 639 Moves, Real Performance Power
+            All services are delivered digitally via Google Drive or private online access.
           </p>
         </div>
 
@@ -194,16 +194,16 @@ export default function BannerStrip() {
           </div>
           <div className="banner-buy-wrap">
             <div className="banner-buy-chip">
-              <span className="price">₹499</span>
-              <span className="sep">•</span>
-              <span className="steps">639 Steps</span>
+              <span className="price">Course Access</span>
+              <span className="sep">|</span>
+              <span className="steps">Online service</span>
             </div>
             <button
               type="button"
               className="banner-buy-btn"
               onClick={handleCheckout}
             >
-              <span className="banner-buy-text">Buy Now</span>
+              <span className="banner-buy-text">Get Course Access</span>
             </button>
           </div>
         </div>
@@ -211,3 +211,5 @@ export default function BannerStrip() {
     </section>
   );
 }
+
+

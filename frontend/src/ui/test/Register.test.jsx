@@ -12,18 +12,17 @@ vi.mock("../auth.jsx", () => ({
 
 test("shows error on failed register", async () => {
   const user = userEvent.setup();
-  const { container } = render(
+  render(
     <MemoryRouter>
       <Register />
     </MemoryRouter>
   );
 
-  const inputs = container.querySelectorAll("input");
-  await user.clear(inputs[0]);
-  await user.type(inputs[0], "Test User");
-  await user.type(inputs[1], "blocked@asdance.com");
-  await user.type(inputs[2], "pass123");
-  await user.click(screen.getByRole("button", { name: /create account/i }));
+  await user.type(screen.getByLabelText(/full name/i), "Test User");
+  await user.type(screen.getByLabelText(/^email$/i), "blocked@asdance.com");
+  await user.type(screen.getByLabelText(/^password$/i), "pass123");
+  await user.type(screen.getByLabelText(/confirm password/i), "pass123");
+  await user.click(screen.getByRole("button", { name: /create my access/i }));
 
   expect(await screen.findByText(/not allowed/i)).toBeInTheDocument();
 });

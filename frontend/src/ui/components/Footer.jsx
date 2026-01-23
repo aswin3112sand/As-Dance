@@ -6,9 +6,10 @@ export default function Footer() {
         <footer className="site-footer section-anim bg-contact" id="contacts">
             <div className="container-max footer-grid">
                 <div className="footer-col footer-brand">
-                    <div className="footer-title">AS DANCE — 639-Step Premium Curriculum</div>
+                    <div className="footer-title">AS DANCE - Online Dance Training and Customized Choreography</div>
                     <p className="footer-copy">
-                        Fast skill progression for students, fitness dancers, wedding choreo learners, and stage performers.
+                        An online service delivering customized choreography with original dance steps, plus online dance training
+                        for every level. We do not sell copyrighted songs or third-party digital products.
                     </p>
                     <div className="footer-icons">
                         <a href="https://wa.me/918825602356" target="_blank" rel="noopener noreferrer" className="footer-icon" aria-label="WhatsApp">
@@ -20,7 +21,7 @@ export default function Footer() {
                     </div>
                 </div>
                 <div className="footer-col">
-                    <div className="footer-title">Contact</div>
+                    <div className="footer-title">Contact Us</div>
                     <div className="footer-list footer-contact">
                         <div className="footer-contact-item">
                             <Mail size={16} />
@@ -30,17 +31,16 @@ export default function Footer() {
                             <PhoneCall size={16} />
                             <span>Phone: +91 88256 02356</span>
                         </div>
-                        <div className="footer-contact-item">Song Used: "Dance Dhoom Mix 2025"</div>
-                        <div className="footer-contact-item">Beat Sync: Always Matching Step For Beaat</div>
+                        <div className="footer-contact-item">Response time: within 24-48 hours</div>
                     </div>
                 </div>
                 <div className="footer-col">
-                    <div className="footer-title">Support</div>
+                    <div className="footer-title">Delivery Method & Refund Policy</div>
                     <div className="footer-list">
-                        <span>Secure Payment</span>
-                        <span>Lifetime Access</span>
-                        <span>Instant Unlock</span>
-                        <span>24/7 Support</span>
+                        <span>Delivery within 24-48 hours after payment.</span>
+                        <span>Access via Google Drive or private online access.</span>
+                        <span>Refunds apply only if access is not delivered.</span>
+                        <span>No refunds after access is provided.</span>
                     </div>
                 </div>
             </div>
@@ -52,15 +52,15 @@ export default function Footer() {
                 </div>
                 <div className="footer-trust-item">
                     <Infinity size={16} />
-                    Lifetime Access
+                    Course Access
                 </div>
                 <div className="footer-trust-item">
                     <Zap size={16} />
-                    Instant Unlock
+                    Delivery 24-48 hours
                 </div>
                 <div className="footer-trust-item">
                     <Headphones size={16} />
-                    24/7 Support
+                    Support
                 </div>
             </div>
             <div className="footer-signature">

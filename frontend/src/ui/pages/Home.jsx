@@ -10,7 +10,7 @@ const ReviewLoop = React.lazy(() => import("../components/ReviewLoop.jsx"));
 import Navbar from "../components/Navbar.jsx";
 import Footer from "../components/Footer.jsx";
 
-const NAV_SECTIONS = ["bundle", "services", "preview", "reviews", "contacts"];
+const NAV_SECTIONS = ["about", "services", "preview", "reviews", "contacts"];
 
 export default function Home() {
   const loaded = true;
@@ -104,7 +104,7 @@ export default function Home() {
       <div id="preloader" style={{ opacity: loaded ? 0 : 1, visibility: loaded ? 'hidden' : 'visible' }}>
         <div className="loader-content">
           <div className="loader-text">AS DANCE</div>
-          <div className="loader-subtext">639 STEP BUNDLE</div>
+          <div className="loader-subtext">ONLINE DANCE TRAINING</div>
         </div>
       </div>
       {/* NAVBAR */}

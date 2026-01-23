@@ -26,12 +26,13 @@ export default function DemoSection() {
   return (
     <section className="section section-compact bg-demos section-anim" id="preview">
       <div className="container-max">
-        <h2 className="section-head text-center">Demo / Preview</h2>
+        <h2 className="section-head text-center">Course Preview</h2>
         <DemoCards demos={demos} />
         <div className="preview-note">
-          Click Preview → Google Drive video must open
+          Click Preview to open a sample video (Google Drive).
         </div>
       </div>
     </section>
   );
 }
+

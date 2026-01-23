@@ -28,7 +28,7 @@ public class SecurityConfig {
             "frame-ancestors 'self'; " +
             "form-action 'self'; " +
             "script-src 'self' 'unsafe-inline' https://checkout.razorpay.com; " +
-            "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
+            "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com data:; " +
             "img-src 'self' data: https: blob:; " +
             "font-src 'self' https://fonts.gstatic.com data:; " +
             "connect-src 'self' https: ws: wss:; " +

@@ -65,7 +65,7 @@ export default function PaymentSuccess() {
           <div className="payment-result-icon is-success" aria-hidden="true">OK</div>
           <h1 className="payment-result-title">Payment Successful</h1>
           <p className="payment-result-subtitle">
-            Your 639-step bundle is unlocked. Thank you for the purchase.
+            Payment confirmed. Course access is provided within 24-48 hours after payment.
           </p>
 
           <div className="payment-result-meta">
@@ -78,7 +78,7 @@ export default function PaymentSuccess() {
           <div className="payment-result-actions">
             {resolvedGoogleDriveUrl && (
               <a href={resolvedGoogleDriveUrl} className="btn btn-cta btn-hero btn-cta-primary">
-                Access Google Drive Folder
+                Open Access Link
               </a>
             )}
             <Link className="btn btn-cta btn-hero btn-cta-primary" to="/dashboard">
@@ -90,7 +90,7 @@ export default function PaymentSuccess() {
           </div>
           {resolvedGoogleDriveUrl && status?.unlocked !== false && (
             <p className="payment-result-subtitle" style={{ marginTop: "1rem", fontSize: "0.9rem" }}>
-              Redirecting to Google Drive in 2 seconds...
+              If your access link is ready, it will open in 2 seconds.
             </p>
           )}
           {showVerifyWarning && (

@@ -7,17 +7,17 @@ import heroAvif1024 from "../../assets/optimized/hero-1024.avif";
 import heroWebp512 from "../../assets/optimized/hero-512.webp";
 import heroWebp1024 from "../../assets/optimized/hero-1024.webp";
 
-const LEVELS = [
-  { name: "Easy", value: 196, className: "hero-level-easy" },
-  { name: "Medium", value: 219, className: "hero-level-medium" },
-  { name: "Hard", value: 226, className: "hero-level-hard" }
+const SERVICE_PILLARS = [
+  { name: "Choreography", value: "Custom", className: "hero-level-easy" },
+  { name: "Training", value: "Online", className: "hero-level-medium" },
+  { name: "Delivery", value: "24-48h", className: "hero-level-hard" }
 ];
 
 const OFFER_ICONS = [
-  { label: "Instant Unlock", icon: "⚡" },
-  { label: "HD Step Video", icon: "🎥" },
-  { label: "7-Day Step Change", icon: "🔁" },
-  { label: "One-Time Payment", icon: "💳" }
+  { label: "Custom Dance Choreography Service", icon: "*" },
+  { label: "Online Dance Training Course", icon: "*" },
+  { label: "Original dance steps", icon: "*" },
+  { label: "Course access", icon: "*" }
 ];
 
 const HeroSection = () => {
@@ -37,7 +37,7 @@ const HeroSection = () => {
   useEffect(() => {
     const targetEl = counterRef.current;
     if (!targetEl) return;
-    targetEl.textContent = "639";
+    targetEl.textContent = "24-48";
   }, []);
 
   return (
@@ -48,24 +48,24 @@ const HeroSection = () => {
         <div className="hero-content hero-content-advanced">
           <div className="hero-brand-row">
             <span className="hero-brand-title">AS DANCE</span>
-            <span className="hero-brand-subtitle">639 Bundle</span>
+            <span className="hero-brand-subtitle">Online Dance Training Course</span>
           </div>
           <div className="hero-headline-row">
             <h1 className="hero-title">
-              639-STEP <span className="hero-title-highlight">STAGE-READY</span> DANCE CURRICULUM
+              Customized <span className="hero-title-highlight">CHOREOGRAPHY</span> AND ONLINE DANCE TRAINING
             </h1>
             <div className="hero-count-panel">
               <span className="hero-count-value" ref={counterRef}>0</span>
-              <span className="hero-count-label">Steps</span>
-              <span className="hero-price-tag">₹499 ONLY</span>
+              <span className="hero-count-label">Hours</span>
+              <span className="hero-price-tag">Delivery window</span>
             </div>
           </div>
           <div className="hero-price-stack">
-            <span className="hero-old-price">₹1500</span>
-            <span className="hero-price-badge">₹499 ONLY</span>
+            <span className="hero-old-price">Education service</span>
+            <span className="hero-price-badge">Subscription / course access</span>
           </div>
           <div className="hero-levels">
-            {LEVELS.map((level) => (
+            {SERVICE_PILLARS.map((level) => (
               <span key={level.name} className={`hero-level-pill ${level.className}`}>
                 <span className="hero-level-value">{level.value}</span>
                 <span className="hero-level-name">{level.name}</span>
@@ -73,11 +73,11 @@ const HeroSection = () => {
             ))}
           </div>
           <div className="hero-difficulty-line">
-            {LEVELS.map((level, idx) => (
+            {SERVICE_PILLARS.map((level, idx) => (
               <span key={`${level.name}-line`} className="hero-difficulty-item">
                 <strong>{level.name.toUpperCase()}</strong>
                 <span className="hero-difficulty-value">{level.value}</span>
-                {idx < LEVELS.length - 1 && <span className="hero-difficulty-separator">|</span>}
+                {idx < SERVICE_PILLARS.length - 1 && <span className="hero-difficulty-separator">|</span>}
               </span>
             ))}
           </div>
@@ -87,11 +87,13 @@ const HeroSection = () => {
               className="btn btn-cta btn-hero btn-cta-primary hero-primary-cta"
               onClick={handleCheckout}
             >
-              UNLOCK NOW &nbsp;→&nbsp; START IN MINUTES
+              GET COURSE ACCESS
             </button>
           </div>
           <p className="hero-copy hero-copy-advanced">
-            Unlock studio-grade choreography, lifetime drills, and instant mentorship—no gaps, all neon energy.
+            An online service for customized choreography with original dance steps, plus online dance training built
+            around your song and style. This education service provides subscription / course access with guided videos
+            and support.
           </p>
           <div className="hero-offer-icons hero-offer-icons-cta">
             {OFFER_ICONS.map((item) => (
@@ -108,15 +110,15 @@ const HeroSection = () => {
             </span>
             <span className="trust-item">
               <Infinity size={16} />
-              Lifetime Access
+              Course Access
             </span>
             <span className="trust-item">
               <Zap size={16} />
-              Instant Unlock
+              Delivery 24-48 hours
             </span>
             <span className="trust-item">
               <Headphones size={16} />
-              24/7 Support
+              Support
             </span>
           </div>
         </div>
@@ -153,3 +155,8 @@ const HeroSection = () => {
 };
 
 export default HeroSection;
+
+
+
+
+

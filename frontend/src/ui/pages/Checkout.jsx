@@ -165,7 +165,7 @@ const Checkout = () => {
       amount: data.amountPaise,
       currency: data.currency || "INR",
       name: "As Dance",
-      description: "Unlock Premium Content",
+      description: "Online dance training access",
       image: bundlePreview,
       order_id: data.orderId,
       handler: async (response) => {
@@ -252,8 +252,8 @@ const Checkout = () => {
           <div className="checkout-left">
             <div className="checkout-micro-stats">Secure Checkout</div>
             <div className="checkout-brandline">AS DANCE</div>
-            <div className="checkout-title-sm">Unlock the 639-Step Bundle</div>
-            <div className="checkout-subtitle">One-time payment. Instant unlock. Lifetime access.</div>
+            <div className="checkout-title-sm">Get Online Dance Training Access</div>
+            <div className="checkout-subtitle">Secure payment. Access provided within 24-48 hours.</div>
 
             <div className="checkout-steps">
               <span className="checkout-step is-complete">Details</span>
@@ -264,8 +264,8 @@ const Checkout = () => {
             </div>
 
             <p className="checkout-body">
-              Your bundle unlocks 639 curated steps across easy, medium, and hard routines.
-              Fill in optional contact details so we can reach you instantly after payment.
+              Your payment confirms course access and lets us deliver your customized choreography or training link.
+              Fill in optional contact details so we can confirm delivery within 24-48 hours.
             </p>
 
             <form
@@ -336,7 +336,7 @@ const Checkout = () => {
               <div className="bundle-preview">
                 <img
                   src={bundlePreview}
-                  alt="Bundle Preview"
+                  alt="Course Preview"
                   loading="lazy"
                   decoding="async"
                   width="640"
@@ -344,7 +344,7 @@ const Checkout = () => {
                 />
               </div>
               <div className="checkout-summary-row">
-                <span>Bundle Access</span>
+                <span>Course Access</span>
                 <span className="checkout-summary-value">₹499</span>
               </div>
               <div className="checkout-summary-row total">
@@ -363,10 +363,10 @@ const Checkout = () => {
               <div className="checkout-trust-divider"></div>
               <div className="checkout-trust-row">
                 <span className="checkout-trust-item">Secure Payment</span>
-                <span className="checkout-trust-item">Instant Unlock</span>
-                <span className="checkout-trust-item">Lifetime Access</span>
+                <span className="checkout-trust-item">Delivery 24-48 hours</span>
+                <span className="checkout-trust-item">Course Access</span>
               </div>
-              <div className="checkout-receipt">Receipt delivered instantly after payment.</div>
+              <div className="checkout-receipt">Receipt sent after payment. Access delivered within 24-48 hours via Google Drive or private online access. Refunds apply only if access is not delivered.</div>
 
               <div className="checkout-support">
                 <div className="checkout-support-item">
@@ -388,7 +388,7 @@ const Checkout = () => {
                   </div>
                 </div>
               </div>
-              <div className="checkout-trust-note">Complete payment to unlock your dashboard.</div>
+              <div className="checkout-trust-note">Complete payment to confirm your course access.</div>
             </div>
           </div>
         </div>

@@ -26,22 +26,22 @@ const PROFILE_IMAGES = [
 ];
 
 const REVIEWS = [
-  { id: 1, name: "Karthi", profileIndex: 0, tagline: "AS DANCE Learner", txt: "639 steps for ₹499? Bro this is insane value. So much work for such a low price. Lifetime access vera level. Worth every rupee." },
-  { id: 2, name: "Stephan", profileIndex: 1, tagline: "AS DANCE Learner", txt: "Each step pirichu clear explanation kuduthadhu romba useful bro. Ippo practice panna easy ah irukku. Best bundle I’ve seen." },
-  { id: 3, name: "Babu", profileIndex: 2, tagline: "AS DANCE Learner", txt: "I bought for my cousin. Avan daily practice panran. He said dance improve aagiduchu bro. Super investment." },
-  { id: 4, name: "Godjeni", profileIndex: 3, tagline: "AS DANCE Learner", txt: "Friend oda marriage function ku steps theda kastama irundhuchu. Indha bundle la ready steps irundhadhu big help bro!" },
-  { id: 5, name: "Rickson", profileIndex: 4, tagline: "AS DANCE Learner", txt: "Dance competition ku prepare aagum podhu idhu game changer bro. Hard steps um structured ah irundhuchu. I won thanks to this." },
-  { id: 6, name: "Akash", profileIndex: 5, tagline: "AS DANCE Learner", txt: "Bundle improve pannuna speed romba nalla irukku. Medium steps training ku perfect. Price ku mela value." },
-  { id: 7, name: "Arun", profileIndex: 6, tagline: "AS DANCE Learner", txt: "I used this for my friend’s sangeet night. 639 steps la choice panna neraya options. Crowd impress bro!" },
-  { id: 8, name: "Wifread", profileIndex: 7, tagline: "AS DANCE Learner", txt: "Video quality and step breakdown vera level clarity bro. Lifetime access naala stress illa. Slowly learn pannalam." },
-  { id: 9, name: "Akish", profileIndex: 8, tagline: "AS DANCE Learner", txt: "This bundle improved my dance skills a lot bro. 1 year ah progress illaama irundhen. Ippo improvement visible." },
-  { id: 10, name: "Vishal", profileIndex: 9, tagline: "AS DANCE Learner", txt: "₹499 ku 639 steps + Tamil explanation + lifetime access… Bro this is underpriced for the work. Respect." },
-  { id: 11, name: "Rabi", profileIndex: 10, tagline: "AS DANCE Learner", txt: "Steps pirichu kuduthadhu naala practice smooth bro. Total body posture tips um helpful ah irundhuchu." },
-  { id: 12, name: "Rio", profileIndex: 11, tagline: "AS DANCE Learner", txt: "My cousin told me to buy. Bro it really helped me in my college dance event. Easy steps to start, hard steps to grow." },
-  { id: 13, name: "Kabi", profileIndex: 12, tagline: "AS DANCE Learner", txt: "I used for my own dance competition. Structured practice plan naala stamina improve bro. No slip steps." },
-  { id: 14, name: "PeriyaVijay", profileIndex: 13, tagline: "AS DANCE Learner", txt: "I recommended this to my friend for his marriage dance. Avanum happy. Worth bundle bro." },
-  { id: 15, name: "Venkat", profileIndex: 14, tagline: "AS DANCE Learner", txt: "This bundle boosted my confidence bro. Step breakdown naala I don’t feel confused anymore." },
-  { id: 16, name: "Starwin", profileIndex: 15, tagline: "AS DANCE Learner", txt: "Bought for my friend’s cousin for competition. Bro it helped him improve fast. Price ku heavy value." }
+  { id: 1, name: "Karthi", profileIndex: 0, tagline: "AS DANCE Learner", txt: "Customized choreography matched my song's rhythm and mood. Clean counts and smooth flow." },
+  { id: 2, name: "Stephan", profileIndex: 1, tagline: "AS DANCE Learner", txt: "The online dance training videos are clear and structured. Easy to practice every day." },
+  { id: 3, name: "Babu", profileIndex: 2, tagline: "AS DANCE Learner", txt: "I received original dance steps tailored to my event. Delivery was on time." },
+  { id: 4, name: "Godjeni", profileIndex: 3, tagline: "AS DANCE Learner", txt: "Great education service. The course access made my practice routine consistent." },
+  { id: 5, name: "Rickson", profileIndex: 4, tagline: "AS DANCE Learner", txt: "Song-based routine felt polished and performance ready." },
+  { id: 6, name: "Akash", profileIndex: 5, tagline: "AS DANCE Learner", txt: "Support was responsive and the online service felt professional." },
+  { id: 7, name: "Arun", profileIndex: 6, tagline: "AS DANCE Learner", txt: "Online dance training improved my basics and confidence." },
+  { id: 8, name: "Wifread", profileIndex: 7, tagline: "AS DANCE Learner", txt: "Course access via Google Drive was organized and easy to use." },
+  { id: 9, name: "Akish", profileIndex: 8, tagline: "AS DANCE Learner", txt: "Customized choreography helped my wedding performance look sharp." },
+  { id: 10, name: "Vishal", profileIndex: 9, tagline: "AS DANCE Learner", txt: "Clear instruction and pacing across the lessons." },
+  { id: 11, name: "Rabi", profileIndex: 10, tagline: "AS DANCE Learner", txt: "Original dance steps with variations made rehearsal smoother." },
+  { id: 12, name: "Rio", profileIndex: 11, tagline: "AS DANCE Learner", txt: "Delivery within 24-48 hours matched the timeline promised." },
+  { id: 13, name: "Kabi", profileIndex: 12, tagline: "AS DANCE Learner", txt: "The structured lessons kept me motivated and focused." },
+  { id: 14, name: "PeriyaVijay", profileIndex: 13, tagline: "AS DANCE Learner", txt: "Well matched routine for my song and style." },
+  { id: 15, name: "Venkat", profileIndex: 14, tagline: "AS DANCE Learner", txt: "Reliable education service with practical guidance." },
+  { id: 16, name: "Starwin", profileIndex: 15, tagline: "AS DANCE Learner", txt: "Easy communication and a tailored result." }
 ];
 const ANIMATION_STATE_KEY = "as-dance-review-animation-state";
 
@@ -495,8 +495,8 @@ export default function ReviewLoop() {
             <span className="reviews-title-glow">User Reviews & Stage Feedback</span>
           </h2>
           <p className="reviews-subhead">
-            639-Step curriculum trusted by stage performers. Real feedback from competition dancers and
-            audience-impact routines.
+            Customized choreography and online dance training trusted by performers. Real feedback from learners and
+            event dancers.
           </p>
         </div>
 
@@ -557,3 +557,4 @@ export default function ReviewLoop() {
     </section>
   );
 }
+

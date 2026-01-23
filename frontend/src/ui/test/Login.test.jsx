@@ -12,16 +12,15 @@ vi.mock("../auth.jsx", () => ({
 
 test("shows error on failed login", async () => {
   const user = userEvent.setup();
-  const { container } = render(
+  render(
     <MemoryRouter>
       <Login />
     </MemoryRouter>
   );
 
-  const inputs = container.querySelectorAll("input");
-  await user.type(inputs[0], "testuser@asdance.com");
-  await user.type(inputs[1], "pass123");
-  await user.click(screen.getByRole("button", { name: /login/i }));
+  await user.type(screen.getByLabelText(/email/i), "testuser@asdance.com");
+  await user.type(screen.getByLabelText(/password/i), "pass123");
+  await user.click(screen.getByRole("button", { name: /enter the stage/i }));
 
-  expect(await screen.findByText(/Login Failed/i)).toBeInTheDocument();
+  expect(await screen.findByText(/user_not_found/i)).toBeInTheDocument();
 });
