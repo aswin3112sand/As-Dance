@@ -13,6 +13,18 @@ public class HmacUtil {
     return toHex(hash);
   }
 
+  public static boolean verifySignature(String payload, String signature, String secret) {
+    try {
+      if (payload == null || signature == null || secret == null) {
+        return false;
+      }
+      String expected = hmacSha256(payload, secret);
+      return expected.equals(signature);
+    } catch (Exception e) {
+      return false;
+    }
+  }
+
   private static String toHex(byte[] bytes) {
     StringBuilder sb = new StringBuilder(bytes.length * 2);
     for (byte b : bytes) {

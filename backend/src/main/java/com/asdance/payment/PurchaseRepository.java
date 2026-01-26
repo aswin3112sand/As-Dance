@@ -6,8 +6,14 @@ import java.util.Optional;
 
 public interface PurchaseRepository extends JpaRepository<Purchase, Long> {
   Optional<Purchase> findTopByUserIdOrderByCreatedAtDesc(Long userId);
+
   Optional<Purchase> findTopByUserIdAndStatusOrderByCreatedAtDesc(Long userId, String status);
+
   Optional<Purchase> findByRazorpayOrderId(String razorpayOrderId);
+
+  Optional<Purchase> findByRazorpayPaymentId(String razorpayPaymentId);
+
   List<Purchase> findByStatusOrderByPaidAtDesc(String status);
+
   List<Purchase> findByStatusInOrderByPaidAtDesc(List<String> statuses);
 }
