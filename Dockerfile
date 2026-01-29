@@ -2,7 +2,7 @@ FROM node:20-alpine AS frontend
 WORKDIR /frontend
 COPY frontend/package*.json ./
 RUN npm install
-COPY frontend . .
+COPY frontend/. ./
 RUN npm run build
 
 FROM maven:3.9-eclipse-temurin-21 AS backend
