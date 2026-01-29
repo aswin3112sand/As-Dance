@@ -30,8 +30,19 @@ public class ConfigVerifier implements CommandLineRunner {
     public void run(String... args) {
         logger.info("================ CONFIGURATION CHECK ================");
         logger.info("Active Profiles: {}", Arrays.toString(env.getActiveProfiles()));
-        logger.info("Razorpay Key ID: {}", razorpayKeyId);
+        logger.info("Razorpay Key ID: {}", maskKey(razorpayKeyId));
         logger.info("Database URL:    {}", datasourceUrl);
         logger.info("=====================================================");
+    }
+
+    private String maskKey(String value) {
+        if (value == null || value.isBlank() || "NOT_SET".equals(value)) {
+            return "NOT_SET";
+        }
+        int len = value.length();
+        if (len <= 8) {
+            return "****";
+        }
+        return value.substring(0, 4) + "..." + value.substring(len - 4);
     }
 }
