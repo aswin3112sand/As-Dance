@@ -74,7 +74,8 @@ export default function BuyNowButton({
 
     const data = orderResult.data;
     const razorpayKey = import.meta.env.VITE_RAZORPAY_KEY_ID;
-    if (!razorpayKey || !data.orderId) {
+    const resolvedKey = data.keyId || razorpayKey;
+    if (!resolvedKey || !data.orderId) {
       setError("Payment configuration missing. Please contact support.");
       setLoading(false);
       return;
@@ -88,7 +89,7 @@ export default function BuyNowButton({
     }
 
     const options = {
-      key: razorpayKey,
+      key: resolvedKey,
       amount: data.amount,
       currency: "INR",
       name: "AS DANCE",

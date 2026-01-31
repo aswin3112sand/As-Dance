@@ -44,7 +44,7 @@ spring:
 
 app:
   jwt:
-    secret: ${APP_JWT_SECRET:${random.uuid}${random.uuid}}
+    secret: ${APP_JWT_SECRET:${JWT_SECRET:${random.uuid}${random.uuid}}}
     issuer: as-dance
     expMinutes: 43200
   access:
@@ -54,8 +54,10 @@ app:
   payment:
     mock: false
     razorpay:
-      keyId: ${RAZORPAY_KEY_ID:}
-      keySecret: ${RAZORPAY_KEY_SECRET:}
+      keyId: ${RAZORPAY_LIVE_KEY_ID:${RAZORPAY_KEY_ID:}}
+      keySecret: ${RAZORPAY_LIVE_KEY_SECRET:${RAZORPAY_KEY_SECRET:}}
+  course:
+    pricePaise: 49900
   brand:
     name: AS DANCE
   support:

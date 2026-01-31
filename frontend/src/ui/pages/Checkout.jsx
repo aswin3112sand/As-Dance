@@ -98,7 +98,7 @@ const Checkout = () => {
 
     let orderResult;
     try {
-      orderResult = await createPaymentOrder({ buyerName: name, buyerPhone: phone });
+      orderResult = await createPaymentOrder({ buyerName: name, buyerPhone: phone, courseId });
     } catch (err) {
       setMessages(["Unable to reach the payment server. Please try again."]);
       setProcessing(false);
@@ -107,7 +107,11 @@ const Checkout = () => {
     }
     const { ok, data } = orderResult;
     if (!ok) {
-      setMessages([data.message || "Failed to create payment order"]);
+      const message =
+        data.message === "PAYMENT_CONFIG_MISSING"
+          ? "Payment config missing. Add RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET in backend."
+          : data.message || "Failed to create payment order";
+      setMessages([message]);
       setProcessing(false);
       processingRef.current = false;
       return;
@@ -122,7 +126,8 @@ const Checkout = () => {
     }
 
     const razorpayKey = import.meta.env.VITE_RAZORPAY_KEY_ID;
-    if (!razorpayKey || !data.orderId) {
+    const resolvedKey = data.keyId || razorpayKey;
+    if (!resolvedKey || !data.orderId) {
       setMessages(["Payment configuration missing. Please contact support."]);
       setProcessing(false);
       processingRef.current = false;
@@ -130,7 +135,7 @@ const Checkout = () => {
     }
 
     const options = {
-      key: razorpayKey,
+      key: resolvedKey,
       amount: data.amount,
       currency: "INR",
       name: "As Dance",

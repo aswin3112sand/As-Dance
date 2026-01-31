@@ -19,6 +19,9 @@ public class Purchase {
   @Column(nullable=false)
   private Long userId;
 
+  @Column(name = "course_id")
+  private Long courseId;
+
   @Column(nullable=false)
   private String status; // CREATED, PAID, SUCCESS
 

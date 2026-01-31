@@ -4,7 +4,8 @@ public class PaymentDtos {
 
   public record CreateOrderRequest(
     String buyerName,
-    String buyerPhone
+    String buyerPhone,
+    Long courseId
   ) {}
 
   public record CreateCourseOrderRequest(

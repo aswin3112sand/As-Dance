@@ -2,6 +2,7 @@ package com.asdance.payment;
 
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +14,7 @@ import static com.asdance.payment.PaymentDtos.*;
 public class PaymentController {
 
   private final PaymentService paymentService;
+  private final WebhookService webhookService;
 
   @Value("${app.bundle.amountPaise:49900}")
   private int bundleAmountPaise;
@@ -23,8 +25,9 @@ public class PaymentController {
   @Value("${app.razorpay.keyId:}")
   private String razorpayKeyId;
 
-  public PaymentController(PaymentService paymentService) {
+  public PaymentController(PaymentService paymentService, WebhookService webhookService) {
     this.paymentService = paymentService;
+    this.webhookService = webhookService;
   }
 
   @PostMapping("/order")
@@ -32,9 +35,26 @@ public class PaymentController {
     return ResponseEntity.ok(paymentService.createOrder(auth, bundleAmountPaise, req));
   }
 
+  @PostMapping("/create-order")
+  public ResponseEntity<?> createOrderV2(Authentication auth, @RequestBody(required = false) CreateOrderRequest req) {
+    return ResponseEntity.ok(paymentService.createOrder(auth, bundleAmountPaise, req));
+  }
+
   @PostMapping("/verify")
   public ResponseEntity<?> verify(Authentication auth, @Valid @RequestBody VerifyRequest req) {
     return ResponseEntity.ok(paymentService.verify(auth, req));
+  }
+
+  @PostMapping("/webhook")
+  public ResponseEntity<String> razorpayWebhook(
+      @RequestBody String payload,
+      @RequestHeader("X-Razorpay-Signature") String signature) {
+    try {
+      webhookService.processWebhook(payload, signature);
+      return ResponseEntity.ok("Webhook processed successfully.");
+    } catch (SecurityException e) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Signature verification failed.");
+    }
   }
 
   @PostMapping("/webhook/razorpay")

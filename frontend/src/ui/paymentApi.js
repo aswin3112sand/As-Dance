@@ -1,12 +1,13 @@
 import { apiFetch } from "./api.js";
 
 export async function createPaymentOrder(payload) {
-  const res = await apiFetch("/api/payment/order", {
+  const res = await apiFetch("/api/payment/create-order", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       buyerName: payload?.buyerName,
-      buyerPhone: payload?.buyerPhone
+      buyerPhone: payload?.buyerPhone,
+      courseId: payload?.courseId
     })
   });
   const data = await res.json().catch(() => ({}));

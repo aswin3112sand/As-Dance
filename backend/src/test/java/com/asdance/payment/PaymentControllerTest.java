@@ -28,6 +28,9 @@ class PaymentControllerTest {
   @MockBean
   private PaymentService paymentService;
 
+  @MockBean
+  private WebhookService webhookService;
+
   @Test
   void statusReturnsLockedWhenNoAuth() throws Exception {
     mockMvc.perform(get("/api/payment/status"))

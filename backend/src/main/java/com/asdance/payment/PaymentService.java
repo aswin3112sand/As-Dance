@@ -233,16 +233,28 @@ public class PaymentService {
         return new CreateOrderResponse(false, "AUTH", "", "", amountPaise, "INR", "Access restricted to allowed user.");
       }
 
+      Long courseId = req != null ? req.courseId() : null;
+      if (courseId != null && courseId <= 0) {
+        return new CreateOrderResponse(false, "INVALID_COURSE", "", "", amountPaise, "INR", "Invalid course.");
+      }
+
       String buyerName = normalizeName(req != null ? req.buyerName() : null);
       String buyerPhone = normalizePhone(req != null ? req.buyerPhone() : null);
       if (buyerName.isBlank()) {
         buyerName = user.getFullName();
       }
 
+      int resolvedAmount = amountPaise;
+      int courseAmount = resolveCourseAmount(courseId);
+      if (courseId != null && courseAmount > 0) {
+        resolvedAmount = courseAmount;
+      }
+
       var purchase = Purchase.builder()
           .userId(userId)
+          .courseId(courseId)
           .status("CREATED")
-          .amountPaise(amountPaise)
+          .amountPaise(resolvedAmount)
           .createdAt(Instant.now())
           .buyerEmail(user.getEmail())
           .buyerName(buyerName)
@@ -250,17 +262,21 @@ public class PaymentService {
           .externalUserId(accessPolicy.getAllowedUserId())
           .build();
 
-      if (mock || keyId == null || keyId.isBlank() || keySecret == null || keySecret.isBlank()) {
+      boolean missingKeys = keyId == null || keyId.isBlank() || keySecret == null || keySecret.isBlank();
+      if (missingKeys && !mock) {
+        return new CreateOrderResponse(false, "PAYMENT_CONFIG_MISSING", "", "", resolvedAmount, "INR", "PAYMENT_CONFIG_MISSING");
+      }
+      if (mock || missingKeys) {
         String orderId = "order_mock_" + UUID.randomUUID().toString().replace("-", "");
         purchase.setRazorpayOrderId(orderId);
         purchaseRepository.save(purchase);
-        return new CreateOrderResponse(true, "MOCK", "", orderId, amountPaise, "INR",
+        return new CreateOrderResponse(true, "MOCK", "", orderId, resolvedAmount, "INR",
             "MOCK mode enabled. Click Pay -> we will auto-unlock on verify.");
       }
 
       RazorpayClient client = new RazorpayClient(keyId, keySecret);
       JSONObject options = new JSONObject();
-      options.put("amount", amountPaise);
+      options.put("amount", resolvedAmount);
       options.put("currency", "INR");
       options.put("receipt", "asdance_rcpt_" + userId + "_" + System.currentTimeMillis());
       options.put("payment_capture", 1);
@@ -270,7 +286,7 @@ public class PaymentService {
       purchase.setRazorpayOrderId(orderId);
       purchaseRepository.save(purchase);
 
-      return new CreateOrderResponse(true, "RAZORPAY", keyId, orderId, amountPaise, "INR", "Order created");
+      return new CreateOrderResponse(true, "RAZORPAY", keyId, orderId, resolvedAmount, "INR", "Order created");
     } catch (Exception e) {
       return new CreateOrderResponse(false, "ERROR", keyId, null, amountPaise, "INR", "Order create failed: " + e.getMessage());
     }
