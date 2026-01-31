@@ -1,4 +1,6 @@
 FROM node:20-alpine AS frontend
+ARG VITE_RAZORPAY_KEY_ID
+ENV VITE_RAZORPAY_KEY_ID=$VITE_RAZORPAY_KEY_ID
 WORKDIR /frontend
 COPY frontend/package*.json ./
 RUN npm install
