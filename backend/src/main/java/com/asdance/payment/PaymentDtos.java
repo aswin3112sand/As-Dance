@@ -7,6 +7,18 @@ public class PaymentDtos {
     String buyerPhone
   ) {}
 
+  public record CreateCourseOrderRequest(
+    Long courseId
+  ) {}
+
+  public record CreateCourseOrderResponse(
+    boolean success,
+    String message,
+    String orderId,
+    int amount,
+    String keyId
+  ) {}
+
   public record CreateOrderResponse(
     boolean ok,
     String mode, // MOCK or RAZORPAY
@@ -37,6 +49,12 @@ public class PaymentDtos {
     String razorpay_order_id,
     String razorpay_payment_id,
     String razorpay_signature
+  ) {}
+
+  public record VerifyCourseResponse(
+    boolean success,
+    boolean courseAccess,
+    String message
   ) {}
 
   public record WebhookRequest(

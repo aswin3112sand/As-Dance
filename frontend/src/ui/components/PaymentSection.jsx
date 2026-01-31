@@ -1,22 +1,12 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
 import { CreditCard } from "../icons.jsx";
 import { useAuth } from "../auth.jsx";
+import BuyNowButton from "./BuyNowButton.jsx";
 import profileImage from "../../assets/bg/poster.webp";
 
 export default function PaymentSection() {
   const { user } = useAuth();
-  const nav = useNavigate();
   const displayName = user?.fullName || user?.email?.split("@")[0] || "AS DANCE Learner";
-
-  const handleCheckout = () => {
-    const target = "/checkout?pay=1";
-    if (!user) {
-      nav("/login", { state: { from: target } });
-      return;
-    }
-    nav(target);
-  };
 
   return (
     <section className="section section-compact bg-payment section-anim" id="payment">
@@ -91,14 +81,7 @@ export default function PaymentSection() {
               <span className="payment-method payment-upi">UPI</span>
             </div>
 
-            <button
-              id="payBtn"
-              type="button"
-              className="buy-now-btn"
-              onClick={handleCheckout}
-            >
-              Buy Now
-            </button>
+            <BuyNowButton courseId={123} label="Buy Now" />
           </div>
         </div>
       </div>

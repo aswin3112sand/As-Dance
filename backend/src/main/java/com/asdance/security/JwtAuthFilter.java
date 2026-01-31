@@ -39,9 +39,19 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     }
 
     try {
-      var token = cookieService.readToken(request);
-      if (token.isPresent()) {
-        var jwtUser = jwtService.parse(token.get());
+      String bearer = request.getHeader("Authorization");
+      String tokenValue = null;
+      if (bearer != null && bearer.startsWith("Bearer ")) {
+        tokenValue = bearer.substring("Bearer ".length()).trim();
+      } else {
+        var token = cookieService.readToken(request);
+        if (token.isPresent()) {
+          tokenValue = token.get();
+        }
+      }
+
+      if (tokenValue != null && !tokenValue.isBlank()) {
+        var jwtUser = jwtService.parse(tokenValue);
         var auth = new UsernamePasswordAuthenticationToken(
             jwtUser.userId(),
             jwtUser.email(),

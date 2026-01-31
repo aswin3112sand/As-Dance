@@ -1,4 +1,5 @@
 @import "bootstrap/dist/css/bootstrap.min.css";
+@import "./tailwind.css";
 @import "./styles.css";
 @import "./mobile-menu.css";
 @import "./neon-styles.css";

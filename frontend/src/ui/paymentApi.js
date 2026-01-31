@@ -4,12 +4,20 @@ export async function createPaymentOrder(payload) {
   const res = await apiFetch("/api/payment/order", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload || {})
+    body: JSON.stringify({
+      buyerName: payload?.buyerName,
+      buyerPhone: payload?.buyerPhone
+    })
   });
   const data = await res.json().catch(() => ({}));
+  const normalized = {
+    ...data,
+    amount: data.amount ?? data.amountPaise,
+    success: data.success ?? data.ok
+  };
   return {
     ok: res.ok && data.ok !== false,
-    data,
+    data: normalized,
     status: res.status
   };
 }

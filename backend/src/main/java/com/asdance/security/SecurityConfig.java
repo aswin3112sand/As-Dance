@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.http.HttpMethod;
 
 @Configuration
 @EnableWebSecurity
@@ -73,12 +74,13 @@ public class SecurityConfig {
                         .contentSecurityPolicy(csp -> csp.policyDirectives(CONTENT_SECURITY_POLICY)))
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/**").authenticated()
                         .requestMatchers(
                                 "/",
                                 "/index.html",
                                 "/login",
                                 "/register",
-                                "/api/auth/**",
                                 "/assets/**",
                                 "/*.js",
                                 "/*.css",
@@ -96,6 +98,7 @@ public class SecurityConfig {
                                 "/*.ttf",
                                 "/*.eot"
                         ).permitAll()
+                        .requestMatchers(HttpMethod.GET, "/**").permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(new GuestAuthFilter(guestUserServiceProvider.getIfAvailable(() -> null)), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtAuthFilter(), GuestAuthFilter.class)

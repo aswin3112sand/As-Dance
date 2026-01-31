@@ -60,6 +60,9 @@ echo ========================================
 echo.
 
 set SPRING_PROFILES_ACTIVE=%PROFILE%
+set RAZORPAY_KEY_ID=rzp_test_S9x8v58typ8PLI
+set RAZORPAY_KEY_SECRET=K8IYt5e2vDitzVNr3TEbN2HH
+set APP_PAYMENT_MOCK=false
 call mvn spring-boot:run
 
 endlocal

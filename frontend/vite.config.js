@@ -1,12 +1,14 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
+const backendPort = Number(process.env.BACKEND_PORT) || 8080
+
 export default defineConfig({
   base: "/",
   plugins: [react()],
   server: {
     host: '0.0.0.0',
-    port: Number(process.env.PORT) || 5173,
+    port: Number(process.env.PORT) || 3000,
     strictPort: true,
     headers: {
       'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
@@ -15,11 +17,11 @@ export default defineConfig({
     },
     proxy: {
       '/api': {
-        target: 'http://localhost:8085',
+        target: `http://localhost:${backendPort}`,
         changeOrigin: true
       },
       '/h2-console': {
-        target: 'http://localhost:8085',
+        target: `http://localhost:${backendPort}`,
         changeOrigin: true
       }
     }

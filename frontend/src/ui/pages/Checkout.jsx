@@ -1,9 +1,9 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useMemo, useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth.jsx";
 import { Mail, WhatsApp } from "../icons.jsx";
 import { createPaymentOrder, verifyPayment, fetchPaymentStatus } from "../paymentApi.js";
-import { clearFailure, clearReceipt, saveFailure, saveReceipt } from "../paymentStorage.js";
+import { clearFailure, clearReceipt, saveFailure } from "../paymentStorage.js";
 import bundlePreview from "../../assets/bg/poster.webp";
 import "../checkout-styles.css";
 
@@ -13,6 +13,11 @@ const Checkout = () => {
 
   const [messages, setMessages] = useState([]);
   const [processing, setProcessing] = useState(false);
+  const courseId = useMemo(() => {
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get("courseId");
+    return id ? Number(id) : 123;
+  }, []);
 
   const nameRef = useRef(null);
   const phoneRef = useRef(null);
@@ -108,43 +113,6 @@ const Checkout = () => {
       return;
     }
 
-    if (data.mode === "MOCK") {
-      const mockPaymentId = `pay_mock_${Date.now()}`;
-      let verifyRes;
-      try {
-        verifyRes = await verifyPayment({
-          orderId: data.orderId,
-          paymentId: mockPaymentId,
-          signature: ""
-        });
-      } catch (err) {
-        setMessages(["Payment verification failed. Please try again."]);
-        setProcessing(false);
-        processingRef.current = false;
-        return;
-      }
-      if (verifyRes.ok) {
-        const receiptPayload = {
-          orderId: data.orderId,
-          paymentId: mockPaymentId,
-          amountPaise: data.amountPaise,
-          googleDriveUrl: verifyRes.data?.unlockedVideoUrl
-        };
-        saveReceipt(receiptPayload, user?.id);
-        setProcessing(false);
-        processingRef.current = false;
-        navigate("/payment-success", { state: receiptPayload });
-      } else {
-        const reason = verifyRes.data?.message || "Payment failed. Please try again.";
-        const failurePayload = { reason };
-        saveFailure(failurePayload, user?.id);
-        setProcessing(false);
-        processingRef.current = false;
-        navigate("/payment-failed", { state: failurePayload });
-      }
-      return;
-    }
-
     const razorpayLoaded = await loadRazorpay();
     if (!razorpayLoaded) {
       setMessages(["Failed to load payment gateway. Please try again."]);
@@ -153,7 +121,8 @@ const Checkout = () => {
       return;
     }
 
-    if (!data.keyId || !data.orderId) {
+    const razorpayKey = import.meta.env.VITE_RAZORPAY_KEY_ID;
+    if (!razorpayKey || !data.orderId) {
       setMessages(["Payment configuration missing. Please contact support."]);
       setProcessing(false);
       processingRef.current = false;
@@ -161,9 +130,9 @@ const Checkout = () => {
     }
 
     const options = {
-      key: data.keyId || "rzp_test_S1mk723Rt4DSsp",
-      amount: data.amountPaise,
-      currency: data.currency || "INR",
+      key: razorpayKey,
+      amount: data.amount,
+      currency: "INR",
       name: "As Dance",
       description: "Online dance training access",
       image: bundlePreview,
@@ -185,16 +154,9 @@ const Checkout = () => {
           return;
         }
         if (verifyRes.ok) {
-          const receiptPayload = {
-            orderId: response.razorpay_order_id || data.orderId,
-            paymentId: response.razorpay_payment_id,
-            amountPaise: data.amountPaise,
-            googleDriveUrl: verifyRes.data?.unlockedVideoUrl
-          };
-          saveReceipt(receiptPayload, user?.id);
           setProcessing(false);
           processingRef.current = false;
-          navigate("/payment-success", { state: receiptPayload });
+          navigate(`/dashboard?courseId=${courseId}`);
         } else {
           const reason = verifyRes.data?.message || "Payment failed. Please try again.";
           const failurePayload = { reason };
