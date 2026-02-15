@@ -1,6 +1,7 @@
-import React, { Suspense, useEffect } from "react";
+import React, { Suspense, useEffect, useRef } from "react";
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { AuthProvider, useAuth } from "./auth.jsx";
+const GA_MEASUREMENT_ID = "G-2360J4PHQT";
 
 // Lazy load pages
 const Home = React.lazy(() => import("./pages/Home.jsx"));
@@ -60,11 +61,33 @@ function RevealObserver() {
   return null;
 }
 
+function GoogleAnalyticsTracker() {
+  const location = useLocation();
+  const lastTrackedPathRef = useRef("");
+
+  useEffect(() => {
+    if (typeof window.gtag !== "function") return;
+    const pagePath = `${location.pathname}${location.search}${location.hash}`;
+    if (lastTrackedPathRef.current === pagePath) return;
+    lastTrackedPathRef.current = pagePath;
+
+    window.gtag("event", "page_view", {
+      page_path: pagePath,
+      page_location: window.location.href,
+      page_title: document.title,
+      send_to: GA_MEASUREMENT_ID,
+    });
+  }, [location.pathname, location.search, location.hash]);
+
+  return null;
+}
+
 export default function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
         <a className="skip-link" href="#main-content">Skip to content</a>
+        <GoogleAnalyticsTracker />
         <RevealObserver />
         <main id="main-content" role="main" tabIndex="-1">
           <Suspense fallback={<Loading />}>
