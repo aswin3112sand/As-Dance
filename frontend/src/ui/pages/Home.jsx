@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect, useRef, useState } from "react";
+import React, { Suspense, memo, useEffect, useRef, useState } from "react";
 import { Mail, WhatsApp } from "../icons.jsx";
 
 import BannerStrip from "../components/BannerStrip.jsx";
@@ -12,11 +12,8 @@ import Footer from "../components/Footer.jsx";
 
 const NAV_SECTIONS = ["about", "services", "preview", "reviews", "contacts"];
 
-export default function Home() {
-  const loaded = true;
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [activeSection, setActiveSection] = useState(NAV_SECTIONS[0]);
-  const SectionSkeleton = ({ title, id, minHeight }) => (
+const SectionSkeleton = memo(function SectionSkeleton({ title, id, minHeight }) {
+  return (
     <section
       id={id}
       className="section section-compact section-anim"
@@ -28,39 +25,55 @@ export default function Home() {
       </div>
     </section>
   );
-  const LazyMount = ({ rootMargin = "240px", fallback, children }) => {
-    const [isVisible, setIsVisible] = useState(false);
-    const targetRef = useRef(null);
+});
 
-    useEffect(() => {
-      if (isVisible) return;
-      if (!("IntersectionObserver" in window)) {
-        setIsVisible(true);
-        return;
-      }
-      const observer = new IntersectionObserver(
-        (entries) => {
-          if (entries.some((entry) => entry.isIntersecting)) {
-            setIsVisible(true);
-            observer.disconnect();
-          }
-        },
-        { rootMargin }
-      );
-      const node = targetRef.current;
-      if (node) observer.observe(node);
-      return () => observer.disconnect();
-    }, [isVisible, rootMargin]);
+const PREVIEW_FALLBACK = (
+  <SectionSkeleton title="preview" id="preview" minHeight="clamp(260px, 45vw, 420px)" />
+);
 
-    return <div ref={targetRef}>{isVisible ? children : fallback}</div>;
-  };
+const REVIEWS_FALLBACK = (
+  <SectionSkeleton title="reviews" id="reviews" minHeight="clamp(300px, 60vw, 560px)" />
+);
+
+const LazyMount = memo(function LazyMount({ rootMargin = "240px", fallback, children }) {
+  const [isVisible, setIsVisible] = useState(false);
+  const targetRef = useRef(null);
+
+  useEffect(() => {
+    if (isVisible) return;
+    if (!("IntersectionObserver" in window)) {
+      setIsVisible(true);
+      return;
+    }
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin }
+    );
+    const node = targetRef.current;
+    if (node) observer.observe(node);
+    return () => observer.disconnect();
+  }, [isVisible, rootMargin]);
+
+  return <div ref={targetRef}>{isVisible ? children : fallback}</div>;
+});
+
+export default function Home() {
+  const loaded = true;
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [activeSection, setActiveSection] = useState(NAV_SECTIONS[0]);
 
   useEffect(() => {
     let rafId = null;
 
     const updateScrollState = () => {
       const currentY = window.scrollY || document.documentElement.scrollTop || 0;
-      setIsScrolled(currentY > 12);
+      const nextIsScrolled = currentY > 12;
+      setIsScrolled((prev) => (prev === nextIsScrolled ? prev : nextIsScrolled));
       rafId = null;
     };
 
@@ -85,7 +98,8 @@ export default function Home() {
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            setActiveSection(entry.target.id);
+            const sectionId = entry.target.id;
+            setActiveSection((prev) => (prev === sectionId ? prev : sectionId));
           }
         });
       },
@@ -126,18 +140,18 @@ export default function Home() {
         <HeroSection />
         <LevelCards />
         <LazyMount
-          fallback={<SectionSkeleton title="preview" id="preview" minHeight="clamp(260px, 45vw, 420px)" />}
+          fallback={PREVIEW_FALLBACK}
         >
-          <Suspense fallback={<SectionSkeleton title="preview" id="preview" minHeight="clamp(260px, 45vw, 420px)" />}>
+          <Suspense fallback={PREVIEW_FALLBACK}>
             <DemoSection />
           </Suspense>
         </LazyMount>
 
         {/* 3. REVIEWS MARQUEE */}
         <LazyMount
-          fallback={<SectionSkeleton title="reviews" id="reviews" minHeight="clamp(300px, 60vw, 560px)" />}
+          fallback={REVIEWS_FALLBACK}
         >
-          <Suspense fallback={<SectionSkeleton title="reviews" id="reviews" minHeight="clamp(300px, 60vw, 560px)" />}>
+          <Suspense fallback={REVIEWS_FALLBACK}>
             <ReviewLoop />
           </Suspense>
         </LazyMount>

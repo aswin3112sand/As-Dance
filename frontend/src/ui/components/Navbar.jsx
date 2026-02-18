@@ -4,29 +4,43 @@ import { Menu, X } from "../icons.jsx";
 
 const NAV_SECTIONS = ["about", "services", "preview", "reviews", "contacts"];
 const BANNER_POINTS = [
-    "Online service for customized choreography",
-    "Original dance steps for every song",
-    "Online dance training with guided lessons",
-    "Education service with course access",
-    "Delivery within 24-48 hours",
-    "Secure payments and support"
+    "Course access INR 499",
+    "Custom choreography plans available",
+    "Secure checkout and instant confirmation",
+    "Digital delivery in 24-48 hours",
+    "Preview before you buy",
+    "WhatsApp support for quick help"
 ];
 
 export default function Navbar({ activeSection, loaded, isScrolled }) {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const [tickerPaused, setTickerPaused] = useState(false);
+
+    const handleTickerBlur = (event) => {
+        const related = event.relatedTarget;
+        if (!related || !event.currentTarget.contains(related)) {
+            setTickerPaused(false);
+        }
+    };
 
     return (
         <>
-            <div className="scroll-banner" aria-label="AS DANCE highlights">
+            <div
+                className={`scroll-banner${tickerPaused ? " is-paused" : ""}`}
+                aria-label="AS DANCE highlights"
+                onMouseEnter={() => setTickerPaused(true)}
+                onMouseLeave={() => setTickerPaused(false)}
+                onFocusCapture={() => setTickerPaused(true)}
+                onBlurCapture={handleTickerBlur}
+            >
                 <div className="track">
                     {BANNER_POINTS.concat(BANNER_POINTS).map((item, index) => (
                         <span className="scroll-item" key={`${item}-${index}`}>{item}</span>
                     ))}
                 </div>
             </div>
-            <nav
-                className={`navbar${loaded ? " is-nav-animated" : ""}${isScrolled ? " is-scrolled" : ""}`}
-            >
+
+            <nav className={`navbar${loaded ? " is-nav-animated" : ""}${isScrolled ? " is-scrolled" : ""}`}>
                 <div className="container-max">
                     <div className="brand fs-4 text-white fw-bold tracking-wider" style={{ fontFamily: "var(--font-display)" }}>AS DANCE</div>
 
@@ -37,7 +51,6 @@ export default function Navbar({ activeSection, loaded, isScrolled }) {
                             aria-current={activeSection === "about" ? "location" : undefined}
                         >
                             <span className="nav-label">About</span>
-                            <span className="nav-emoji" aria-hidden="true">📦</span>
                         </a>
                         <a
                             href="#services"
@@ -45,7 +58,6 @@ export default function Navbar({ activeSection, loaded, isScrolled }) {
                             aria-current={activeSection === "services" ? "location" : undefined}
                         >
                             <span className="nav-label">Services</span>
-                            <span className="nav-emoji" aria-hidden="true">⚙</span>
                         </a>
                         <a
                             href="#preview"
@@ -53,7 +65,6 @@ export default function Navbar({ activeSection, loaded, isScrolled }) {
                             aria-current={activeSection === "preview" ? "location" : undefined}
                         >
                             <span className="nav-label">Preview</span>
-                            <span className="nav-emoji" aria-hidden="true">▶</span>
                         </a>
                         <a
                             href="#reviews"
@@ -61,31 +72,24 @@ export default function Navbar({ activeSection, loaded, isScrolled }) {
                             aria-current={activeSection === "reviews" ? "location" : undefined}
                         >
                             <span className="nav-label">Reviews</span>
-                            <span className="nav-emoji" aria-hidden="true">⭐</span>
                         </a>
-                        <a href="#contacts" className="nav-link">
+                        <a
+                            href="#contacts"
+                            className={`nav-link${activeSection === "contacts" ? " is-active" : ""}`}
+                            aria-current={activeSection === "contacts" ? "location" : undefined}
+                        >
                             <span className="nav-label">Contacts</span>
-                            <span className="nav-emoji" aria-hidden="true">📞✉</span>
                         </a>
                     </div>
 
                     <div className="header-actions">
-                        <Link
-                            to="/login"
-                            className="btn btn--ghost nav-cta d-none d-md-inline-flex"
-                        >
-                            <span className="cta-icon" aria-hidden="true">🔐</span>
+                        <Link to="/login" className="btn btn--ghost nav-cta d-none d-md-inline-flex">
                             <span className="cta-text">Login</span>
                         </Link>
-                        <Link
-                            to="/register"
-                            className="btn btn--primary nav-cta d-none d-md-inline-flex"
-                        >
-                            <span className="cta-icon" aria-hidden="true">✨</span>
+                        <Link to="/register" className="btn btn--primary nav-cta d-none d-md-inline-flex">
                             <span className="cta-text">Create Account</span>
                         </Link>
 
-                        {/* Mobile Toggle */}
                         <button
                             className="nav-toggle-btn d-md-none"
                             onClick={() => setMobileMenuOpen(true)}
@@ -95,15 +99,9 @@ export default function Navbar({ activeSection, loaded, isScrolled }) {
                         </button>
                     </div>
                 </div>
+            </nav>
 
-
-            </nav >
-
-            {/* MOBILE MENU OVERLAY */}
-            <div
-                className={`mobile-menu-overlay ${mobileMenuOpen ? 'is-open' : ''}`}
-                aria-hidden={!mobileMenuOpen}
-            >
+            <div className={`mobile-menu-overlay ${mobileMenuOpen ? "is-open" : ""}`} aria-hidden={!mobileMenuOpen}>
                 <div className="mobile-menu-header">
                     <div className="brand fs-4 text-white fw-bold tracking-wider" style={{ fontFamily: "var(--font-display)" }}>AS DANCE</div>
                     <button
@@ -130,7 +128,7 @@ export default function Navbar({ activeSection, loaded, isScrolled }) {
                         <Link to="/register" className="btn btn-hero btn-cta-primary w-100" onClick={() => setMobileMenuOpen(false)}>Create Account</Link>
                     </div>
                 </div>
-            </div >
+            </div>
         </>
     );
 }

@@ -10,6 +10,7 @@ import "../checkout-styles.css";
 const Checkout = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const customQuoteUrl = "https://wa.me/918825602356?text=Hi%20AS%20DANCE%2C%20I%20need%20a%20custom%20choreography%20quote.";
 
   const [messages, setMessages] = useState([]);
   const [processing, setProcessing] = useState(false);
@@ -219,20 +220,27 @@ const Checkout = () => {
           <div className="checkout-left">
             <div className="checkout-micro-stats">Secure Checkout</div>
             <div className="checkout-brandline">AS DANCE</div>
-            <div className="checkout-title-sm">Get Online Dance Training Access</div>
-            <div className="checkout-subtitle">Secure payment. Access provided within 24-48 hours.</div>
+            <div className="checkout-title-sm">Course Access Checkout - INR 499</div>
+            <div className="checkout-subtitle">Fixed-price course purchase. Access delivered within 24-48 hours.</div>
+
+            <div className="checkout-switch-offer">
+              Need custom choreography instead?{" "}
+              <a href={customQuoteUrl} target="_blank" rel="noopener noreferrer">
+                Get WhatsApp quote
+              </a>
+            </div>
 
             <div className="checkout-steps">
               <span className="checkout-step is-complete">Details</span>
-              <span className="checkout-step-divider">•</span>
+              <span className="checkout-step-divider">|</span>
               <span className="checkout-step is-active">Payment</span>
-              <span className="checkout-step-divider">•</span>
+              <span className="checkout-step-divider">|</span>
               <span className="checkout-step">Unlock</span>
             </div>
 
             <p className="checkout-body">
-              Your payment confirms course access and lets us deliver your customized choreography or training link.
-              Fill in optional contact details so we can confirm delivery within 24-48 hours.
+              This payment is for course access only. Fill in optional contact details so we can confirm and deliver
+              access within 24-48 hours.
             </p>
 
             <form
@@ -278,7 +286,7 @@ const Checkout = () => {
                   type="submit"
                   disabled={processing}
                 >
-                  {processing ? "Processing..." : "Buy Now"}
+                  {processing ? "Processing..." : "Pay INR 499 Now"}
                 </button>
               </div>
             </form>
@@ -312,11 +320,15 @@ const Checkout = () => {
               </div>
               <div className="checkout-summary-row">
                 <span>Course Access</span>
-                <span className="checkout-summary-value">₹499</span>
+                <span className="checkout-summary-value">INR 499</span>
+              </div>
+              <div className="checkout-summary-row">
+                <span>Delivery Window</span>
+                <span className="checkout-summary-value">24-48h</span>
               </div>
               <div className="checkout-summary-row total">
                 <span>Total</span>
-                <span className="checkout-summary-value">₹499</span>
+                <span className="checkout-summary-value">INR 499</span>
               </div>
               <button
                 className="checkout-summary-cta"
@@ -324,7 +336,7 @@ const Checkout = () => {
                 onClick={handlePayment}
                 disabled={processing}
               >
-                {processing ? "Processing..." : "Pay ₹499"}
+                {processing ? "Processing..." : "Pay INR 499"}
               </button>
 
               <div className="checkout-trust-divider"></div>
@@ -333,7 +345,10 @@ const Checkout = () => {
                 <span className="checkout-trust-item">Delivery 24-48 hours</span>
                 <span className="checkout-trust-item">Course Access</span>
               </div>
-              <div className="checkout-receipt">Receipt sent after payment. Access delivered within 24-48 hours via Google Drive or private online access. Refunds apply only if access is not delivered.</div>
+              <div className="checkout-receipt">
+                Receipt is sent after payment. Access is delivered within 24-48 hours via Google Drive or private
+                online access. Refunds apply only if access is not delivered.
+              </div>
 
               <div className="checkout-support">
                 <div className="checkout-support-item">
@@ -354,8 +369,21 @@ const Checkout = () => {
                     </div>
                   </div>
                 </div>
+                <div className="checkout-support-item">
+                  <WhatsApp size={18} className="support-icon" aria-hidden="true" />
+                  <div>
+                    <div className="support-label">Custom Choreo Quote</div>
+                    <div className="support-value">
+                      <a href={customQuoteUrl} target="_blank" rel="noopener noreferrer">
+                        Open WhatsApp quote chat
+                      </a>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div className="checkout-trust-note">Complete payment to confirm your course access.</div>
+              <div className="checkout-trust-note">
+                This checkout is only for course access. For custom choreography packages, use WhatsApp quote.
+              </div>
             </div>
           </div>
         </div>

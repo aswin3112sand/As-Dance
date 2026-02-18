@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { memo, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../auth.jsx";
 import { shouldReduceMotion } from "../utils/motion.js";
@@ -7,9 +7,10 @@ import bannerAvif840 from "../../assets/optimized/banner-840.avif";
 import bannerWebp420 from "../../assets/optimized/banner-420.webp";
 import bannerWebp840 from "../../assets/optimized/banner-840.webp";
 
-export default function BannerStrip() {
+function BannerStrip() {
   const nav = useNavigate();
   const { user } = useAuth();
+  const customQuoteUrl = "https://wa.me/918825602356?text=Hi%20AS%20DANCE%2C%20I%20need%20a%20custom%20choreography%20quote.";
   const starLayers = useMemo(() => {
     const reduceStars = typeof window !== "undefined" && (
       shouldReduceMotion() ||
@@ -54,6 +55,10 @@ export default function BannerStrip() {
       return;
     }
     nav(target);
+  };
+
+  const handleCustomQuote = () => {
+    window.open(customQuoteUrl, "_blank", "noopener,noreferrer");
   };
 
   return (
@@ -119,12 +124,12 @@ export default function BannerStrip() {
         <div className="banner-copy">
           <div className="banner-content-item">
             <div className="banner-welcome-badge">
-              <span style={{ fontSize: '1.1em' }} role="img" aria-label="headphones">🎧</span>
+              <span className="banner-welcome-mark" aria-hidden="true">AS</span>
               Welcome to AS DANCE
             </div>
           </div>
 
-          <div className="banner-kicker banner-content-item">ABOUT US</div>
+          <div className="banner-kicker banner-content-item">START HERE</div>
 
           <h2 className="banner-title-advanced banner-content-item">
             <span className="title-accent">Customized</span>{" "}
@@ -152,6 +157,9 @@ export default function BannerStrip() {
 
           <div className="banner-meta banner-content-item mt-4">
             Delivery within 24-48 hours after payment
+          </div>
+          <div className="banner-offer-line banner-content-item">
+            Course Access: INR 499 | Custom Choreography: Starts INR 300
           </div>
           <p className="banner-tagline banner-content-item mt-3 text-white-50">
             All services are delivered digitally via Google Drive or private online access.
@@ -194,22 +202,36 @@ export default function BannerStrip() {
           </div>
           <div className="banner-buy-wrap">
             <div className="banner-buy-chip">
-              <span className="price">Course Access</span>
+              <span className="price">INR 499</span>
               <span className="sep">|</span>
-              <span className="steps">Online service</span>
+              <span className="steps">Course Access</span>
             </div>
-            <button
-              type="button"
-              className="banner-buy-btn"
-              onClick={handleCheckout}
-            >
-              <span className="banner-buy-text">Get Course Access</span>
-            </button>
+            <div className="banner-buy-actions">
+              <button
+                type="button"
+                className="banner-buy-btn"
+                onClick={handleCheckout}
+              >
+                <span className="banner-buy-text">Buy Course Access</span>
+              </button>
+              <button
+                type="button"
+                className="banner-custom-btn"
+                onClick={handleCustomQuote}
+              >
+                Custom Choreo Quote
+              </button>
+            </div>
+            <p className="banner-buy-note">
+              Fixed checkout for course access. Custom choreography is quoted on WhatsApp.
+            </p>
           </div>
         </div>
       </div>
     </section>
   );
 }
+
+export default memo(BannerStrip);
 
 

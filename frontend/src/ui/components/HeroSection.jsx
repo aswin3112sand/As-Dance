@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { memo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../auth.jsx";
 import { ShieldCheck, Infinity, Zap, Headphones } from "../icons.jsx";
@@ -23,7 +23,7 @@ const OFFER_ICONS = [
 const HeroSection = () => {
   const nav = useNavigate();
   const { user } = useAuth();
-  const counterRef = useRef(null);
+  const customQuoteUrl = "https://wa.me/918825602356?text=Hi%20AS%20DANCE%2C%20I%20want%20a%20custom%20choreography%20quote.";
 
   const handleCheckout = () => {
     const target = "/checkout?pay=1";
@@ -34,11 +34,9 @@ const HeroSection = () => {
     nav(target);
   };
 
-  useEffect(() => {
-    const targetEl = counterRef.current;
-    if (!targetEl) return;
-    targetEl.textContent = "24-48";
-  }, []);
+  const handlePreview = () => {
+    nav("/preview");
+  };
 
   return (
     <section className="hero-section section bg-hero hero-full">
@@ -52,17 +50,20 @@ const HeroSection = () => {
           </div>
           <div className="hero-headline-row">
             <h1 className="hero-title">
-              Customized <span className="hero-title-highlight">CHOREOGRAPHY</span> AND ONLINE DANCE TRAINING
+              Learn Faster With <span className="hero-title-highlight">AS DANCE</span>
             </h1>
             <div className="hero-count-panel">
-              <span className="hero-count-value" ref={counterRef}>0</span>
+              <span className="hero-count-value">24-48</span>
               <span className="hero-count-label">Hours</span>
               <span className="hero-price-tag">Delivery window</span>
             </div>
           </div>
+          <p className="hero-offer-line">
+            Course Access INR 499 | Secure Payment | Delivery in 24-48 hours
+          </p>
           <div className="hero-price-stack">
-            <span className="hero-old-price">Education service</span>
-            <span className="hero-price-badge">Subscription / course access</span>
+            <span className="hero-old-price">Two options available</span>
+            <span className="hero-price-badge">Course access or custom choreography</span>
           </div>
           <div className="hero-levels">
             {SERVICE_PILLARS.map((level) => (
@@ -81,19 +82,31 @@ const HeroSection = () => {
               </span>
             ))}
           </div>
-          <div className="hero-cta-row">
+          <div className="hero-cta-row hero-cta-stack">
             <button
               type="button"
               className="btn btn-cta btn-hero btn-cta-primary hero-primary-cta"
               onClick={handleCheckout}
             >
-              GET COURSE ACCESS
+              BUY COURSE ACCESS - INR 499
+            </button>
+            <button
+              type="button"
+              className="btn btn-outline-light btn-hero hero-secondary-cta"
+              onClick={handlePreview}
+            >
+              WATCH PREVIEW
             </button>
           </div>
+          <div className="hero-cta-hint">
+            Need custom choreography pricing?{" "}
+            <a href={customQuoteUrl} target="_blank" rel="noopener noreferrer">
+              Get WhatsApp quote
+            </a>
+          </div>
           <p className="hero-copy hero-copy-advanced">
-            An online service for customized choreography with original dance steps, plus online dance training built
-            around your song and style. This education service provides subscription / course access with guided videos
-            and support.
+            Course Access is a fixed-price checkout. Custom choreography is a separate service with duration-based
+            pricing and WhatsApp consultation.
           </p>
           <div className="hero-offer-icons hero-offer-icons-cta">
             {OFFER_ICONS.map((item) => (
@@ -154,7 +167,7 @@ const HeroSection = () => {
   );
 };
 
-export default HeroSection;
+export default memo(HeroSection);
 
 
 

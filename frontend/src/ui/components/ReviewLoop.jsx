@@ -1,6 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { shouldReduceMotion } from "../utils/motion.js";
+import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Star } from "../icons.jsx";
+import { shouldReduceMotion } from "../utils/motion.js";
+import "./ReviewLoop.css";
+
 import w1 from "../../assets/bg/w1.webp";
 import w2 from "../../assets/bg/w2.webp";
 import w3 from "../../assets/bg/w3.webp";
@@ -43,518 +45,257 @@ const REVIEWS = [
   { id: 15, name: "Venkat", profileIndex: 14, tagline: "AS DANCE Learner", txt: "Reliable education service with practical guidance." },
   { id: 16, name: "Starwin", profileIndex: 15, tagline: "AS DANCE Learner", txt: "Easy communication and a tailored result." }
 ];
-const ANIMATION_STATE_KEY = "as-dance-review-animation-state";
 
-export default function ReviewLoop() {
-  const reviews = REVIEWS;
-  const [isAnimating, setIsAnimating] = useState(() => {
-    if (typeof window === "undefined") return false;
-    const reduceMotion = shouldReduceMotion();
-    const isSmallScreen = window.matchMedia("(max-width: 768px)").matches;
-    const isCoarsePointer = window.matchMedia("(pointer: coarse)").matches;
-    if (reduceMotion || isSmallScreen || isCoarsePointer) return false;
-    const stored = localStorage.getItem(ANIMATION_STATE_KEY);
-    return stored ? JSON.parse(stored) : true;
-  });
-  const loopReviews = isAnimating ? [...reviews, ...reviews] : reviews;
+const STAR_KEYS = [1, 2, 3, 4, 5];
+const AUTO_SCROLL_PX_PER_SECOND = 26;
+const AUTO_RESUME_DELAY = 2200;
+const FALLBACK_CARD_STEP = 300;
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      localStorage.setItem(ANIMATION_STATE_KEY, JSON.stringify(isAnimating));
-    }
-  }, [isAnimating]);
-
-  const toggleAnimation = () => {
-    setIsAnimating(!isAnimating);
-  };
+const ReviewCard = memo(function ReviewCard({ review }) {
+  const profile = PROFILE_IMAGES[review.profileIndex % PROFILE_IMAGES.length];
 
   return (
-    <section id="reviews" className="section review-section bg-reviews section-anim">
-      <style>{`
-        .review-section {
-          position: relative;
-          padding: 3.5rem 0;
-          background: linear-gradient(180deg, rgba(5, 8, 20, 0.95) 0%, rgba(8, 12, 28, 0.92) 50%, rgba(5, 8, 20, 0.95) 100%);
-          overflow: hidden;
-          isolation: isolate;
-        }
+    <article className="review-loop-card" role="listitem">
+      <div className="review-loop-card-head">
+        <div className="review-loop-avatar-wrap">
+          <img
+            src={profile}
+            alt={`${review.name} profile`}
+            loading="lazy"
+            decoding="async"
+            fetchpriority="low"
+            width="56"
+            height="56"
+            className="review-loop-avatar"
+          />
+          <span className="review-loop-badge">{`#${review.id}`}</span>
+        </div>
+        <div>
+          <p className="review-loop-name">{review.name}</p>
+          <p className="review-loop-tagline">{review.tagline}</p>
+        </div>
+      </div>
+      <p className="review-loop-copy">"{review.txt}"</p>
+      <div className="review-loop-stars" aria-hidden="true">
+        {STAR_KEYS.map((star) => (
+          <Star key={star} size={16} fill="currentColor" stroke="none" />
+        ))}
+      </div>
+    </article>
+  );
+});
 
-        .review-section::before {
-          content: '';
-          position: absolute;
-          inset: 0;
-          background: 
-            repeating-linear-gradient(0deg, rgba(0, 242, 234, 0.02) 0px, rgba(0, 242, 234, 0.02) 1px, transparent 1px, transparent 40px),
-            repeating-linear-gradient(90deg, rgba(0, 242, 234, 0.02) 0px, rgba(0, 242, 234, 0.02) 1px, transparent 1px, transparent 40px),
-            radial-gradient(ellipse 120% 50% at 50% 0%, rgba(0, 242, 234, 0.08) 0%, transparent 60%),
-            radial-gradient(ellipse 100% 60% at 50% 100%, rgba(255, 0, 80, 0.06) 0%, transparent 70%);
-          pointer-events: none;
-          z-index: 1;
-        }
+function ReviewLoop() {
+  const [isAnimating, setIsAnimating] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return !shouldReduceMotion();
+  });
+  const [isPaused, setIsPaused] = useState(false);
+  const [isCoarsePointer, setIsCoarsePointer] = useState(false);
+  const scrollerRef = useRef(null);
+  const animationFrameRef = useRef(null);
+  const resumeTimerRef = useRef(null);
 
-        .review-fog-layer {
-          position: absolute;
-          inset: 0;
-          background: radial-gradient(ellipse 80% 40% at 50% 50%, rgba(0, 242, 234, 0.08) 0%, transparent 70%);
-          filter: blur(60px);
-          pointer-events: none;
-          z-index: 1;
-          opacity: 0.12;
-          will-change: opacity;
-          animation: reviewFogPulse 18s ease-in-out infinite;
-        }
+  const loopReviews = useMemo(() => (isAnimating ? [...REVIEWS, ...REVIEWS] : REVIEWS), [isAnimating]);
 
-        .review-nebula-tl {
-          position: absolute;
-          top: -100px;
-          left: -100px;
-          width: 400px;
-          height: 400px;
-          background: radial-gradient(circle, rgba(0, 242, 234, 0.15) 0%, transparent 70%);
-          filter: blur(80px);
-          pointer-events: none;
-          z-index: 1;
-          will-change: transform;
-          animation: reviewNebulaPulse 22s ease-in-out infinite;
-        }
+  const clearResumeTimer = useCallback(() => {
+    if (resumeTimerRef.current) {
+      window.clearTimeout(resumeTimerRef.current);
+      resumeTimerRef.current = null;
+    }
+  }, []);
 
-        .review-nebula-br {
-          position: absolute;
-          bottom: -100px;
-          right: -100px;
-          width: 400px;
-          height: 400px;
-          background: radial-gradient(circle, rgba(255, 0, 80, 0.12) 0%, transparent 70%);
-          filter: blur(80px);
-          pointer-events: none;
-          z-index: 1;
-          will-change: transform;
-          animation: reviewNebulaPulse 24s ease-in-out infinite reverse;
-        }
+  const normalizeLoopPosition = useCallback((scroller) => {
+    const loopPoint = scroller.scrollWidth / 2;
+    if (!loopPoint || !Number.isFinite(loopPoint)) return;
+    if (scroller.scrollLeft >= loopPoint) {
+      scroller.scrollLeft -= loopPoint;
+      return;
+    }
+    if (scroller.scrollLeft <= 0) {
+      scroller.scrollLeft += loopPoint;
+    }
+  }, []);
 
-        .reviews-header {
-          position: relative;
-          z-index: 2;
-          text-align: center;
-          margin-bottom: 3.5rem;
-        }
+  const pauseTemporarily = useCallback(() => {
+    if (!isAnimating) return;
+    clearResumeTimer();
+    setIsPaused(true);
+    resumeTimerRef.current = window.setTimeout(() => {
+      setIsPaused(false);
+      resumeTimerRef.current = null;
+    }, AUTO_RESUME_DELAY);
+  }, [clearResumeTimer, isAnimating]);
 
-        .reviews-title {
-          font-family: var(--font-display);
-          font-size: clamp(1.8rem, 4vw, 3rem);
-          font-weight: 800;
-          color: #fff;
-          margin: 0 0 1rem 0;
-          letter-spacing: -1px;
-          text-shadow: 0 0 30px rgba(0, 242, 234, 0.2);
-          position: relative;
-        }
+  const handleBlur = useCallback((event) => {
+    const relatedTarget = event.relatedTarget;
+    if (!relatedTarget || !event.currentTarget.contains(relatedTarget)) {
+      clearResumeTimer();
+      setIsPaused(false);
+    }
+  }, [clearResumeTimer]);
 
-        .reviews-title-glow {
-          position: absolute;
-          inset: 0;
-          background: linear-gradient(90deg, transparent 0%, rgba(0, 242, 234, 0.3) 50%, transparent 100%);
-          -webkit-background-clip: text;
-          background-clip: text;
-          -webkit-text-fill-color: transparent;
-          opacity: 0;
-          will-change: opacity;
-          pointer-events: none;
-          animation: reviewTitleGlow 12s ease-in-out infinite;
-        }
+  const scrollByCard = useCallback((direction) => {
+    const scroller = scrollerRef.current;
+    if (!scroller) return;
+    const track = scroller.querySelector(".review-loop-track");
+    const firstCard = scroller.querySelector(".review-loop-card");
+    const trackStyles = track ? window.getComputedStyle(track) : null;
+    const gap = trackStyles ? parseFloat(trackStyles.columnGap || trackStyles.gap || "0") : 0;
+    const step = (firstCard?.getBoundingClientRect().width || FALLBACK_CARD_STEP) + gap;
 
-        .reviews-subhead {
-          font-family: var(--font-sans);
-          font-size: 1rem;
-          color: rgba(255, 255, 255, 0.65);
-          max-width: 700px;
-          margin: 0 auto;
-          line-height: 1.6;
-          letter-spacing: 0.3px;
-        }
+    scroller.scrollBy({ left: direction * step, behavior: "smooth" });
 
-        .review-scroller-wrapper {
-          position: relative;
-          z-index: 3;
-          display: flex;
-          align-items: center;
-          gap: 1.5rem;
-          padding: 0 1rem;
-        }
+    if (isAnimating) {
+      pauseTemporarily();
+      window.setTimeout(() => {
+        const current = scrollerRef.current;
+        if (current) normalizeLoopPosition(current);
+      }, 360);
+    }
+  }, [isAnimating, normalizeLoopPosition, pauseTemporarily]);
 
-        .review-scroller {
-          position: relative;
-          flex: 1;
-          min-width: 0;
-          overflow: hidden;
-        }
+  useEffect(() => {
+    if (typeof window === "undefined") return undefined;
+    const mediaQuery = window.matchMedia("(pointer: coarse)");
+    const handleChange = (event) => setIsCoarsePointer(event.matches);
 
-        .review-scroller.is-static {
-          overflow-x: auto;
-          -webkit-overflow-scrolling: touch;
-          scrollbar-width: none;
-        }
+    setIsCoarsePointer(mediaQuery.matches);
+    if (mediaQuery.addEventListener) {
+      mediaQuery.addEventListener("change", handleChange);
+      return () => mediaQuery.removeEventListener("change", handleChange);
+    }
 
-        .review-scroller.is-static::-webkit-scrollbar {
-          display: none;
-        }
+    mediaQuery.addListener(handleChange);
+    return () => mediaQuery.removeListener(handleChange);
+  }, []);
 
-        .review-track {
-          display: flex;
-          gap: 1.5rem;
-          padding: 1rem 0;
-          width: max-content;
-          will-change: transform;
-        }
+  useEffect(() => {
+    const scroller = scrollerRef.current;
+    if (!scroller || !isAnimating) return;
+    if (scroller.scrollLeft < 1) {
+      scroller.scrollLeft = 1;
+    }
+  }, [isAnimating, loopReviews.length]);
 
-        .review-track.is-animating {
-          animation: reviewMarquee 24s linear infinite;
-        }
+  useEffect(() => {
+    const scroller = scrollerRef.current;
+    if (!scroller || !isAnimating || isPaused) return;
 
-        @keyframes reviewMarquee {
-          from { transform: translate3d(0, 0, 0); }
-          to { transform: translate3d(-50%, 0, 0); }
-        }
+    let lastTime = performance.now();
+    const animate = (timestamp) => {
+      const delta = timestamp - lastTime;
+      lastTime = timestamp;
+      scroller.scrollLeft += (AUTO_SCROLL_PX_PER_SECOND * delta) / 1000;
+      normalizeLoopPosition(scroller);
+      animationFrameRef.current = window.requestAnimationFrame(animate);
+    };
 
-        @keyframes reviewFogPulse {
-          0%, 100% { opacity: 0.08; }
-          50% { opacity: 0.16; }
-        }
+    animationFrameRef.current = window.requestAnimationFrame(animate);
+    return () => {
+      if (animationFrameRef.current) {
+        window.cancelAnimationFrame(animationFrameRef.current);
+        animationFrameRef.current = null;
+      }
+    };
+  }, [isAnimating, isPaused, loopReviews.length, normalizeLoopPosition]);
 
-        @keyframes reviewNebulaPulse {
-          0%, 100% { transform: scale(1); }
-          50% { transform: scale(1.04); }
-        }
+  useEffect(() => {
+    return () => {
+      clearResumeTimer();
+      if (animationFrameRef.current) {
+        window.cancelAnimationFrame(animationFrameRef.current);
+      }
+    };
+  }, [clearResumeTimer]);
 
-        @keyframes reviewTitleGlow {
-          0%, 100% { opacity: 0.08; }
-          50% { opacity: 0.45; }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-          .review-track.is-animating,
-          .review-fog-layer,
-          .review-nebula-tl,
-          .review-nebula-br,
-          .reviews-title-glow {
-            animation: none !important;
-          }
-        }
-
-        .review-card {
-          flex: 0 0 clamp(260px, 70vw, 340px);
-          min-width: clamp(260px, 70vw, 340px);
-          height: 100%;
-          background: rgba(10, 18, 25, 0.4);
-          border: 1px solid rgba(0, 242, 234, 0.12);
-          border-radius: 16px;
-          padding: clamp(1.25rem, 3.5vw, 2rem);
-          transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1),
-            box-shadow 0.35s cubic-bezier(0.4, 0, 0.2, 1),
-            border-color 0.35s ease,
-            background 0.35s ease;
-          cursor: pointer;
-          display: flex;
-          flex-direction: column;
-          box-shadow: 0 8px 32px rgba(0, 242, 234, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.1);
-          will-change: transform, box-shadow, border-color, opacity;
-        }
-
-        .review-card:hover {
-          border-color: rgba(0, 242, 234, 0.4);
-          background: rgba(10, 18, 25, 0.6);
-          box-shadow: 0 18px 50px rgba(0, 0, 0, 0.35), 0 0 18px rgba(0, 242, 234, 0.16),
-            inset 0 1px 0 rgba(255, 255, 255, 0.15);
-          transform: translateY(-6px);
-        }
-
-        .review-card-inner {
-          display: flex;
-          flex-direction: column;
-          gap: 1.25rem;
-          flex: 1;
-        }
-
-        .review-card-heading {
-          display: flex;
-          gap: 1rem;
-          align-items: flex-start;
-        }
-
-        .review-card-avatar {
-          position: relative;
-          flex-shrink: 0;
-        }
-
-        .review-card-avatar-ring {
-          position: absolute;
-          inset: -4px;
-          border-radius: 50%;
-          background: conic-gradient(from 0deg, rgba(0, 242, 234, 0.6), rgba(255, 0, 80, 0.3), rgba(0, 242, 234, 0.6));
-          opacity: 0.8;
-          animation: ringRotate 140s linear infinite;
-          will-change: transform;
-        }
-
-        @keyframes ringRotate {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-
-        .review-card-avatar-img {
-          position: relative;
-          z-index: 1;
-          width: clamp(44px, 14vw, 56px);
-          height: clamp(44px, 14vw, 56px);
-          border-radius: 50%;
-          object-fit: cover;
-          border: 2px solid rgba(0, 242, 234, 0.3);
-          box-shadow: 0 0 16px rgba(0, 242, 234, 0.2), inset 0 0 8px rgba(0, 242, 234, 0.1);
-          display: block;
-        }
-
-        .review-card-avatar-label {
-          position: absolute;
-          bottom: -6px;
-          right: -6px;
-          background: linear-gradient(135deg, rgba(0, 242, 234, 0.9), rgba(255, 0, 80, 0.7));
-          color: #fff;
-          font-size: clamp(0.55rem, 2vw, 0.65rem);
-          font-weight: 800;
-          padding: 3px 5px;
-          border-radius: 50%;
-          width: clamp(20px, 6vw, 24px);
-          height: clamp(20px, 6vw, 24px);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          border: 1px solid rgba(255, 255, 255, 0.3);
-          box-shadow: 0 0 12px rgba(0, 242, 234, 0.4);
-          z-index: 2;
-        }
-
-        .review-card-name {
-          font-family: var(--font-display);
-          font-size: 1rem;
-          font-weight: 700;
-          color: rgba(255, 255, 255, 0.95);
-          margin: 0;
-          letter-spacing: -0.3px;
-        }
-
-        .review-card-tagline {
-          font-family: var(--font-sans);
-          font-size: 0.75rem;
-          font-weight: 700;
-          color: rgba(0, 242, 234, 0.8);
-          margin: 0;
-          text-transform: uppercase;
-          letter-spacing: 1px;
-        }
-
-        .review-card-text {
-          font-family: var(--font-sans);
-          font-size: 0.95rem;
-          color: rgba(255, 255, 255, 0.75);
-          line-height: 1.6;
-          margin: 0;
-          font-weight: 500;
-          flex: 1;
-        }
-
-        .review-card-stars {
-          display: flex;
-          gap: 0.4rem;
-          margin-top: auto;
-        }
-
-        .review-card-stars svg {
-          color: #FFD700;
-          filter: drop-shadow(0 0 4px rgba(255, 215, 0, 0.4));
-        }
-
-        .review-controls {
-          flex-shrink: 0;
-          display: flex;
-          gap: 0.75rem;
-          align-items: center;
-        }
-
-        .review-control {
-          flex-shrink: 0;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          width: clamp(40px, 10vw, 48px);
-          height: clamp(40px, 10vw, 48px);
-          background: rgba(0, 242, 234, 0.1);
-          border: 1.5px solid rgba(0, 242, 234, 0.3);
-          border-radius: 10px;
-          cursor: pointer;
-          transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), background 0.2s ease, color 0.2s ease;
-          color: rgba(0, 242, 234, 0.8);
-          font-size: clamp(0.95rem, 2.5vw, 1.2rem);
-          font-weight: 700;
-          box-shadow: 0 0 16px rgba(0, 242, 234, 0.1);
-          will-change: transform, box-shadow, background;
-          padding: 0;
-        }
-
-        .review-control:hover {
-          background: rgba(0, 242, 234, 0.2);
-          border-color: rgba(0, 242, 234, 0.6);
-          color: rgba(0, 242, 234, 1);
-          box-shadow: 0 0 24px rgba(0, 242, 234, 0.3);
-          transform: translateY(-1px);
-        }
-
-        .review-control:active {
-          transform: translateY(1px);
-        }
-
-        .review-control.active {
-          background: rgba(0, 242, 234, 0.25);
-          border-color: rgba(0, 242, 234, 0.8);
-          color: rgba(0, 242, 234, 1);
-          box-shadow: 0 0 32px rgba(0, 242, 234, 0.4);
-        }
-
-        @media (max-width: 768px) {
-          .review-section {
-            padding: 3.5rem 0;
-          }
-
-          .reviews-title {
-            font-size: clamp(1.6rem, 5vw, 2rem);
-            letter-spacing: -0.5px;
-          }
-
-          .reviews-subhead {
-            font-size: 0.9rem;
-          }
-
-          .review-card {
-            flex: 0 0 clamp(240px, 78vw, 300px);
-            min-width: clamp(240px, 78vw, 300px);
-            padding: clamp(1.1rem, 3.5vw, 1.5rem);
-          }
-
-          .review-scroller-wrapper {
-            gap: 1rem;
-            padding: 0 0.5rem;
-          }
-
-          .review-card-avatar-ring {
-            animation: none;
-          }
-        }
-
-        @media (max-width: 640px) {
-          .review-scroller-wrapper {
-            flex-direction: column;
-            align-items: stretch;
-          }
-
-          .review-controls {
-            width: 100%;
-            justify-content: center;
-          }
-        }
-
-        @media (max-width: 480px) {
-          .review-section {
-            padding: 2.5rem 0;
-          }
-
-          .reviews-title {
-            font-size: 1.5rem;
-          }
-
-          .review-card {
-            flex: 0 0 clamp(220px, 82vw, 280px);
-            min-width: clamp(220px, 82vw, 280px);
-            padding: clamp(1rem, 4vw, 1.25rem);
-          }
-
-          .review-control {
-            width: clamp(38px, 12vw, 44px);
-            height: clamp(38px, 12vw, 44px);
-            font-size: clamp(0.9rem, 3.5vw, 1rem);
-          }
-        }
-      `}</style>
-
-      <div className="review-fog-layer" />
-      <div className="review-nebula-tl" />
-      <div className="review-nebula-br" />
-
+  return (
+    <section id="reviews" className="section review-loop-section section-anim" aria-labelledby="reviews-title">
+      <div className="review-loop-fog" aria-hidden="true" />
       <div className="container-max">
-        <div className="reviews-header">
-          <h2 className="reviews-title">
-            User Reviews & Stage Feedback
-            <span className="reviews-title-glow">User Reviews & Stage Feedback</span>
-          </h2>
-          <p className="reviews-subhead">
+        <header className="review-loop-header">
+          <h2 className="review-loop-title" id="reviews-title">User Reviews & Stage Feedback</h2>
+          <p className="review-loop-subtitle">
             Customized choreography and online dance training trusted by performers. Real feedback from learners and
             event dancers.
           </p>
-        </div>
+        </header>
 
-        <div className="review-scroller-wrapper">
-          <div className={`review-scroller ${isAnimating ? "is-animating" : "is-static"}`}>
-            <div className={`review-track ${isAnimating ? "is-animating" : ""}`}>
-              {loopReviews.map((review, idx) => {
-                const profile = PROFILE_IMAGES[review.profileIndex % PROFILE_IMAGES.length];
-                return (
-                  <article key={`review-${review.id}-${idx}`} className="review-card">
-                    <div className="review-card-inner">
-                      <div className="review-card-heading">
-                        <div className="review-card-avatar">
-                          <div className="review-card-avatar-ring" />
-                          <img
-                            src={profile}
-                            alt="AS DANCE learner"
-                            loading="lazy"
-                            decoding="async"
-                            width="56"
-                            height="56"
-                            className="review-card-avatar-img"
-                          />
-                          <span className="review-card-avatar-label">{`#${review.id}`}</span>
-                        </div>
-                        <div>
-                          <p className="review-card-name">{review.name}</p>
-                          <p className="review-card-tagline">{review.tagline}</p>
-                        </div>
-                      </div>
-
-                      <p className="review-card-text">"{review.txt}"</p>
-
-                      <div className="review-card-stars">
-                        {[1, 2, 3, 4, 5].map((star) => (
-                          <Star key={star} size={16} fill="currentColor" stroke="none" />
-                        ))}
-                      </div>
-                    </div>
-                  </article>
-                );
-              })}
+        <div className="review-loop-shell">
+          <div
+            ref={scrollerRef}
+            className={`review-loop-scroller ${isAnimating ? "is-animating" : "is-static"} ${isCoarsePointer ? "is-touch" : ""}`}
+            onMouseEnter={() => {
+              if (!isAnimating || isCoarsePointer) return;
+              setIsPaused(true);
+            }}
+            onMouseLeave={() => {
+              clearResumeTimer();
+              setIsPaused(false);
+            }}
+            onFocusCapture={() => {
+              if (!isAnimating) return;
+              setIsPaused(true);
+            }}
+            onBlurCapture={handleBlur}
+            onScroll={() => {
+              if (!isAnimating) return;
+              const scroller = scrollerRef.current;
+              if (scroller) normalizeLoopPosition(scroller);
+            }}
+            onTouchStart={() => {
+              if (!isAnimating) return;
+              clearResumeTimer();
+              setIsPaused(true);
+            }}
+            onTouchEnd={pauseTemporarily}
+            onTouchCancel={pauseTemporarily}
+          >
+            <div className="review-loop-track" role="list" aria-label="Customer reviews">
+              {loopReviews.map((review, idx) => (
+                <ReviewCard key={`review-${review.id}-${idx}`} review={review} />
+              ))}
             </div>
           </div>
-          <div className="review-controls">
+
+          <div className="review-loop-controls">
             <button
-              className={`review-control ${isAnimating ? "active" : ""}`}
-              onClick={toggleAnimation}
-              title={isAnimating ? "Stop animation" : "Start animation"}
               type="button"
-              aria-label={isAnimating ? "Stop animation" : "Start animation"}
+              className="review-loop-control"
+              onClick={() => scrollByCard(-1)}
+              aria-label="View previous reviews"
             >
-              {isAnimating ? "ON" : "OFF"}
+              Prev
+            </button>
+            <button
+              type="button"
+              className={`review-loop-control ${isAnimating ? "active" : ""}`}
+              onClick={() => {
+                clearResumeTimer();
+                setIsPaused(false);
+                setIsAnimating((prev) => !prev);
+              }}
+              aria-pressed={isAnimating}
+              aria-label={isAnimating ? "Pause review auto scroll" : "Play review auto scroll"}
+            >
+              {isAnimating ? "Pause" : "Play"}
+            </button>
+            <button
+              type="button"
+              className="review-loop-control"
+              onClick={() => scrollByCard(1)}
+              aria-label="View next reviews"
+            >
+              Next
             </button>
           </div>
+          <p className="review-loop-status" aria-live="polite">
+            {isAnimating ? (isPaused ? "Auto scroll paused" : "Auto scroll running") : "Manual swipe mode enabled"}
+          </p>
         </div>
       </div>
     </section>
   );
 }
 
+export default memo(ReviewLoop);

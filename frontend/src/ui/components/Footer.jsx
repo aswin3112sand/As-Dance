@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { WhatsApp, Mail, ShieldCheck, Infinity, Zap, Headphones, PhoneCall } from "../icons.jsx";
 
-export default function Footer() {
+function Footer() {
     return (
         <footer className="site-footer section-anim bg-contact" id="contacts">
             <div className="container-max footer-grid">
@@ -69,3 +69,5 @@ export default function Footer() {
         </footer>
     );
 }
+
+export default memo(Footer);

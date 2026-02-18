@@ -180,3 +180,20 @@
         padding: 1rem 0;
     }
 }
+
+.checkout-switch-offer {
+    margin: 0.8rem 0 1rem;
+    padding: 0.7rem 0.9rem;
+    border-radius: 10px;
+    border: 1px solid rgba(127, 232, 255, 0.2);
+    background: rgba(8, 12, 26, 0.55);
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.checkout-switch-offer a {
+    color: #7fe8ff;
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
