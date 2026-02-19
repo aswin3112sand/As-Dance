@@ -35,8 +35,8 @@ function BannerStrip() {
     );
 
     const counts = reduceStars
-      ? { far: 10, mid: 8, near: 6 }
-      : { far: 18, mid: 16, near: 12 };
+      ? { far: 8, mid: 6, near: 4 }
+      : { far: 12, mid: 10, near: 8 };
     const twinkleMin = reduceStars ? 8 : 6;
     const twinkleMax = reduceStars ? 16 : 16;
     const delayMax = reduceStars ? 8 : 6;

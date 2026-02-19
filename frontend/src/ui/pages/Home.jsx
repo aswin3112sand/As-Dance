@@ -114,13 +114,6 @@ export default function Home() {
 
   return (
     <>
-      {/* 0. UTILS */}
-      <div id="preloader" style={{ opacity: loaded ? 0 : 1, visibility: loaded ? 'hidden' : 'visible' }}>
-        <div className="loader-content">
-          <div className="loader-text">AS DANCE</div>
-          <div className="loader-subtext">ONLINE DANCE TRAINING</div>
-        </div>
-      </div>
       {/* NAVBAR */}
       <header className="site-header">
         <Navbar

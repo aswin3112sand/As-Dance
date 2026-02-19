@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { Menu, X } from "../icons.jsx";
 
 const NAV_SECTIONS = ["about", "services", "preview", "reviews", "contacts"];
@@ -15,6 +15,55 @@ const BANNER_POINTS = [
 export default function Navbar({ activeSection, loaded, isScrolled }) {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [tickerPaused, setTickerPaused] = useState(false);
+    const location = useLocation();
+
+    useEffect(() => {
+        setMobileMenuOpen(false);
+    }, [location.pathname, location.search, location.hash]);
+
+    useEffect(() => {
+        const onEscape = (event) => {
+            if (event.key === "Escape") {
+                setMobileMenuOpen(false);
+            }
+        };
+
+        if (mobileMenuOpen) {
+            window.addEventListener("keydown", onEscape);
+        }
+
+        return () => {
+            window.removeEventListener("keydown", onEscape);
+        };
+    }, [mobileMenuOpen]);
+
+    useEffect(() => {
+        const mq = window.matchMedia("(min-width: 769px)");
+        const handleViewportChange = (event) => {
+            if (event.matches) {
+                setMobileMenuOpen(false);
+            }
+        };
+
+        if (mq.matches) {
+            setMobileMenuOpen(false);
+        }
+
+        if (typeof mq.addEventListener === "function") {
+            mq.addEventListener("change", handleViewportChange);
+            return () => mq.removeEventListener("change", handleViewportChange);
+        }
+
+        mq.addListener(handleViewportChange);
+        return () => mq.removeListener(handleViewportChange);
+    }, []);
+
+    useEffect(() => {
+        document.body.classList.toggle("mobile-menu-open", mobileMenuOpen);
+        return () => {
+            document.body.classList.remove("mobile-menu-open");
+        };
+    }, [mobileMenuOpen]);
 
     const handleTickerBlur = (event) => {
         const related = event.relatedTarget;
@@ -42,7 +91,9 @@ export default function Navbar({ activeSection, loaded, isScrolled }) {
 
             <nav className={`navbar${loaded ? " is-nav-animated" : ""}${isScrolled ? " is-scrolled" : ""}`}>
                 <div className="container-max">
-                    <div className="brand fs-4 text-white fw-bold tracking-wider" style={{ fontFamily: "var(--font-display)" }}>AS DANCE</div>
+                    <Link to="/" className="brand fs-4 text-white fw-bold tracking-wider" style={{ fontFamily: "var(--font-display)" }}>
+                        AS DANCE
+                    </Link>
 
                     <div className="nav-center">
                         <a
@@ -83,17 +134,20 @@ export default function Navbar({ activeSection, loaded, isScrolled }) {
                     </div>
 
                     <div className="header-actions">
-                        <Link to="/login" className="btn btn--ghost nav-cta d-none d-md-inline-flex">
+                        <Link to="/login" className="btn btn--ghost nav-cta nav-action-link">
                             <span className="cta-text">Login</span>
                         </Link>
-                        <Link to="/register" className="btn btn--primary nav-cta d-none d-md-inline-flex">
+                        <Link to="/register" className="btn btn--primary nav-cta nav-action-link">
                             <span className="cta-text">Create Account</span>
                         </Link>
 
                         <button
-                            className="nav-toggle-btn d-md-none"
+                            className="nav-toggle-btn"
+                            type="button"
                             onClick={() => setMobileMenuOpen(true)}
                             aria-label="Open Menu"
+                            aria-expanded={mobileMenuOpen}
+                            aria-controls="mobile-menu-overlay"
                         >
                             <Menu size={24} color="#fff" />
                         </button>
@@ -101,11 +155,25 @@ export default function Navbar({ activeSection, loaded, isScrolled }) {
                 </div>
             </nav>
 
-            <div className={`mobile-menu-overlay ${mobileMenuOpen ? "is-open" : ""}`} aria-hidden={!mobileMenuOpen}>
+            <div
+                id="mobile-menu-overlay"
+                className={`mobile-menu-overlay ${mobileMenuOpen ? "is-open" : ""}`}
+                aria-hidden={!mobileMenuOpen}
+                role="dialog"
+                aria-modal="true"
+            >
                 <div className="mobile-menu-header">
-                    <div className="brand fs-4 text-white fw-bold tracking-wider" style={{ fontFamily: "var(--font-display)" }}>AS DANCE</div>
+                    <Link
+                        to="/"
+                        className="brand fs-4 text-white fw-bold tracking-wider"
+                        style={{ fontFamily: "var(--font-display)" }}
+                        onClick={() => setMobileMenuOpen(false)}
+                    >
+                        AS DANCE
+                    </Link>
                     <button
                         className="nav-close-btn"
+                        type="button"
                         onClick={() => setMobileMenuOpen(false)}
                         aria-label="Close Menu"
                     >

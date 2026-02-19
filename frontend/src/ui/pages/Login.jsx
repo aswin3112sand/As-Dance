@@ -15,7 +15,6 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [err, setErr] = useState("");
   const [loading, setLoading] = useState(false);
-  const [mounted, setMounted] = useState(false);
   const particleCount = useMemo(() => {
     if (typeof window === "undefined") return 8;
     const reduceMotion = shouldReduceMotion();
@@ -32,7 +31,6 @@ export default function Login() {
   );
 
   useEffect(() => {
-    setMounted(true);
     if (typeof loc.state?.email === "string") {
       setEmail(loc.state.email);
     }
@@ -73,7 +71,7 @@ export default function Login() {
         <div className="light-beam beam-2"></div>
       </div>
 
-      <div className={`cinematic-card login-card ${mounted ? "mounted" : ""}`}>
+      <div className="cinematic-card login-card mounted">
         <div className="card-glow"></div>
 
         <div className="auth-header">

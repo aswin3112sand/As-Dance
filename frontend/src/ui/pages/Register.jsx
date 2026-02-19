@@ -19,7 +19,6 @@ export default function Register() {
   const [err, setErr] = useState("");
   const [ok, setOk] = useState("");
   const [loading, setLoading] = useState(false);
-  const [mounted, setMounted] = useState(false);
   const particleCount = useMemo(() => {
     if (typeof window === "undefined") return 10;
     const reduceMotion = shouldReduceMotion();
@@ -36,7 +35,6 @@ export default function Register() {
   );
 
   useEffect(() => {
-    setMounted(true);
     if (typeof loc.state?.email === "string") {
       setEmail(loc.state.email);
     }
@@ -94,7 +92,7 @@ export default function Register() {
         <div className="light-pulse"></div>
       </div>
 
-      <div className={`cinematic-card register-card ${mounted ? "mounted" : ""}`}>
+      <div className="cinematic-card register-card mounted">
         <div className="card-glow register-glow"></div>
 
         <div className="auth-header">

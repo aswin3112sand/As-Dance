@@ -14,13 +14,9 @@ test("renders hero content", () => {
     </MemoryRouter>
   );
 
-  expect(
-    screen.getByRole("heading", {
-      level: 1,
-      name: /customized.*online dance training/i
-    })
-  ).toBeInTheDocument();
-  expect(screen.getAllByRole("button", { name: /get course access/i }).length)
+  expect(screen.getByRole("heading", { name: /customized choreography online dance training/i }))
+    .toBeInTheDocument();
+  expect(screen.getAllByRole("button", { name: /buy course access/i }).length)
     .toBeGreaterThan(0);
   expect(screen.getAllByText(/AS DANCE/i).length).toBeGreaterThan(0);
 });

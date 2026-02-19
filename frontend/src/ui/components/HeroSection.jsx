@@ -151,12 +151,12 @@ const HeroSection = () => {
               <img
                 src={heroWebp1024}
                 alt="AS DANCE premium poster"
-                loading="eager"
+                loading="lazy"
                 decoding="async"
                 width="1024"
                 height="1536"
                 style={{ aspectRatio: "2/3" }}
-                fetchpriority="high"
+                fetchpriority="low"
                 className="hero-preview-image"
               />
             </picture>

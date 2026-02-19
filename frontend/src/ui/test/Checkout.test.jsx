@@ -3,13 +3,13 @@ import { MemoryRouter } from "react-router-dom";
 import { vi } from "vitest";
 import Checkout from "../pages/Checkout.jsx";
 
-const apiFetchMock = vi.fn().mockResolvedValue({
-  ok: true,
-  json: async () => ({ unlocked: false })
-});
-
-vi.mock("../api.js", () => ({
-  apiFetch: (...args) => apiFetchMock(...args)
+vi.mock("../paymentApi.js", () => ({
+  fetchPaymentStatus: vi.fn().mockResolvedValue({
+    ok: true,
+    data: { unlocked: false }
+  }),
+  createPaymentOrder: vi.fn(),
+  verifyPayment: vi.fn()
 }));
 
 vi.mock("../auth.jsx", () => ({
@@ -30,5 +30,5 @@ test("renders checkout screen", async () => {
   );
 
   expect(await screen.findByText(/Secure Checkout/i)).toBeInTheDocument();
-  expect(screen.getByRole("button", { name: /Buy Now/i })).toBeInTheDocument();
+  expect(screen.getByRole("button", { name: /pay inr 499 now/i })).toBeInTheDocument();
 });
