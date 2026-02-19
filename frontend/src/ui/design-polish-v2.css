@@ -309,3 +309,159 @@ select:focus {
     letter-spacing: -0.01em;
   }
 }
+
+/* Auth mobile hardening */
+.cinematic-auth {
+  isolation: isolate;
+}
+
+.cinematic-auth .cinematic-bg {
+  pointer-events: none;
+}
+
+.cinematic-auth .cinematic-card {
+  width: min(100%, 480px);
+  margin-inline: auto;
+}
+
+@media (max-width: 768px) {
+  .cinematic-auth.login-page,
+  .cinematic-auth.register-page {
+    min-height: 100svh !important;
+    min-height: 100dvh !important;
+    height: auto !important;
+    padding:
+      max(12px, env(safe-area-inset-top))
+      var(--mobile-gutter)
+      max(16px, env(safe-area-inset-bottom)) !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch;
+    align-items: stretch !important;
+    justify-content: flex-start !important;
+    gap: 12px;
+  }
+
+  .cinematic-auth.login-page {
+    justify-content: center !important;
+  }
+
+  .cinematic-auth .cinematic-bg {
+    position: fixed !important;
+    inset: 0;
+  }
+
+  .cinematic-auth .light-beam,
+  .cinematic-auth .light-pulse {
+    display: none !important;
+  }
+
+  .cinematic-auth .particle-field {
+    opacity: 0.55;
+  }
+
+  .cinematic-auth .cinematic-card,
+  .cinematic-auth.login-page .cinematic-card,
+  .cinematic-auth.register-page .cinematic-card {
+    width: 100% !important;
+    max-width: 460px !important;
+    margin: 0 auto !important;
+    padding: clamp(14px, 4vw, 20px) clamp(12px, 4vw, 18px) !important;
+    border-radius: 14px !important;
+    transform: none !important;
+    overflow: visible;
+  }
+
+  .cinematic-auth .auth-header {
+    margin-bottom: 12px !important;
+  }
+
+  .cinematic-auth .auth-main-title {
+    font-size: clamp(1rem, 5.6vw, 1.3rem) !important;
+  }
+
+  .cinematic-auth .auth-subtitle {
+    font-size: clamp(0.86rem, 3.6vw, 0.96rem) !important;
+  }
+
+  .cinematic-auth .auth-micro-text {
+    font-size: clamp(0.78rem, 3.2vw, 0.86rem) !important;
+    line-height: 1.5;
+  }
+
+  .cinematic-auth .auth-form {
+    gap: 12px !important;
+    margin-bottom: 12px !important;
+  }
+
+  .cinematic-auth .form-group {
+    gap: 6px !important;
+  }
+
+  .cinematic-auth .form-label {
+    font-size: 0.78rem !important;
+    line-height: 1.2;
+  }
+
+  .cinematic-auth .input-wrapper {
+    min-width: 0;
+  }
+
+  .cinematic-auth .input-icon {
+    left: 12px !important;
+    font-size: 14px !important;
+  }
+
+  .cinematic-auth .form-input {
+    width: 100% !important;
+    min-height: 48px !important;
+    height: 48px !important;
+    font-size: 16px !important;
+    line-height: 1.2;
+    padding: 0 12px 0 34px !important;
+    border-radius: 12px !important;
+  }
+
+  .cinematic-auth .auth-btn {
+    width: 100% !important;
+    min-height: 48px !important;
+    height: 48px !important;
+    font-size: 0.94rem !important;
+    margin-top: 2px !important;
+    border-radius: 12px !important;
+  }
+
+  .cinematic-auth .auth-footer {
+    font-size: 0.8rem !important;
+    line-height: 1.5;
+  }
+
+  .cinematic-auth .auth-error,
+  .cinematic-auth .auth-success {
+    margin-bottom: 12px !important;
+    font-size: 0.86rem !important;
+    padding: 10px 12px !important;
+  }
+}
+
+@media (max-width: 425px) {
+  .cinematic-auth.login-page,
+  .cinematic-auth.register-page {
+    padding-inline: 12px !important;
+  }
+
+  .cinematic-auth .cinematic-card {
+    padding: 14px 12px !important;
+  }
+}
+
+@media (max-width: 320px) {
+  .cinematic-auth.login-page,
+  .cinematic-auth.register-page {
+    padding-inline: 10px !important;
+  }
+
+  .cinematic-auth .auth-main-title {
+    font-size: 0.95rem !important;
+  }
+}
