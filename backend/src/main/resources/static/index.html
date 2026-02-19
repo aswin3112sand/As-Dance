@@ -21,7 +21,13 @@
       s.parentNode.insertBefore(t,s)}(window, document,'script',
       'https://connect.facebook.net/en_US/fbevents.js');
       fbq('init', '3312176042274880');
-      fbq('track', 'PageView');
+    </script>
+    <script>
+      window.addEventListener("load", function() {
+        if (typeof fbq !== "undefined") {
+          fbq('track', 'PageView');
+        }
+      });
     </script>
     <!-- End Meta Pixel Code -->
     <meta charset="UTF-8" />
