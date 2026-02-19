@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect } from "react";
+import React, { Suspense, useEffect, useRef } from "react";
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { AuthProvider, useAuth } from "./auth.jsx";
 
@@ -60,12 +60,32 @@ function RevealObserver() {
   return null;
 }
 
+function MetaPixelPageTracker() {
+  const location = useLocation();
+  const isFirstRender = useRef(true);
+
+  useEffect(() => {
+    // Initial PageView is already fired from index.html.
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+
+    if (typeof window !== "undefined" && typeof window.fbq === "function") {
+      window.fbq("track", "PageView");
+    }
+  }, [location.pathname, location.search]);
+
+  return null;
+}
+
 export default function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
         <a className="skip-link" href="#main-content">Skip to content</a>
         <RevealObserver />
+        <MetaPixelPageTracker />
         <main id="main-content" role="main" tabIndex="-1">
           <Suspense fallback={<Loading />}>
             <Routes>
