@@ -466,53 +466,112 @@ select:focus {
   }
 }
 
-/* Login page hard lock: centered card, no horizontal overflow */
-.cinematic-auth.login-page {
+/* Final auth layout lock (mobile-safe + smooth scroll) */
+.cinematic-auth.login-page,
+.cinematic-auth.register-page {
   min-height: 100vh !important;
   min-height: 100svh !important;
   min-height: 100dvh !important;
   width: 100%;
-  display: grid !important;
-  grid-template-columns: minmax(0, 1fr);
-  place-items: center !important;
+  max-width: 100%;
   overflow-x: hidden !important;
+  box-sizing: border-box;
   padding:
     max(16px, env(safe-area-inset-top))
     max(16px, env(safe-area-inset-right))
     max(16px, env(safe-area-inset-bottom))
     max(16px, env(safe-area-inset-left)) !important;
-  box-sizing: border-box;
 }
 
-.cinematic-auth.login-page .login-shell {
+.cinematic-auth.login-page {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr);
+  place-items: center !important;
+}
+
+.cinematic-auth.register-page {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr);
+  place-items: center !important;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+.cinematic-auth.login-page .login-shell,
+.cinematic-auth.register-page .register-shell {
   position: relative;
   z-index: 10;
   width: 100%;
   max-width: 100%;
-  margin: 0;
+  margin: 0 auto;
   padding: 0;
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: flex-start;
   overflow-x: hidden;
 }
 
-.cinematic-auth.login-page .cinematic-card.login-card {
-  width: 100% !important;
-  max-width: 400px !important;
-  margin: 0 !important;
-  padding: clamp(16px, 4vw, 24px) !important;
-  box-sizing: border-box !important;
-  left: auto !important;
-  right: auto !important;
+.cinematic-auth.login-page .login-shell {
+  align-items: center;
 }
 
 @media (max-width: 768px) {
-  .cinematic-auth.login-page {
+  .cinematic-auth.login-page,
+  .cinematic-auth.register-page {
     padding:
       max(12px, env(safe-area-inset-top))
       max(12px, env(safe-area-inset-right))
       max(12px, env(safe-area-inset-bottom))
       max(12px, env(safe-area-inset-left)) !important;
+  }
+
+  .cinematic-auth.register-page {
+    display: flex !important;
+    align-items: flex-start !important;
+    justify-content: center !important;
+  }
+
+  .cinematic-auth .cinematic-bg {
+    position: absolute !important;
+    inset: 0;
+  }
+
+  .cinematic-auth.login-page .cinematic-card.login-card,
+  .cinematic-auth.register-page .cinematic-card.register-card {
+    width: 100% !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+    left: auto !important;
+    right: auto !important;
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+  }
+
+  .cinematic-auth.login-page .cinematic-card.login-card {
+    max-width: 400px !important;
+    padding: clamp(16px, 4vw, 24px) !important;
+  }
+
+  .cinematic-auth.register-page .cinematic-card.register-card {
+    max-width: 420px !important;
+    padding: clamp(14px, 3.8vw, 22px) !important;
+  }
+
+  .cinematic-auth .particle-field {
+    opacity: 0.35;
+  }
+
+  .cinematic-auth .card-glow {
+    display: none;
+  }
+
+  .cinematic-auth .cinematic-card {
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  body {
+    background-attachment: scroll !important;
   }
 }

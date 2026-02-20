@@ -19,7 +19,7 @@ export default function Login() {
     if (typeof window === "undefined") return 8;
     const reduceMotion = shouldReduceMotion();
     const isSmallScreen = window.matchMedia("(max-width: 768px)").matches;
-    return reduceMotion || isSmallScreen ? 8 : 20;
+    return reduceMotion || isSmallScreen ? 6 : 20;
   }, []);
   const particles = useMemo(
     () => Array.from({ length: particleCount }, () => ({
