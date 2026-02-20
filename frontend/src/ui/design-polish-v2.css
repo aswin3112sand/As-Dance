@@ -465,3 +465,54 @@ select:focus {
     font-size: 0.95rem !important;
   }
 }
+
+/* Login page hard lock: centered card, no horizontal overflow */
+.cinematic-auth.login-page {
+  min-height: 100vh !important;
+  min-height: 100svh !important;
+  min-height: 100dvh !important;
+  width: 100%;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr);
+  place-items: center !important;
+  overflow-x: hidden !important;
+  padding:
+    max(16px, env(safe-area-inset-top))
+    max(16px, env(safe-area-inset-right))
+    max(16px, env(safe-area-inset-bottom))
+    max(16px, env(safe-area-inset-left)) !important;
+  box-sizing: border-box;
+}
+
+.cinematic-auth.login-page .login-shell {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow-x: hidden;
+}
+
+.cinematic-auth.login-page .cinematic-card.login-card {
+  width: 100% !important;
+  max-width: 400px !important;
+  margin: 0 !important;
+  padding: clamp(16px, 4vw, 24px) !important;
+  box-sizing: border-box !important;
+  left: auto !important;
+  right: auto !important;
+}
+
+@media (max-width: 768px) {
+  .cinematic-auth.login-page {
+    padding:
+      max(12px, env(safe-area-inset-top))
+      max(12px, env(safe-area-inset-right))
+      max(12px, env(safe-area-inset-bottom))
+      max(12px, env(safe-area-inset-left)) !important;
+  }
+}
