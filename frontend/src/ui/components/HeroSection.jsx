@@ -189,12 +189,6 @@ const HeroSection = () => {
         </video>
       </div>
       <div className="hero-video-overlay" aria-hidden="true"></div>
-      <div className="hero-right-neon-orb" aria-hidden="true">
-        <img src={dhanushImage} alt="" className="hero-right-neon-orb-image" loading="lazy" decoding="async" />
-      </div>
-      <div className={`hero-dhanush-badge ${isMuted ? "" : "is-live"} hero-dhanush-corner`} aria-hidden="true">
-        <img src={dhanushImage} alt="" className="hero-dhanush-image" loading="lazy" decoding="async" />
-      </div>
       <div className="hero-top-shell">
         <div className="hero-brand-floating">
           <span className="hero-brand-title">AS DANCE</span>
@@ -221,6 +215,7 @@ const HeroSection = () => {
               </span>
             </span>
           </button>
+          <span className={`hero-audio-status-dot ${isMuted ? "is-muted" : "is-live"}`} aria-hidden="true"></span>
         </div>
       </div>
       <div className="hero-fullline-wrap">
@@ -313,6 +308,9 @@ const HeroSection = () => {
           </div>
         </div>
         <div className="hero-visual hero-visual-advanced">
+          <div className="hero-right-neon-orb" aria-hidden="true">
+            <img src={dhanushImage} alt="" className="hero-right-neon-orb-image" loading="lazy" decoding="async" />
+          </div>
           <div className="hero-poster-frame">
             <picture>
               <source
