@@ -28,22 +28,22 @@ const PROFILE_IMAGES = [
 ];
 
 const REVIEWS = [
-  { id: 1, name: "Karthi", profileIndex: 0, tagline: "AS DANCE Learner", txt: "Customized choreography matched my song's rhythm and mood. Clean counts and smooth flow." },
-  { id: 2, name: "Stephan", profileIndex: 1, tagline: "AS DANCE Learner", txt: "The online dance training videos are clear and structured. Easy to practice every day." },
-  { id: 3, name: "Babu", profileIndex: 2, tagline: "AS DANCE Learner", txt: "I received original dance steps tailored to my event. Delivery was on time." },
-  { id: 4, name: "Godjeni", profileIndex: 3, tagline: "AS DANCE Learner", txt: "Great education service. The course access made my practice routine consistent." },
-  { id: 5, name: "Rickson", profileIndex: 4, tagline: "AS DANCE Learner", txt: "Song-based routine felt polished and performance ready." },
-  { id: 6, name: "Akash", profileIndex: 5, tagline: "AS DANCE Learner", txt: "Support was responsive and the online service felt professional." },
-  { id: 7, name: "Arun", profileIndex: 6, tagline: "AS DANCE Learner", txt: "Online dance training improved my basics and confidence." },
-  { id: 8, name: "Wifread", profileIndex: 7, tagline: "AS DANCE Learner", txt: "Course access via Google Drive was organized and easy to use." },
-  { id: 9, name: "Akish", profileIndex: 8, tagline: "AS DANCE Learner", txt: "Customized choreography helped my wedding performance look sharp." },
-  { id: 10, name: "Vishal", profileIndex: 9, tagline: "AS DANCE Learner", txt: "Clear instruction and pacing across the lessons." },
-  { id: 11, name: "Rabi", profileIndex: 10, tagline: "AS DANCE Learner", txt: "Original dance steps with variations made rehearsal smoother." },
-  { id: 12, name: "Rio", profileIndex: 11, tagline: "AS DANCE Learner", txt: "Delivery within 24-48 hours matched the timeline promised." },
-  { id: 13, name: "Kabi", profileIndex: 12, tagline: "AS DANCE Learner", txt: "The structured lessons kept me motivated and focused." },
-  { id: 14, name: "PeriyaVijay", profileIndex: 13, tagline: "AS DANCE Learner", txt: "Well matched routine for my song and style." },
-  { id: 15, name: "Venkat", profileIndex: 14, tagline: "AS DANCE Learner", txt: "Reliable education service with practical guidance." },
-  { id: 16, name: "Starwin", profileIndex: 15, tagline: "AS DANCE Learner", txt: "Easy communication and a tailored result." }
+  { id: 1, name: "Karthi", profileIndex: 0, tagline: "AS DANCE Learner", txt: "Na beginner. 1st week la than confidence increase aachu." },
+  { id: 2, name: "Stephan", profileIndex: 1, tagline: "AS DANCE Learner", txt: "Steps easy ah split pannirukanga, daily practice panna romba use aachu." },
+  { id: 3, name: "Babu", profileIndex: 2, tagline: "AS DANCE Learner", txt: "Beat follow panna theriyala nu irundhen. Ippo counts clear ah puriyuthu." },
+  { id: 4, name: "Godjeni", profileIndex: 3, tagline: "AS DANCE Learner", txt: "WhatsApp support quick. Doubt ketta immediate direction kuduthanga." },
+  { id: 5, name: "Rickson", profileIndex: 4, tagline: "AS DANCE Learner", txt: "Short daily drills nala body control improve aaguthu." },
+  { id: 6, name: "Akash", profileIndex: 5, tagline: "AS DANCE Learner", txt: "Tamil + English explanation nala confuse agala." },
+  { id: 7, name: "Arun", profileIndex: 6, tagline: "AS DANCE Learner", txt: "College culturals ku prepare aagarathukku helpful framework." },
+  { id: 8, name: "Wifread", profileIndex: 7, tagline: "AS DANCE Learner", txt: "Access and flow simple ah irundhuchu, mobile la practice panniten." },
+  { id: 9, name: "Akish", profileIndex: 8, tagline: "AS DANCE Learner", txt: "Naan stage fear irundhen. Ippo konjam confident ah aadaren." },
+  { id: 10, name: "Vishal", profileIndex: 9, tagline: "AS DANCE Learner", txt: "Pacing nalla iruku. Over speed illa, clear progression iruku." },
+  { id: 11, name: "Rabi", profileIndex: 10, tagline: "AS DANCE Learner", txt: "Practice routine set pannitu follow panna easy aachu." },
+  { id: 12, name: "Rio", profileIndex: 11, tagline: "AS DANCE Learner", txt: "Promise pannina support timing ku reply vandhuchu." },
+  { id: 13, name: "Kabi", profileIndex: 12, tagline: "AS DANCE Learner", txt: "Motivation drop aagumbothu guidance helpful ah irundhuchu." },
+  { id: 14, name: "PeriyaVijay", profileIndex: 13, tagline: "AS DANCE Learner", txt: "Home la practice panna suitable format." },
+  { id: 15, name: "Venkat", profileIndex: 14, tagline: "AS DANCE Learner", txt: "Course path clear. Enna first panna nu direct ah therinjiduchu." },
+  { id: 16, name: "Starwin", profileIndex: 15, tagline: "AS DANCE Learner", txt: "Beginner-ku nalla starting point nu feel aachu." }
 ];
 
 const STAR_KEYS = [1, 2, 3, 4, 5];
@@ -214,10 +214,9 @@ function ReviewLoop() {
       <div className="review-loop-fog" aria-hidden="true" />
       <div className="container-max">
         <header className="review-loop-header">
-          <h2 className="review-loop-title" id="reviews-title">User Reviews & Stage Feedback</h2>
+          <h2 className="review-loop-title" id="reviews-title">Real learners, real progress</h2>
           <p className="review-loop-subtitle">
-            Customized choreography and online dance training trusted by performers. Real feedback from learners and
-            event dancers.
+            Fake hype illa. Beginner users regular practice pannitu share pannina honest feedback idhu.
           </p>
         </header>
 

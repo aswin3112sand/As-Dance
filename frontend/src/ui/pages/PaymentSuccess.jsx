@@ -6,8 +6,8 @@ import { loadReceipt } from "../paymentStorage.js";
 
 const formatAmount = (value) => {
   const amount = Number(value);
-  if (!Number.isFinite(amount) || amount <= 0) return "₹499";
-  return `₹${Math.round(amount / 100)}`;
+  if (!Number.isFinite(amount) || amount <= 0) return "INR 499";
+  return `INR ${Math.round(amount / 100)}`;
 };
 
 export default function PaymentSuccess() {
@@ -65,7 +65,7 @@ export default function PaymentSuccess() {
           <div className="payment-result-icon is-success" aria-hidden="true">OK</div>
           <h1 className="payment-result-title">Payment Successful</h1>
           <p className="payment-result-subtitle">
-            Payment confirmed. Course access is provided within 24-48 hours after payment.
+            Payment confirmed. Dashboard opens with your 639-step course access.
           </p>
 
           <div className="payment-result-meta">
@@ -78,7 +78,7 @@ export default function PaymentSuccess() {
           <div className="payment-result-actions">
             {resolvedGoogleDriveUrl && (
               <a href={resolvedGoogleDriveUrl} className="btn btn-cta btn-hero btn-cta-primary">
-                Open Access Link
+                Open 639-Step Access
               </a>
             )}
             <Link className="btn btn-cta btn-hero btn-cta-primary" to="/dashboard">
@@ -90,12 +90,12 @@ export default function PaymentSuccess() {
           </div>
           {resolvedGoogleDriveUrl && status?.unlocked !== false && (
             <p className="payment-result-subtitle" style={{ marginTop: "1rem", fontSize: "0.9rem" }}>
-              If your access link is ready, it will open in 2 seconds.
+              Access link available na adhu 2 seconds-la open aagum.
             </p>
           )}
           {showVerifyWarning && (
             <p className="payment-result-subtitle" role="alert" style={{ marginTop: "1rem", fontSize: "0.9rem" }}>
-              We could not verify your payment on refresh. Please check your dashboard or contact support.
+              Payment verify issue irundha dashboard check pannunga illa WhatsApp support contact pannunga.
             </p>
           )}
         </div>

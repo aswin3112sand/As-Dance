@@ -4,12 +4,13 @@ import { Menu, X } from "../icons.jsx";
 
 const NAV_SECTIONS = ["about", "services", "preview", "reviews", "contacts"];
 const BANNER_POINTS = [
-    "Course access INR 499",
-    "Custom choreography plans available",
-    "Secure checkout and instant confirmation",
-    "Digital delivery in 24-48 hours",
-    "Preview before you buy",
-    "WhatsApp support for quick help"
+    "639-step course INR 499",
+    "Live class compulsory illa",
+    "639 practical song-based steps",
+    "Tamil + English mix explanation",
+    "Payment apram dashboard unlock",
+    "Google Drive access for practice",
+    "WhatsApp support for fast reply"
 ];
 
 export default function Navbar({ activeSection, loaded, isScrolled }) {

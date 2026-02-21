@@ -1,9 +1,9 @@
 import React, { Suspense, memo, useEffect, useRef, useState } from "react";
 import { Mail, WhatsApp } from "../icons.jsx";
 
-import BannerStrip from "../components/BannerStrip.jsx";
 import HeroSection from "../components/HeroSection.jsx";
 import LevelCards from "../components/LevelCards.jsx";
+import FaqSection from "../components/FaqSection.jsx";
 
 const DemoSection = React.lazy(() => import("../components/DemoSection.jsx"));
 const ReviewLoop = React.lazy(() => import("../components/ReviewLoop.jsx"));
@@ -11,6 +11,8 @@ import Navbar from "../components/Navbar.jsx";
 import Footer from "../components/Footer.jsx";
 
 const NAV_SECTIONS = ["about", "services", "preview", "reviews", "contacts"];
+const PRIMARY_CTA_TEXT = "WhatsApp-la 639-Step Course Join Pannu - INR 499";
+const PRIMARY_WA_LINK = "https://wa.me/918825602356?text=Hi%20AS%20DANCE%2C%20naan%20INR%20499%20639-step%20course%20join%20panna%20ready.";
 
 const SectionSkeleton = memo(function SectionSkeleton({ title, id, minHeight }) {
   return (
@@ -127,10 +129,9 @@ export default function Home() {
 
       <div className="page-content">
         {/* 1. HERO */}
-        <BannerStrip />
-
-        {/* 2. REST OF SECTIONS */}
         <HeroSection />
+
+        {/* 2. SALES FLOW */}
         <LevelCards />
         <LazyMount
           fallback={PREVIEW_FALLBACK}
@@ -148,7 +149,19 @@ export default function Home() {
             <ReviewLoop />
           </Suspense>
         </LazyMount>
+
+        <FaqSection />
       </div>
+
+      <a
+        href={PRIMARY_WA_LINK}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="mobile-sticky-enroll"
+        aria-label={PRIMARY_CTA_TEXT}
+      >
+        {PRIMARY_CTA_TEXT}
+      </a>
 
       {/* 9. SUPPORT BUTTONS (Floating Container) */}
       <div className="fab-container">

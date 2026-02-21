@@ -93,14 +93,14 @@ export default function DemoCards({ demos }) {
               </div>
             </div>
             <div className="demo-content p-3">
-              <div className="demo-title h6 fw-bold mb-1">Each Step Declare -Easy/Med/Hard.</div>
-              <div className="demo-subtitle small text-muted mb-3">4-Level Demo View</div>
+              <div className="demo-title h6 fw-bold mb-1">Step-by-step sample lesson.</div>
+              <div className="demo-subtitle small text-muted mb-3">Beginner friendly preview</div>
               {disabled ? (
                 <span
                   className="btn btn-neon btn-sm w-100 z-1 position-relative demo-cta is-disabled"
                   aria-disabled="true"
                 >
-                  Preview
+                  Preview unavailable
                 </span>
               ) : (
                 <a
@@ -109,7 +109,7 @@ export default function DemoCards({ demos }) {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  Preview
+                  Watch preview
                 </a>
               )}
             </div>

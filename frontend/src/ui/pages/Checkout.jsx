@@ -140,7 +140,7 @@ const Checkout = () => {
       amount: data.amount,
       currency: "INR",
       name: "As Dance",
-      description: "Online dance training access",
+      description: "639-step dance course access",
       image: bundlePreview,
       order_id: data.orderId,
       handler: async (response) => {
@@ -220,8 +220,8 @@ const Checkout = () => {
           <div className="checkout-left">
             <div className="checkout-micro-stats">Secure Checkout</div>
             <div className="checkout-brandline">AS DANCE</div>
-            <div className="checkout-title-sm">Course Access Checkout - INR 499</div>
-            <div className="checkout-subtitle">Fixed-price course purchase. Access delivered within 24-48 hours.</div>
+            <div className="checkout-title-sm">639-Step Course Access - INR 499</div>
+            <div className="checkout-subtitle">Live online class include agala. Ithu digital practical video course.</div>
 
             <div className="checkout-switch-offer">
               Need custom choreography instead?{" "}
@@ -239,8 +239,8 @@ const Checkout = () => {
             </div>
 
             <p className="checkout-body">
-              This payment is for course access only. Fill in optional contact details so we can confirm and deliver
-              access within 24-48 hours.
+              Payment complete aana dashboard open aagum. Anga irundhu Google Drive 639 steps access pannalam.
+              Optional contact details fill pannina support quick ah connect panna mudiyum.
             </p>
 
             <form
@@ -319,12 +319,12 @@ const Checkout = () => {
                 />
               </div>
               <div className="checkout-summary-row">
-                <span>Course Access</span>
+                <span>639-Step Course Access</span>
                 <span className="checkout-summary-value">INR 499</span>
               </div>
               <div className="checkout-summary-row">
-                <span>Delivery Window</span>
-                <span className="checkout-summary-value">24-48h</span>
+                <span>Access Method</span>
+                <span className="checkout-summary-value">Dashboard + Google Drive</span>
               </div>
               <div className="checkout-summary-row total">
                 <span>Total</span>
@@ -342,12 +342,12 @@ const Checkout = () => {
               <div className="checkout-trust-divider"></div>
               <div className="checkout-trust-row">
                 <span className="checkout-trust-item">Secure Payment</span>
-                <span className="checkout-trust-item">Delivery 24-48 hours</span>
-                <span className="checkout-trust-item">Course Access</span>
+                <span className="checkout-trust-item">No live class needed</span>
+                <span className="checkout-trust-item">639 practical steps</span>
               </div>
               <div className="checkout-receipt">
-                Receipt is sent after payment. Access is delivered within 24-48 hours via Google Drive or private
-                online access. Refunds apply only if access is not delivered.
+                Receipt generated after payment. Dashboard unlock aagum; appuram Google Drive 639-step course access
+                use pannalam. Refund apply only if access is not delivered.
               </div>
 
               <div className="checkout-support">
@@ -382,7 +382,7 @@ const Checkout = () => {
                 </div>
               </div>
               <div className="checkout-trust-note">
-                This checkout is only for course access. For custom choreography packages, use WhatsApp quote.
+                This checkout is only for 639-step digital course access. Custom choreography packages are separate.
               </div>
             </div>
           </div>

@@ -1,31 +1,31 @@
-
 import React from "react";
 
 const OA_FAQS = [
-    { q: "How unlock works?", a: "Instant auto-unlock. After ₹499 payment, you are redirected to your dashboard with all 639 steps active." },
-    { q: "What is 639 bundle?", a: "A complete dance curriculum: 196 Easy, 219 Medium, and 226 Hard steps. Studio-grade quality." },
-    { q: "Payment security?", a: "100% Secure via Razorpay. We use 256-bit encryption. No card data is stored on our servers." },
-    { q: "Who created curriculum?", a: "Designed by Aswin. Verified for rhythmic accuracy, progressive difficulty, and muscle memory." },
-    { q: "Support availability?", a: "Lifetime WhatsApp support included. We usually reply within minutes for any technical or dance query." },
-    { q: "Access control after login?", a: "Yes. Your purchase is linked to your email/phone. Login anytime from any device to access." },
-    { q: "Refund/Cancellation?", a: "Due to the digital nature (instant unlock), sales are final. We focus on premium quality & support." },
-    { q: "Hosting speed/performance?", a: "Hosted on high-speed premium servers with CDN. Videos load instantly with no buffer." }
+  { q: "Naan full beginner. Enakku set aaguma?", a: "Yes. Basics la start panrom. Step by step explain pannuvom, so dance background venam." },
+  { q: "Language enna?", a: "Tamil + English mix la easy ah explain pannuvom." },
+  { q: "Course price confirm ah INR 499 dhaana?", a: "Yes. Current founders batch entry INR 499." },
+  { q: "Ithu live online class aa?", a: "Illa. Ithu recorded 639-step practical course. Neenga ungalaoda time-ku practice pannalaam." },
+  { q: "Payment safe ah?", a: "Razorpay secure gateway use panrom. Payment process protected." },
+  { q: "Payment apram enna nadakkum?", a: "Payment success apram dashboard page open aagum. Anga Google Drive access moolama 639 steps use pannuveenga." },
+  { q: "Doubt vandha yar kitte kekkanum?", a: "WhatsApp support irukum. Practice doubts clear panna help pannuvom." },
+  { q: "Refund iruka?", a: "Access delivery nadakave illa na refund support pannuvom. Digital access delivered apram refund illa." },
+  { q: "Custom choreography venumna?", a: "Adhu separate service. WhatsApp-la direct quote kudupom." }
 ];
 
 export default function FaqSection() {
-    return (
-        <section className="section" id="faq">
-            <div className="container-max">
-                <h2 className="text-center section-head mx-auto anim-init" data-anim="fadeup">FAQ</h2>
-                <div className="d-grid gap-4" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))" }}>
-                    {OA_FAQS.map((f, i) => (
-                        <div key={i} className="card-3d p-4 anim-init" data-anim="fadeup">
-                            <h4 className="h6 fw-bold text-white mb-2">{f.q}</h4>
-                            <p className="subtle small mb-0">{f.a}</p>
-                        </div>
-                    ))}
-                </div>
+  return (
+    <section className="section section-compact" id="faq">
+      <div className="container-max">
+        <h2 className="text-center section-head mx-auto anim-init" data-anim="fadeup">Common doubts - quick answers</h2>
+        <div className="d-grid gap-4" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))" }}>
+          {OA_FAQS.map((faq, index) => (
+            <div key={index} className="card-3d p-4 anim-init" data-anim="fadeup">
+              <h4 className="h6 fw-bold text-white mb-2">{faq.q}</h4>
+              <p className="subtle small mb-0">{faq.a}</p>
             </div>
-        </section>
-    );
+          ))}
+        </div>
+      </div>
+    </section>
+  );
 }
