@@ -1,6 +1,7 @@
-import React, { memo } from "react";
+import React, { memo, useRef } from "react";
 import { Link } from "react-router-dom";
 import premiumServiceImage from "../../assets/bg/poster.webp";
+import { useIntersectionReveal } from "../hooks/useIntersectionReveal.js";
 import "./LevelCards.css";
 
 const SUPPORT_NUMBER = "918825602356";
@@ -95,10 +96,27 @@ const PREMIUM_MEDIA_POINTS = [
 ];
 
 function LevelCards() {
+  // --- Reveal refs ---
+  const heroRef = useRef(null);
+  const card1Ref = useRef(null);
+  const card2Ref = useRef(null);
+  const card3Ref = useRef(null);
+  const card4Ref = useRef(null);
+  const card5Ref = useRef(null);
+  const card6Ref = useRef(null);
+  const card7Ref = useRef(null);
+
+  useIntersectionReveal(heroRef);
+  useIntersectionReveal([card1Ref, card2Ref], { staggerMs: 110 });
+  useIntersectionReveal([card3Ref, card4Ref], { staggerMs: 110 });
+  useIntersectionReveal(card5Ref);
+  useIntersectionReveal(card6Ref);
+  useIntersectionReveal(card7Ref);
+
   return (
     <section className="section section-compact bg-services section-anim sales-section" id="services">
       <div className="container-max sales-shell">
-        <div className="sales-hero-clarity card-glass">
+        <div ref={heroRef} className="sales-hero-clarity card-glass">
           <p className="sales-chip">INR 499 - 639 Step Course (Main Product)</p>
           <h2 className="section-head text-center sales-headline">
             Live class illa. Direct-ah 639-step recorded practical dance course access, one-time INR 499.
@@ -133,7 +151,7 @@ function LevelCards() {
         </div>
 
         <div className="sales-grid-two">
-          <article className="sales-card card-3d">
+          <article ref={card1Ref} className="sales-card card-3d">
             <h3>Idhu enna course?</h3>
             <ul className="sales-list">
               {COURSE_EXACT.map((point) => (
@@ -142,7 +160,7 @@ function LevelCards() {
             </ul>
           </article>
 
-          <article className="sales-card card-3d">
+          <article ref={card2Ref} className="sales-card card-3d">
             <h3>Yaarukku idhu set aagum?</h3>
             <ul className="sales-list">
               {COURSE_FOR.map((point) => (
@@ -153,7 +171,7 @@ function LevelCards() {
         </div>
 
         <div className="sales-grid-two">
-          <article className="sales-card card-3d">
+          <article ref={card3Ref} className="sales-card card-3d">
             <h3>Yaarukku set aagadhu?</h3>
             <ul className="sales-list">
               {COURSE_NOT_FOR.map((point) => (
@@ -162,7 +180,7 @@ function LevelCards() {
             </ul>
           </article>
 
-          <article className="sales-card card-3d">
+          <article ref={card4Ref} className="sales-card card-3d">
             <h3>2-3 weeks result expectation</h3>
             <ul className="sales-list">
               {COURSE_RESULTS.map((point) => (
@@ -172,7 +190,7 @@ function LevelCards() {
           </article>
         </div>
 
-        <article className="sales-card card-3d">
+        <article ref={card5Ref} className="sales-card card-3d">
           <h3>How course access works</h3>
           <ol className="sales-steps">
             {HOW_IT_WORKS.map((step) => (
@@ -181,7 +199,7 @@ function LevelCards() {
           </ol>
         </article>
 
-        <article className="sales-card card-3d premium-service-card">
+        <article ref={card6Ref} className="sales-card card-3d premium-service-card">
           <p className="sales-chip premium-chip">Custom Song Dance Service (Premium Service)</p>
           <h3>Idhu course illa. Idhu premium custom service.</h3>
           <ul className="sales-list">

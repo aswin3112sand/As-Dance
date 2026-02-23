@@ -1,56 +1,34 @@
-import React, { memo, useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { memo } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth.jsx";
-import { ShieldCheck, Infinity, Zap, Headphones, Music } from "../icons.jsx";
-import heroAvif512 from "../../assets/optimized/hero-512.avif";
-import heroAvif1024 from "../../assets/optimized/hero-1024.avif";
-import heroWebp512 from "../../assets/optimized/hero-512.webp";
-import heroWebp1024 from "../../assets/optimized/hero-1024.webp";
-import heroLocalVideo from "../../assets/bg/Dance dhoom.mp4";
-import heroMelody from "../../assets/bg/Vaarayo-Vaarayo-MassTamilan.dev.mp3";
+import { Music, ShieldCheck, Zap } from "../icons.jsx";
 import dhanushImage from "../../assets/bg/dhanush.webp";
+import Reveal from "./Reveal.jsx";
 
-// Replace this stock URL later if you want another background video.
-const HERO_VIDEO_STOCK_SRC = "https://videos.pexels.com/video-files/10344331/10344331-hd_1920_1080_25fps.mp4";
-const HERO_VIDEO_FALLBACK_SRC = heroLocalVideo;
-const HERO_MELODY_SRC = heroMelody;
-const HERO_AUDIO_PREF_KEY = "asdance:heroAudioEnabled";
+/* Inline styles for hero motion — avoids creating a new CSS module */
+const HERO_IMAGE_STYLE = {
+  animation: "hero-float 5.5s ease-in-out infinite",
+};
 
-const SERVICE_PILLARS = [
-  { name: "Course", value: "639 Steps", className: "hero-level-easy" },
-  { name: "Format", value: "Tamil + English", className: "hero-level-medium" },
-  { name: "Delivery", value: "Google Drive", className: "hero-level-hard" }
-];
+const HERO_FLOAT_KEYFRAMES = `
+@keyframes hero-float {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-10px); }
+}
+@keyframes badge-fade-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-image-float { animation: none !important; }
+  .hero-badge-chip  { animation: none !important; opacity: 1 !important; }
+}
+`;
 
-const OFFER_ICONS = [
-  { label: "One-time INR 499 payment", icon: "*" },
-  { label: "Instant dashboard access", icon: "*" },
-  { label: "639 practical song-based steps", icon: "*" },
-  { label: "20 mins daily self-practice format", icon: "*" }
-];
 
-const HeroSection = () => {
+function HeroSection() {
   const nav = useNavigate();
   const { user } = useAuth();
-  const supportUrl = "https://wa.me/918825602356?text=Hi%20AS%20DANCE%2C%20INR%20499%20639-step%20course%20pathi%20detail%20venum.";
-  const melodyRef = useRef(null);
-  const [isMuted, setIsMuted] = useState(true);
-
-  const setSavedAudioPref = (enabled) => {
-    try {
-      window.localStorage.setItem(HERO_AUDIO_PREF_KEY, enabled ? "true" : "false");
-    } catch {
-      // Ignore storage errors (private mode / blocked storage).
-    }
-  };
-
-  const pauseMelodySafely = (melody) => {
-    try {
-      melody.pause();
-    } catch {
-      // JSDOM and some environments may not implement media pause.
-    }
-  };
 
   const handleCheckout = () => {
     const target = "/checkout?pay=1";
@@ -61,285 +39,103 @@ const HeroSection = () => {
     nav(target);
   };
 
-  useEffect(() => {
-    const melody = melodyRef.current;
-    if (!melody) return;
-
-    melody.muted = isMuted;
-    melody.volume = isMuted ? 0 : 0.9;
-  }, [isMuted]);
-
-  useEffect(() => {
-    const melody = melodyRef.current;
-    if (!melody) return;
-
-    let shouldAutoEnable = false;
-    try {
-      shouldAutoEnable = window.localStorage.getItem(HERO_AUDIO_PREF_KEY) === "true";
-    } catch {
-      shouldAutoEnable = false;
-    }
-
-    if (!shouldAutoEnable) return;
-
-    let cancelled = false;
-    let interactionHooked = false;
-
-    const removeInteractionRetry = () => {
-      if (!interactionHooked) return;
-      window.removeEventListener("pointerdown", handleFirstInteraction);
-      window.removeEventListener("keydown", handleFirstInteraction);
-      interactionHooked = false;
-    };
-
-    const startMelody = async () => {
-      try {
-        melody.muted = false;
-        melody.volume = 0.9;
-        await melody.play();
-        if (!cancelled) {
-          setIsMuted(false);
-        }
-        return true;
-      } catch {
-        melody.muted = true;
-        melody.volume = 0;
-        if (!cancelled) {
-          setIsMuted(true);
-        }
-        return false;
-      }
-    };
-
-    const handleFirstInteraction = async () => {
-      removeInteractionRetry();
-      const started = await startMelody();
-      if (!started) {
-        setSavedAudioPref(false);
-      }
-    };
-
-    const addInteractionRetry = () => {
-      if (interactionHooked) return;
-      window.addEventListener("pointerdown", handleFirstInteraction, { once: true });
-      window.addEventListener("keydown", handleFirstInteraction, { once: true });
-      interactionHooked = true;
-    };
-
-    const tryAutoplay = async () => {
-      const started = await startMelody();
-      if (!started) {
-        addInteractionRetry();
-      }
-    };
-
-    void tryAutoplay();
-
-    return () => {
-      cancelled = true;
-      removeInteractionRetry();
-    };
-  }, []);
-
-  const toggleHeroAudio = async () => {
-    const melody = melodyRef.current;
-    if (!melody) return;
-
-    if (isMuted) {
-      try {
-        melody.muted = false;
-        melody.volume = 0.9;
-        await melody.play();
-        setIsMuted(false);
-        setSavedAudioPref(true);
-      } catch {
-        melody.muted = true;
-        melody.volume = 0;
-        setIsMuted(true);
-        setSavedAudioPref(false);
-      }
-      return;
-    }
-
-    melody.muted = true;
-    melody.volume = 0;
-    pauseMelodySafely(melody);
-    setIsMuted(true);
-    setSavedAudioPref(false);
-  };
-
   return (
-    <section className="hero-section section bg-hero hero-full" id="about">
-      <audio ref={melodyRef} loop preload="auto" playsInline aria-hidden="true" muted={isMuted}>
-        <source src={HERO_MELODY_SRC} type="audio/mpeg" />
-        <source src={heroLocalVideo} type="audio/mp4" />
-      </audio>
-      <div className="hero-video-wrap" aria-hidden="true">
-        <video
-          className="hero-bg-video"
-          autoPlay
-          loop
-          muted
-          playsInline
-          preload="metadata"
-          poster={heroWebp1024}
-        >
-          <source src={HERO_VIDEO_STOCK_SRC} type="video/mp4" />
-          <source src={HERO_VIDEO_FALLBACK_SRC} type="video/mp4" />
-        </video>
-      </div>
-      <div className="hero-video-overlay" aria-hidden="true"></div>
-      <div className="hero-top-shell">
-        <div className="hero-brand-floating">
-          <span className="hero-brand-title">AS DANCE</span>
-          <span className="hero-brand-subtitle">639 STEP PRACTICAL COURSE</span>
-        </div>
-        <div className="hero-audio-cluster">
-          <button
-            type="button"
-            className={`hero-audio-toggle ${isMuted ? "is-muted" : "is-live"}`}
-            onClick={toggleHeroAudio}
-            aria-label={isMuted ? "Enable hero video audio" : "Mute hero video audio"}
-            aria-pressed={!isMuted}
-          >
-            <span className="visually-hidden">
-              {isMuted ? "Enable sound" : "Mute sound"}
-            </span>
-            <span className="hero-audio-icon-wrap" aria-hidden="true">
-              <Music size={16} className="hero-audio-icon" />
-              <span className={`hero-audio-eq ${isMuted ? "is-muted" : "is-live"}`}>
-                <span className="hero-audio-eq-bar"></span>
-                <span className="hero-audio-eq-bar"></span>
-                <span className="hero-audio-eq-bar"></span>
-                <span className="hero-audio-eq-bar"></span>
+    <section id="about" className="overflow-x-clip pt-6 pb-20 md:pt-8 md:pb-24">
+      {/* Inject keyframes once */}
+      <style>{HERO_FLOAT_KEYFRAMES}</style>
+
+      <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-20">
+        <div className="grid grid-cols-1 items-center gap-16 lg:grid-cols-2">
+          <Reveal className="max-w-2xl">
+            <p className="text-xs uppercase tracking-[0.18em] text-[#3B82F6]">Structured Digital Dance Training</p>
+            <h1 className="mt-4 text-4xl md:text-5xl font-bold leading-tight text-white">
+              Learn Dance With Structure. Not Random Reels.
+            </h1>
+            <p className="mt-6 text-gray-300 text-base md:text-lg leading-relaxed">
+              Hi, I&apos;m As. I help beginners build real stage confidence step-by-step.
+            </p>
+            <p className="mt-4 text-base md:text-lg font-semibold leading-relaxed text-white">
+              1,000+ learners | Structured 639-step system | Beginner-friendly
+            </p>
+
+            <div className="mt-8 flex flex-col gap-4 sm:flex-row">
+              <button
+                type="button"
+                className="min-h-[44px] rounded-xl bg-[#3B82F6] px-6 font-semibold text-white shadow-md transition hover:scale-[1.02]"
+                onClick={handleCheckout}
+              >
+                Start With 639 Steps
+              </button>
+              <a
+                className="min-h-[44px] rounded-xl border border-blue-500/40 bg-[#0B1220] px-6 font-semibold text-white transition hover:scale-[1.02] inline-flex items-center justify-center"
+                href="#preview"
+              >
+                Watch How I Teach
+              </a>
+            </div>
+
+            <div className="mt-6 flex flex-wrap gap-3">
+              <span
+                className="hero-badge-chip inline-flex min-h-10 items-center gap-2 rounded-full border border-blue-500/30 bg-[#0B1220] px-3 text-sm text-gray-300"
+                style={{ animation: "badge-fade-in 0.55s cubic-bezier(0.22,1,0.36,1) 0.55s both" }}
+              >
+                <ShieldCheck size={14} aria-hidden="true" />
+                Instant access after payment
               </span>
-            </span>
-          </button>
-          <span className={`hero-audio-status-dot ${isMuted ? "is-muted" : "is-live"}`} aria-hidden="true"></span>
-        </div>
-      </div>
-      <div className="hero-fullline-wrap">
-        <h1 className="hero-fullline-headline">
-          Easy-a start pannunga, step-by-step practice la confident aagunga.
-        </h1>
-      </div>
-      <div className="hero-top-count-row">
-        <div className="hero-count-panel">
-          <span className="hero-count-value">639</span>
-          <span className="hero-count-label">Steps</span>
-        </div>
-      </div>
-      <div className="hero-glow" aria-hidden="true"></div>
-      <div className="hero-grid-background" aria-hidden="true"></div>
-      <div className="container-max hero-grid hero-grid-advanced">
-        <div className="hero-content hero-content-advanced">
-          <div className="hero-price-stack">
-            <span className="hero-old-price">One-time INR 499 | Dashboard access | Song-based step breakdown</span>
-            <span className="hero-price-badge">
-              <span className="hero-price-badge-line">🎥 100% Recorded Practical Course</span>
-              <span className="hero-price-badge-line">⏳ Learn Anytime. Practice at Your Pace.</span>
-            </span>
-          </div>
-          <div className="hero-levels">
-            {SERVICE_PILLARS.map((level) => (
-              <span key={level.name} className={`hero-level-pill ${level.className}`}>
-                <span className="hero-level-value">{level.value}</span>
-                <span className="hero-level-name">{level.name}</span>
+              <span
+                className="hero-badge-chip inline-flex min-h-10 items-center gap-2 rounded-full border border-blue-500/30 bg-[#0B1220] px-3 text-sm text-gray-300"
+                style={{ animation: "badge-fade-in 0.55s cubic-bezier(0.22,1,0.36,1) 0.72s both" }}
+              >
+                <Zap size={14} aria-hidden="true" />
+                Structured beginner path
               </span>
-            ))}
-          </div>
-          <div className="hero-difficulty-line">
-            {SERVICE_PILLARS.map((level, idx) => (
-              <span key={`${level.name}-line`} className="hero-difficulty-item">
-                <strong>{level.name.toUpperCase()}</strong>
-                <span className="hero-difficulty-value">{level.value}</span>
-                {idx < SERVICE_PILLARS.length - 1 && <span className="hero-difficulty-separator">|</span>}
+              <span
+                className="hero-badge-chip inline-flex min-h-10 items-center gap-2 rounded-full border border-blue-500/30 bg-[#0B1220] px-3 text-sm text-gray-300"
+                style={{ animation: "badge-fade-in 0.55s cubic-bezier(0.22,1,0.36,1) 0.9s both" }}
+              >
+                <Music size={14} aria-hidden="true" />
+                Song-based lessons, stable pacing
               </span>
-            ))}
-          </div>
-          <div className="hero-cta-row hero-cta-stack">
-            <button
-              type="button"
-              className="btn btn-cta btn-hero btn-cta-primary hero-primary-cta"
-              onClick={handleCheckout}
+            </div>
+
+            <p className="mt-6 text-gray-300 text-base leading-relaxed">
+              Practice 20 mins daily pothum. Lifetime access with one-time payment.
+            </p>
+          </Reveal>
+
+          <Reveal delay={0.08}>
+            <div
+              className="relative overflow-hidden rounded-2xl border border-blue-500/30 bg-[#0B1220] shadow-lg hero-image-float"
+              style={HERO_IMAGE_STYLE}
             >
-              Pay INR 499 - Access 639 Steps
-            </button>
-          </div>
-          <div className="hero-cta-hint">
-            First preview paakanuma?{" "}
-            <a href="/preview">
-              Video samples inga iruku
-            </a>
-            {" "} | Still doubt ah?{" "}
-            <a href={supportUrl} target="_blank" rel="noopener noreferrer">
-              WhatsApp support
-            </a>
-          </div>
-          <p className="hero-copy hero-copy-advanced">
-            Payment success apram dashboard open aagum. Appuram Google Drive moolama 639 practical
-            steps access panni self-practice start pannalaam.
-          </p>
-          <div className="hero-offer-icons hero-offer-icons-cta">
-            {OFFER_ICONS.map((item) => (
-              <span key={item.label} className="hero-offer-chip">
-                <span className="hero-offer-icon" aria-hidden="true">{item.icon}</span>
-                {item.label}
-              </span>
-            ))}
-          </div>
-          <div className="hero-trust hero-trust-advanced">
-            <span className="trust-item">
-              <ShieldCheck size={16} />
-              Secure Payment
-            </span>
-            <span className="trust-item">
-              <Infinity size={16} />
-              Lifetime practice access
-            </span>
-            <span className="trust-item">
-              <Zap size={16} />
-              Dashboard unlock after payment
-            </span>
-            <span className="trust-item">
-              <Headphones size={16} />
-              WhatsApp help
-            </span>
-          </div>
-        </div>
-        <div className="hero-visual hero-visual-advanced">
-          <div className="hero-right-neon-orb" aria-hidden="true">
-            <img src={dhanushImage} alt="" className="hero-right-neon-orb-image" loading="lazy" decoding="async" />
-          </div>
-          <div className="hero-poster-frame">
-            <picture>
-              <source
-                type="image/avif"
-                srcSet={`${heroAvif512} 512w, ${heroAvif1024} 1024w`}
-                sizes="(max-width: 900px) 70vw, 520px"
-              />
-              <source
-                type="image/webp"
-                srcSet={`${heroWebp512} 512w, ${heroWebp1024} 1024w`}
-                sizes="(max-width: 900px) 70vw, 520px"
-              />
               <img
-                src={heroWebp1024}
-                alt="AS DANCE beginner dance program poster"
+                src={dhanushImage}
+                alt="AS dance performance visual"
                 loading="lazy"
                 decoding="async"
-                width="1024"
-                height="1536"
-                style={{ aspectRatio: "2/3" }}
-                fetchpriority="low"
-                className="hero-preview-image"
+                width="1200"
+                height="900"
+                className="h-full w-full object-cover object-center"
               />
-            </picture>
-          </div>
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#0B1220]/75 to-transparent" />
+              <div className="absolute bottom-4 left-4 right-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                <span className="inline-flex min-h-10 items-center gap-2 rounded-full border border-blue-500/40 bg-[#0B1220]/90 px-3 text-sm text-white">
+                  <Music size={14} aria-hidden="true" />
+                  Music-led practical training
+                </span>
+                <Link
+                  to="/services"
+                  className="inline-flex min-h-10 items-center justify-center rounded-full border border-blue-500/40 bg-[#0B1220]/90 px-3 text-sm font-medium text-white transition hover:scale-[1.02]"
+                >
+                  Premium custom choreography
+                </Link>
+              </div>
+            </div>
+          </Reveal>
         </div>
       </div>
     </section>
   );
-};
+}
 
 export default memo(HeroSection);

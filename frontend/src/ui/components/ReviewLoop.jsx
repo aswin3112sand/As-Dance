@@ -1,5 +1,5 @@
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Star } from "../icons.jsx";
+import { MessageCircle, Star } from "../icons.jsx";
 import { shouldReduceMotion } from "../utils/motion.js";
 import "./ReviewLoop.css";
 
@@ -214,9 +214,14 @@ function ReviewLoop() {
       <div className="review-loop-fog" aria-hidden="true" />
       <div className="container-max">
         <header className="review-loop-header">
-          <h2 className="review-loop-title" id="reviews-title">Real learners, real progress</h2>
+          <h2 className="review-loop-title" id="reviews-title">
+            <MessageCircle size={18} aria-hidden="true" /> Real learners, <span className="review-loop-title-accent">real progress</span>
+          </h2>
           <p className="review-loop-subtitle">
             Fake hype illa. Beginner users regular practice pannitu share pannina honest feedback idhu.
+          </p>
+          <p className="review-loop-rating" aria-label="Average learner rating is 4.8 out of 5">
+            <Star size={15} fill="currentColor" stroke="none" aria-hidden="true" /> 4.8 Average learner rating
           </p>
         </header>
 

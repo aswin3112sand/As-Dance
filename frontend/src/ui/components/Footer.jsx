@@ -1,74 +1,62 @@
 import React, { memo } from "react";
-import { WhatsApp, Mail, ShieldCheck, Infinity, Zap, Headphones, PhoneCall } from "../icons.jsx";
+import { Mail, PhoneCall, ShieldCheck, WhatsApp } from "../icons.jsx";
 
 function Footer() {
   return (
-    <footer className="site-footer section-anim bg-contact" id="contacts">
-      <div className="container-max footer-grid">
-        <div className="footer-col footer-brand">
-          <div className="footer-title">AS DANCE - 639-Step Practical Dance Course</div>
-          <p className="footer-copy">
-            Ithu live online class illa. Recorded practical dance step library.
-            INR 499 payment apram dashboard + Google Drive access available.
-          </p>
-          <div className="footer-icons">
-            <a href="https://wa.me/918825602356" target="_blank" rel="noopener noreferrer" className="footer-icon" aria-label="WhatsApp">
-              <WhatsApp size={18} color="#fff" />
-            </a>
-            <a href="mailto:businessaswin@gmail.com" className="footer-icon" aria-label="Email">
-              <Mail size={18} />
-            </a>
-          </div>
+    <footer id="contacts" className="border-t border-blue-500/20 bg-[#0B1220] py-20 md:py-24">
+      <div className="max-w-7xl mx-auto px-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+          <section>
+            <h3 className="text-xl font-bold text-white">AS DANCE</h3>
+            <p className="mt-3 text-gray-300 leading-relaxed">
+              Structured 639-step practical dance course with one-time payment and lifetime access.
+            </p>
+            <p className="mt-2 text-gray-400 text-sm">Music used is for demonstration &amp; practice purposes.</p>
+          </section>
+
+          <section>
+            <h3 className="text-xl font-bold text-white">Contact</h3>
+            <ul className="mt-3 space-y-3">
+              <li className="flex items-center gap-3 text-gray-300">
+                <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-blue-500/10 text-[#3B82F6]">
+                  <WhatsApp size={16} />
+                </span>
+                +91 88256 02356
+              </li>
+              <li className="flex items-center gap-3 text-gray-300">
+                <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-blue-500/10 text-[#3B82F6]">
+                  <Mail size={16} />
+                </span>
+                businessaswin@gmail.com
+              </li>
+              <li className="flex items-center gap-3 text-gray-300">
+                <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-blue-500/10 text-[#3B82F6]">
+                  <PhoneCall size={16} />
+                </span>
+                Replies within 24 hours
+              </li>
+            </ul>
+          </section>
+
+          <section>
+            <h3 className="text-xl font-bold text-white">Policy</h3>
+            <ul className="mt-3 space-y-2 text-gray-300">
+              <li>Dashboard access unlocks after successful payment.</li>
+              <li>Instruction support is available for paid users only.</li>
+              <li>Refund applies only if access is not delivered.</li>
+              <li>After delivery, digital sale is final.</li>
+            </ul>
+          </section>
         </div>
 
-        <div className="footer-col">
-          <div className="footer-title">Contact Us</div>
-          <div className="footer-list footer-contact">
-            <div className="footer-contact-item">
-              <Mail size={16} />
-              <span>Email: businessaswin@gmail.com</span>
-            </div>
-            <div className="footer-contact-item">
-              <PhoneCall size={16} />
-              <span>Phone: +91 88256 02356</span>
-            </div>
-            <div className="footer-contact-item">WhatsApp response: usually within a few hours</div>
-          </div>
-        </div>
-
-        <div className="footer-col">
-          <div className="footer-title">Delivery and Refund Policy</div>
-          <div className="footer-list">
-            <span>Payment success apram dashboard page open aagum.</span>
-            <span>Google Drive moolama 639 practical steps access.</span>
-            <span>Support on WhatsApp for onboarding and doubts.</span>
-            <span>Refund applies only if access is not delivered.</span>
-            <span>After access delivery, digital sale is final.</span>
-          </div>
+        <div className="mt-10 border-t border-blue-500/20 pt-6 flex flex-wrap items-center justify-between gap-4">
+          <p className="text-gray-400 text-sm">© {new Date().getFullYear()} AS DANCE</p>
+          <span className="inline-flex items-center gap-2 rounded-full border border-blue-500/30 px-3 py-1.5 text-sm text-gray-300">
+            <ShieldCheck size={14} className="text-[#3B82F6]" />
+            Secure payment and guided access
+          </span>
         </div>
       </div>
-
-      <div className="footer-divider" aria-hidden="true"></div>
-      <div className="footer-trust">
-        <div className="footer-trust-item">
-          <ShieldCheck size={16} />
-          Secure Payment
-        </div>
-        <div className="footer-trust-item">
-          <Infinity size={16} />
-          Learn at your pace
-        </div>
-        <div className="footer-trust-item">
-          <Zap size={16} />
-          Fast onboarding
-        </div>
-        <div className="footer-trust-item">
-          <Headphones size={16} />
-          WhatsApp support
-        </div>
-      </div>
-
-      <div className="footer-signature">Aswin - AS DANCE Creator</div>
     </footer>
   );
 }

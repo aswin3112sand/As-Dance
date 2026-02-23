@@ -1,6 +1,8 @@
 import React, { Suspense, useEffect, useRef } from "react";
-import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "./auth.jsx";
+import { LazyMotion, domAnimation } from "framer-motion";
+import "./premium-buttons.css";
 
 // Lazy load pages
 const Home = React.lazy(() => import("./pages/Home.jsx"));
@@ -12,6 +14,7 @@ const PaymentFailed = React.lazy(() => import("./pages/PaymentFailed.jsx"));
 const Dashboard = React.lazy(() => import("./pages/Dashboard.jsx"));
 const Admin = React.lazy(() => import("./pages/Admin.jsx"));
 const Preview = React.lazy(() => import("./pages/Preview.jsx"));
+const ServicePage = React.lazy(() => import("./pages/ServicePage.jsx"));
 const NotFound = React.lazy(() => import("./pages/NotFound.jsx"));
 
 function ProtectedRoute({ children }) {
@@ -28,6 +31,7 @@ function RootRoute() {
 }
 
 import Loading from "./components/Loading";
+import OfferPopup from "./components/OfferPopup.jsx";
 
 function RevealObserver() {
   const location = useLocation();
@@ -79,6 +83,34 @@ function MetaPixelPageTracker() {
   return null;
 }
 
+function OfferPopupMount() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { loading, user } = useAuth();
+
+  const isOfferRoute =
+    location.pathname === "/" ||
+    location.pathname === "/home" ||
+    location.pathname === "/dance";
+
+  const handlePrimaryCta = () => {
+    const target = "/checkout?pay=1";
+    if (!user) {
+      navigate(`/login?redirect=${encodeURIComponent(target)}`);
+      return;
+    }
+    navigate(target);
+  };
+
+  return (
+    <OfferPopup
+      isActive={isOfferRoute && !loading}
+      hasPurchased={Boolean(user?.unlocked)}
+      onPrimaryCta={handlePrimaryCta}
+    />
+  );
+}
+
 export default function App() {
   return (
     <AuthProvider>
@@ -86,52 +118,56 @@ export default function App() {
         <a className="skip-link" href="#main-content">Skip to content</a>
         <RevealObserver />
         <MetaPixelPageTracker />
-        <main id="main-content" role="main" tabIndex="-1">
-          <Suspense fallback={<Loading />}>
-            <Routes>
-              <Route path="/" element={<RootRoute />} />
-              <Route path="/home" element={<Home />} />
-              <Route path="/dance" element={<Home />} />
-              <Route path="/preview" element={<Preview />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              <Route
-                path="/checkout"
-                element={
-                  <ProtectedRoute>
-                    <Checkout />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/payment-success"
-                element={
-                  <ProtectedRoute>
-                    <PaymentSuccess />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/payment-failed"
-                element={
-                  <ProtectedRoute>
-                    <PaymentFailed />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/dashboard"
-                element={
-                  <ProtectedRoute>
-                    <Dashboard />
-                  </ProtectedRoute>
-                }
-              />
-              <Route path="/admin" element={<Admin />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </Suspense>
-        </main>
+        <OfferPopupMount />
+        <LazyMotion features={domAnimation}>
+          <main id="main-content" role="main" tabIndex="-1">
+            <Suspense fallback={<Loading />}>
+              <Routes>
+                <Route path="/" element={<RootRoute />} />
+                <Route path="/home" element={<Home />} />
+                <Route path="/dance" element={<Home />} />
+                <Route path="/services" element={<ServicePage />} />
+                <Route path="/preview" element={<Preview />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route
+                  path="/checkout"
+                  element={
+                    <ProtectedRoute>
+                      <Checkout />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/payment-success"
+                  element={
+                    <ProtectedRoute>
+                      <PaymentSuccess />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/payment-failed"
+                  element={
+                    <ProtectedRoute>
+                      <PaymentFailed />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/dashboard"
+                  element={
+                    <ProtectedRoute>
+                      <Dashboard />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route path="/admin" element={<Admin />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </Suspense>
+          </main>
+        </LazyMotion>
       </BrowserRouter>
     </AuthProvider>
   );

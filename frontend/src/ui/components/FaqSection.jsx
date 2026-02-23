@@ -1,31 +1,57 @@
-import React from "react";
+import React, { memo } from "react";
+import { MessageCircle } from "../icons.jsx";
+import Reveal from "./Reveal.jsx";
 
-const OA_FAQS = [
-  { q: "Naan full beginner. Enakku set aaguma?", a: "Yes. Basics la start panrom. Step by step explain pannuvom, so dance background venam." },
-  { q: "Language enna?", a: "Tamil + English mix la easy ah explain pannuvom." },
-  { q: "Course price confirm ah INR 499 dhaana?", a: "Yes. Current founders batch entry INR 499." },
-  { q: "Ithu live online class aa?", a: "Illa. Ithu recorded 639-step practical course. Neenga ungalaoda time-ku practice pannalaam." },
-  { q: "Payment safe ah?", a: "Razorpay secure gateway use panrom. Payment process protected." },
-  { q: "Payment apram enna nadakkum?", a: "Payment success apram dashboard page open aagum. Anga Google Drive access moolama 639 steps use pannuveenga." },
-  { q: "Doubt vandha yar kitte kekkanum?", a: "WhatsApp support irukum. Practice doubts clear panna help pannuvom." },
-  { q: "Refund iruka?", a: "Access delivery nadakave illa na refund support pannuvom. Digital access delivered apram refund illa." },
-  { q: "Custom choreography venumna?", a: "Adhu separate service. WhatsApp-la direct quote kudupom." }
+const FAQS = [
+  {
+    q: "Is this for complete beginners?",
+    a: "Yes. The structure starts from basics and progresses level by level.",
+  },
+  {
+    q: "How much should I practice daily?",
+    a: "20 minutes daily is enough if done consistently with the structured flow.",
+  },
+  {
+    q: "Will I get lifetime access?",
+    a: "Yes. One-time INR 499 payment with lifetime access to the 639-step system.",
+  },
+  {
+    q: "Who gets support?",
+    a: "Instruction support is available for paid course buyers and paid service buyers.",
+  },
 ];
 
-export default function FaqSection() {
+function FaqSection() {
   return (
-    <section className="section section-compact" id="faq">
-      <div className="container-max">
-        <h2 className="text-center section-head mx-auto anim-init" data-anim="fadeup">Common doubts - quick answers</h2>
-        <div className="d-grid gap-4" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))" }}>
-          {OA_FAQS.map((faq, index) => (
-            <div key={index} className="card-3d p-4 anim-init" data-anim="fadeup">
-              <h4 className="h6 fw-bold text-white mb-2">{faq.q}</h4>
-              <p className="subtle small mb-0">{faq.a}</p>
-            </div>
+    <section id="faq" className="py-20 md:py-24">
+      <div className="max-w-7xl mx-auto px-6">
+        <Reveal className="max-w-3xl">
+          <p className="text-xs uppercase tracking-[0.16em] text-[#3B82F6]">FAQ</p>
+          <h2 className="mt-4 text-4xl md:text-5xl font-bold text-white leading-tight">
+            Common doubts, quick answers
+          </h2>
+        </Reveal>
+
+        <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-10">
+          {FAQS.map((item, idx) => (
+            <Reveal
+              key={item.q}
+              delay={idx * 0.04}
+              className="rounded-2xl border border-blue-500/25 bg-[#0F172A] p-6 md:p-8"
+            >
+              <h3 className="flex items-start gap-3 text-xl font-semibold text-white">
+                <span className="mt-1 inline-flex h-8 w-8 items-center justify-center rounded-lg bg-blue-500/10 text-[#3B82F6]">
+                  <MessageCircle size={15} />
+                </span>
+                <span>{item.q}</span>
+              </h3>
+              <p className="mt-3 text-gray-300 leading-relaxed">{item.a}</p>
+            </Reveal>
           ))}
         </div>
       </div>
     </section>
   );
 }
+
+export default memo(FaqSection);

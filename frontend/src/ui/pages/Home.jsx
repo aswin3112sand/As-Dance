@@ -2,8 +2,17 @@ import React, { Suspense, memo, useEffect, useRef, useState } from "react";
 import { Mail, WhatsApp } from "../icons.jsx";
 
 import HeroSection from "../components/HeroSection.jsx";
-import LevelCards from "../components/LevelCards.jsx";
+import BrandProblemSection from "../components/BrandProblemSection.jsx";
+import BrandSystemSection from "../components/BrandSystemSection.jsx";
+import BrandValueOfferSection from "../components/BrandValueOfferSection.jsx";
+import BrandProofStrip from "../components/BrandProofStrip.jsx";
+import BrandUpsellSection from "../components/BrandUpsellSection.jsx";
+import BrandStorySection from "../components/BrandStorySection.jsx";
+import BrandFinalCloseSection from "../components/BrandFinalCloseSection.jsx";
 import FaqSection from "../components/FaqSection.jsx";
+import MusicCircle from "../components/MusicCircle.jsx";
+import musicTrack from "../../assets/bg/Vaarayo-Vaarayo-MassTamilan.dev.mp3";
+import musicCover from "../../assets/bg/dhanush.webp";
 
 const DemoSection = React.lazy(() => import("../components/DemoSection.jsx"));
 const ReviewLoop = React.lazy(() => import("../components/ReviewLoop.jsx"));
@@ -29,12 +38,12 @@ const SectionSkeleton = memo(function SectionSkeleton({ title, id, minHeight }) 
   );
 });
 
-const PREVIEW_FALLBACK = (
-  <SectionSkeleton title="preview" id="preview" minHeight="clamp(260px, 45vw, 420px)" />
-);
-
 const REVIEWS_FALLBACK = (
   <SectionSkeleton title="reviews" id="reviews" minHeight="clamp(300px, 60vw, 560px)" />
+);
+
+const PREVIEW_FALLBACK = (
+  <SectionSkeleton title="preview" id="preview" minHeight="clamp(260px, 45vw, 420px)" />
 );
 
 const LazyMount = memo(function LazyMount({ rootMargin = "240px", fallback, children }) {
@@ -128,20 +137,11 @@ export default function Home() {
 
 
       <div className="page-content">
-        {/* 1. HERO */}
         <HeroSection />
-
-        {/* 2. SALES FLOW */}
-        <LevelCards />
-        <LazyMount
-          fallback={PREVIEW_FALLBACK}
-        >
-          <Suspense fallback={PREVIEW_FALLBACK}>
-            <DemoSection />
-          </Suspense>
-        </LazyMount>
-
-        {/* 3. REVIEWS MARQUEE */}
+        <BrandProblemSection />
+        <BrandSystemSection />
+        <BrandValueOfferSection />
+        <BrandProofStrip />
         <LazyMount
           fallback={REVIEWS_FALLBACK}
         >
@@ -149,8 +149,17 @@ export default function Home() {
             <ReviewLoop />
           </Suspense>
         </LazyMount>
-
+        <LazyMount
+          fallback={PREVIEW_FALLBACK}
+        >
+          <Suspense fallback={PREVIEW_FALLBACK}>
+            <DemoSection />
+          </Suspense>
+        </LazyMount>
+        <BrandUpsellSection />
+        <BrandStorySection />
         <FaqSection />
+        <BrandFinalCloseSection />
       </div>
 
       <a
@@ -165,6 +174,12 @@ export default function Home() {
 
       {/* 9. SUPPORT BUTTONS (Floating Container) */}
       <div className="fab-container">
+        <MusicCircle
+          audioSrc={musicTrack}
+          coverSrc={musicCover}
+          title="Toggle practice track"
+          className="music-circle-shell--fab"
+        />
         <a
           href="mailto:businessaswin@gmail.com"
           className="mail-float"

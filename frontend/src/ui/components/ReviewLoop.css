@@ -1,3 +1,48 @@
+/* ============================================================
+   MOTION — Star shimmer
+   ============================================================ */
+@keyframes star-shimmer {
+
+  0%,
+  100% {
+    filter: drop-shadow(0 0 4px rgba(255, 209, 102, 0.3));
+  }
+
+  50% {
+    filter: drop-shadow(0 0 10px rgba(255, 209, 102, 0.75));
+  }
+}
+
+/* ============================================================
+   MOTION — Avatar ring pulse
+   ============================================================ */
+@keyframes avatar-ring-pulse {
+
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(54, 243, 255, 0.5);
+  }
+
+  55% {
+    box-shadow: 0 0 0 7px rgba(54, 243, 255, 0);
+  }
+}
+
+/* ============================================================
+   MOTION — Section header entrance
+   ============================================================ */
+@keyframes header-rise {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .review-loop-section {
   position: relative;
   overflow: hidden;
@@ -26,6 +71,7 @@
   margin: 0 auto clamp(1.25rem, 3vw, 2.25rem);
   max-width: 760px;
   text-align: center;
+  animation: header-rise 0.65s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .review-loop-title {
@@ -36,11 +82,27 @@
   text-shadow: 0 0 18px rgba(54, 243, 255, 0.22);
 }
 
+.review-loop-title-accent {
+  color: #ffd166;
+  text-shadow: 0 0 14px rgba(255, 209, 102, 0.32);
+}
+
 .review-loop-subtitle {
   margin: 0.9rem auto 0;
   font-size: clamp(0.92rem, 1.5vw, 1.02rem);
   line-height: 1.65;
   color: rgba(237, 248, 255, 0.8);
+}
+
+.review-loop-rating {
+  margin: 0.72rem auto 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.38rem;
+  color: #ffd166;
+  font-size: 0.86rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
 }
 
 .review-loop-shell {
@@ -81,21 +143,29 @@
   min-height: 230px;
   border-radius: 18px;
   padding: clamp(0.95rem, 2.6vw, 1.45rem);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  background: linear-gradient(160deg, rgba(11, 20, 38, 0.84), rgba(31, 14, 30, 0.7));
-  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  background: linear-gradient(160deg, rgba(11, 20, 38, 0.78), rgba(31, 14, 30, 0.68));
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.32), inset 0 0 0 1px rgba(255, 255, 255, 0.06);
   display: flex;
   flex-direction: column;
   gap: 0.8rem;
   scroll-snap-align: start;
   contain: layout paint style;
-  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+  transition:
+    transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 .review-loop-card:hover {
-  transform: translateY(-4px);
-  border-color: rgba(54, 243, 255, 0.45);
-  box-shadow: 0 18px 36px rgba(0, 0, 0, 0.38), 0 0 16px rgba(54, 243, 255, 0.22);
+  transform: translateY(-7px) scale(1.018);
+  border-color: rgba(54, 243, 255, 0.5);
+  box-shadow:
+    0 24px 50px rgba(0, 0, 0, 0.45),
+    0 0 28px rgba(54, 243, 255, 0.22),
+    inset 0 0 0 1px rgba(54, 243, 255, 0.12);
 }
 
 .review-loop-card-head {
@@ -115,6 +185,14 @@
   border-radius: 50%;
   object-fit: cover;
   border: 2px solid rgba(54, 243, 255, 0.35);
+  animation: avatar-ring-pulse 3s ease-in-out infinite;
+  transition: border-color 0.3s ease;
+}
+
+.review-loop-card:hover .review-loop-avatar {
+  border-color: rgba(54, 243, 255, 0.75);
+  animation-play-state: paused;
+  box-shadow: 0 0 0 3px rgba(54, 243, 255, 0.25);
 }
 
 .review-loop-badge {
@@ -166,6 +244,23 @@
 
 .review-loop-stars svg {
   filter: drop-shadow(0 0 5px rgba(255, 209, 102, 0.35));
+  animation: star-shimmer 2.8s ease-in-out infinite;
+}
+
+.review-loop-stars svg:nth-child(2) {
+  animation-delay: 0.18s;
+}
+
+.review-loop-stars svg:nth-child(3) {
+  animation-delay: 0.36s;
+}
+
+.review-loop-stars svg:nth-child(4) {
+  animation-delay: 0.54s;
+}
+
+.review-loop-stars svg:nth-child(5) {
+  animation-delay: 0.72s;
 }
 
 .review-loop-controls {
@@ -261,9 +356,13 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+
   .review-loop-card,
   .review-loop-control,
-  .review-loop-fog {
+  .review-loop-fog,
+  .review-loop-header,
+  .review-loop-avatar,
+  .review-loop-stars svg {
     transition: none !important;
     animation: none !important;
   }

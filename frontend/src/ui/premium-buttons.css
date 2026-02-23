@@ -1,0 +1,291 @@
+/* ================================================================
+   PREMIUM BUTTON EFFECTS — AS-Dance
+   v2.0 | shimmer + glow lift + gradient border
+   ================================================================ */
+
+/* ---------------------------------------------------------------
+   KEYFRAMES
+   --------------------------------------------------------------- */
+
+/* Light beam that sweeps L→R on the button */
+@keyframes btn-shimmer-sweep {
+    0% {
+        transform: translateX(-110%) skewX(-18deg);
+    }
+
+    100% {
+        transform: translateX(210%) skewX(-18deg);
+    }
+}
+
+/* Subtle ambient pulse for CTA buttons (complements LevelCards pulse) */
+@keyframes btn-ambient-glow {
+
+    0%,
+    100% {
+        box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);
+    }
+
+    50% {
+        box-shadow: 0 0 30px 4px rgba(59, 130, 246, 0.22);
+    }
+}
+
+/* Gradient border spin (used on outline buttons) */
+@keyframes btn-border-spin {
+    to {
+        --btn-border-angle: 360deg;
+    }
+}
+
+/* ---------------------------------------------------------------
+   PRIMARY CTA BUTTONS
+   .btn-cta-primary  .btn--primary  .btn-primary  button[type=button].hero-cta
+   --------------------------------------------------------------- */
+
+.btn-cta-primary,
+.btn--primary,
+.btn-primary,
+.btn-cta,
+.sales-primary-cta {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    transition:
+        transform 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+        box-shadow 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+        filter 0.28s ease;
+}
+
+/* Shimmer beam pseudo-element */
+.btn-cta-primary::after,
+.btn--primary::after,
+.btn-primary::after,
+.btn-cta::after,
+.sales-primary-cta::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    width: 55%;
+    height: 100%;
+    top: 0;
+    background: linear-gradient(105deg,
+            transparent 30%,
+            rgba(255, 255, 255, 0.26) 50%,
+            transparent 70%);
+    transform: translateX(-110%) skewX(-18deg);
+    pointer-events: none;
+    z-index: 2;
+}
+
+/* Run shimmer on hover */
+.btn-cta-primary:hover::after,
+.btn--primary:hover::after,
+.btn-primary:hover::after,
+.btn-cta:hover::after,
+.sales-primary-cta:hover::after {
+    animation: btn-shimmer-sweep 0.55s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* Hover: lift + deepen shadow + slight brightness boost */
+.btn-cta-primary:hover,
+.btn--primary:hover,
+.btn-primary:hover,
+.btn-cta:hover,
+.sales-primary-cta:hover {
+    transform: translateY(-4px) scale(1.025);
+    box-shadow:
+        0 14px 36px rgba(0, 0, 0, 0.45),
+        0 0 28px rgba(59, 130, 246, 0.35),
+        0 0 60px rgba(59, 130, 246, 0.12);
+    filter: brightness(1.08);
+}
+
+/* Active press */
+.btn-cta-primary:active,
+.btn--primary:active,
+.btn-primary:active,
+.btn-cta:active,
+.sales-primary-cta:active {
+    transform: translateY(-1px) scale(0.985);
+    transition-duration: 0.1s;
+}
+
+/* ---------------------------------------------------------------
+   INLINE HERO BUTTONS (Tailwind-classed — HeroSection.jsx)
+   These use Tailwind classes, so we target by class combo
+   --------------------------------------------------------------- */
+
+/* "Start With 639 Steps" primary button */
+button.rounded-xl.bg-\[#3B82F6\] {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    transition:
+        transform 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+        box-shadow 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+button.rounded-xl.bg-\[#3B82F6\]::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(105deg,
+            transparent 30%,
+            rgba(255, 255, 255, 0.28) 50%,
+            transparent 70%);
+    transform: translateX(-120%) skewX(-18deg);
+    pointer-events: none;
+    z-index: 2;
+}
+
+button.rounded-xl.bg-\[#3B82F6\]:hover::after {
+    animation: btn-shimmer-sweep 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+button.rounded-xl.bg-\[#3B82F6\]:hover {
+    transform: translateY(-4px) scale(1.025);
+    box-shadow:
+        0 14px 36px rgba(0, 0, 0, 0.45),
+        0 0 30px rgba(59, 130, 246, 0.45);
+}
+
+button.rounded-xl.bg-\[#3B82F6\]:active {
+    transform: translateY(-1px) scale(0.985);
+}
+
+/* ---------------------------------------------------------------
+   SECONDARY / GHOST / OUTLINE BUTTONS
+   .btn--ghost  .btn-ghost  outline-light variants
+   Hero "Watch How I Teach" anchor
+   --------------------------------------------------------------- */
+
+.btn--ghost,
+.btn-ghost,
+.btn-outline-light,
+a.rounded-xl.border {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    transition:
+        transform 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+        box-shadow 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+        border-color 0.28s ease,
+        background 0.28s ease;
+}
+
+/* Shimmer beam (dimmer for ghost buttons) */
+.btn--ghost::after,
+.btn-ghost::after,
+.btn-outline-light::after,
+a.rounded-xl.border::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    width: 55%;
+    height: 100%;
+    background: linear-gradient(105deg,
+            transparent 30%,
+            rgba(255, 255, 255, 0.14) 50%,
+            transparent 70%);
+    transform: translateX(-110%) skewX(-18deg);
+    pointer-events: none;
+    z-index: 2;
+}
+
+.btn--ghost:hover::after,
+.btn-ghost:hover::after,
+.btn-outline-light:hover::after,
+a.rounded-xl.border:hover::after {
+    animation: btn-shimmer-sweep 0.58s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* Hover: lift + cyan glow edge */
+.btn--ghost:hover,
+.btn-ghost:hover,
+.btn-outline-light:hover,
+a.rounded-xl.border:hover {
+    transform: translateY(-4px) scale(1.022);
+    box-shadow:
+        0 12px 32px rgba(0, 0, 0, 0.4),
+        0 0 22px rgba(54, 243, 255, 0.22),
+        inset 0 0 0 1px rgba(54, 243, 255, 0.35);
+    border-color: rgba(54, 243, 255, 0.55) !important;
+}
+
+.btn--ghost:active,
+.btn-ghost:active,
+.btn-outline-light:active,
+a.rounded-xl.border:active {
+    transform: translateY(-1px) scale(0.985);
+    transition-duration: 0.1s;
+}
+
+/* ---------------------------------------------------------------
+   NAVBAR BUTTONS — .btn--primary / .btn--ghost in navbar
+   --------------------------------------------------------------- */
+
+.navbar-glass .btn--primary:hover,
+.navbar-glass .btn-primary:hover {
+    box-shadow:
+        0 8px 24px rgba(0, 0, 0, 0.4),
+        0 0 20px rgba(59, 130, 246, 0.4);
+    transform: translateY(-3px) scale(1.02);
+}
+
+.navbar-glass .btn--ghost:hover,
+.navbar-glass .btn-ghost:hover {
+    box-shadow:
+        0 8px 20px rgba(0, 0, 0, 0.35),
+        0 0 16px rgba(54, 243, 255, 0.18);
+    transform: translateY(-3px) scale(1.02);
+    border-color: rgba(54, 243, 255, 0.5) !important;
+}
+
+/* ---------------------------------------------------------------
+   REVIEW LOOP CONTROLS
+   --------------------------------------------------------------- */
+
+.review-loop-control:hover {
+    transform: translateY(-3px) scale(1.06) !important;
+    box-shadow:
+        0 10px 26px rgba(0, 0, 0, 0.4),
+        0 0 18px rgba(54, 243, 255, 0.3) !important;
+}
+
+/* ---------------------------------------------------------------
+   REDUCED MOTION — disable all effects
+   --------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .btn-cta-primary,
+    .btn--primary,
+    .btn-primary,
+    .btn-cta,
+    .sales-primary-cta,
+    .btn--ghost,
+    .btn-ghost,
+    .btn-outline-light,
+    button.rounded-xl.bg-\[#3B82F6\],
+    a.rounded-xl.border {
+        transition: box-shadow 0.15s ease, border-color 0.15s ease !important;
+        transform: none !important;
+        filter: none !important;
+    }
+
+    .btn-cta-primary::after,
+    .btn--primary::after,
+    .btn-primary::after,
+    .btn-cta::after,
+    .sales-primary-cta::after,
+    .btn--ghost::after,
+    .btn-ghost::after,
+    .btn-outline-light::after,
+    button.rounded-xl.bg-\[#3B82F6\]::after,
+    a.rounded-xl.border::after {
+        display: none !important;
+    }
+}

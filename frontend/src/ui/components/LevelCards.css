@@ -1,3 +1,33 @@
+/* ============================================================
+   MOTION DESIGN — CTA Pulse
+   ============================================================ */
+@keyframes cta-pulse {
+
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.55);
+  }
+
+  55% {
+    box-shadow: 0 0 0 12px rgba(59, 130, 246, 0);
+  }
+}
+
+/* ============================================================
+   MOTION DESIGN — Card entrance (scroll reveal)
+   ============================================================ */
+@keyframes card-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .sales-section .sales-shell {
   display: grid;
   gap: clamp(14px, 2vw, 22px);
@@ -6,6 +36,17 @@
 .sales-hero-clarity {
   padding: clamp(20px, 3vw, 30px);
   border: 1px solid rgba(255, 255, 255, 0.2);
+  /* Entrance animation default state */
+  opacity: 0;
+  transform: translateY(30px);
+  transition:
+    opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.sales-hero-clarity.is-visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .sales-chip {
@@ -47,6 +88,7 @@
   letter-spacing: 0.08em;
   text-transform: uppercase;
   font-weight: 800;
+  animation: cta-pulse 2.6s ease-in-out infinite;
 }
 
 .sales-link-cta {
@@ -65,6 +107,34 @@
 .sales-card {
   padding: clamp(16px, 2.2vw, 24px);
   border-radius: 18px;
+  /* Entrance animation default state */
+  opacity: 0;
+  transform: translateY(30px);
+  transition:
+    opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.28s ease,
+    border-color 0.28s ease;
+}
+
+/* Triggered by IntersectionObserver */
+.sales-card.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Stagger delays for grid pairs */
+.sales-grid-two .sales-card:nth-child(2) {
+  transition-delay: 0.1s;
+}
+
+/* Hover lift + glow (blue theme) */
+.sales-card:hover {
+  transform: translateY(-6px) scale(1.013);
+  box-shadow:
+    0 22px 50px rgba(0, 0, 0, 0.45),
+    0 0 28px rgba(59, 130, 246, 0.18);
+  border-color: rgba(80, 160, 255, 0.4);
 }
 
 .sales-card h3,
@@ -104,6 +174,15 @@
   gap: 14px;
   border: 1px solid rgba(255, 201, 148, 0.35);
   background: linear-gradient(150deg, rgba(36, 18, 25, 0.88), rgba(22, 16, 34, 0.84));
+}
+
+/* Premium card — warm gold glow on hover */
+.premium-service-card:hover {
+  transform: translateY(-6px) scale(1.013);
+  box-shadow:
+    0 22px 50px rgba(0, 0, 0, 0.48),
+    0 0 32px rgba(255, 180, 80, 0.24);
+  border-color: rgba(255, 201, 148, 0.65);
 }
 
 .premium-service-layout {
@@ -249,6 +328,24 @@
   color: #b9f8ff;
   text-decoration: underline;
   text-underline-offset: 3px;
+}
+
+/* ============================================================
+   MOTION — Reduced motion accessibility
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+
+  .sales-card,
+  .sales-hero-clarity {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: box-shadow 0.2s ease, border-color 0.2s ease !important;
+  }
+
+  .btn-cta-primary,
+  .sales-primary-cta {
+    animation: none !important;
+  }
 }
 
 @media (max-width: 860px) {

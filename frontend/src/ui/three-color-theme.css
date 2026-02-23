@@ -1,0 +1,43 @@
+:root {
+  --brand-navy: #0b1220;
+  --brand-blue: #3b82f6;
+  --brand-orange: #f59e0b;
+}
+
+body,
+.page-content {
+  background: var(--brand-navy) !important;
+  color: #ffffff;
+}
+
+body::before,
+body::after {
+  display: none !important;
+}
+
+.page-content {
+  padding-top: var(--header-total);
+}
+
+.site-header .navbar .brand {
+  color: #ffffff !important;
+}
+
+.mobile-sticky-enroll {
+  background: var(--brand-blue) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(59, 130, 246, 0.55) !important;
+  box-shadow: 0 10px 18px rgba(59, 130, 246, 0.28) !important;
+}
+
+.fab-container .wa-float,
+.fab-container .mail-float {
+  border: 1px solid rgba(59, 130, 246, 0.45) !important;
+  background: #0f172a !important;
+  box-shadow: 0 8px 16px rgba(11, 18, 32, 0.3) !important;
+}
+
+.fab-container .wa-float:hover,
+.fab-container .mail-float:hover {
+  transform: translateY(-1px);
+}
