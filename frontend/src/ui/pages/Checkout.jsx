@@ -60,21 +60,48 @@ const BUNDLE_INCLUDES = [
   "Single dashboard route with Google Drive delivery after unlock.",
 ];
 
+const LIVE_BUY_SIGNALS = [
+  {
+    id: "viewing",
+    metric: "23 learners viewing now",
+    copy: "Live bundle interest is active. Secure the unlock before you drop off the flow.",
+  },
+  {
+    id: "today",
+    metric: "18 learners checked this offer today",
+    copy: "This checkout is converting because the path is simple: pay, verify, unlock, train.",
+  },
+  {
+    id: "support",
+    metric: "WhatsApp support is active now",
+    copy: "Need help after payment? Support follow-up is already aligned to this unlock flow.",
+  },
+];
+
 export default function Checkout() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [messages, setMessages] = useState([]);
   const [processing, setProcessing] = useState(false);
+  const [buyerName, setBuyerName] = useState("");
+  const [buyerPhone, setBuyerPhone] = useState("");
+  const [liveSignalIndex, setLiveSignalIndex] = useState(0);
   const courseId = useMemo(() => {
     const params = new URLSearchParams(window.location.search);
     const id = params.get("courseId");
     return id ? Number(id) : 123;
   }, []);
 
-  const nameRef = useRef(null);
-  const phoneRef = useRef(null);
   const processingRef = useRef(false);
   const razorpayReadyRef = useRef(false);
+
+  useEffect(() => {
+    const intervalId = window.setInterval(() => {
+      setLiveSignalIndex((current) => (current + 1) % LIVE_BUY_SIGNALS.length);
+    }, 4200);
+
+    return () => window.clearInterval(intervalId);
+  }, []);
 
   useEffect(() => {
     const checkStatus = async () => {
@@ -125,6 +152,18 @@ export default function Checkout() {
     return digits;
   };
 
+  const liveSignal = LIVE_BUY_SIGNALS[liveSignalIndex];
+  const preferredName = buyerName.trim() || user?.fullName || "";
+  const firstName = preferredName ? preferredName.split(/\s+/)[0] : "";
+  const primaryCheckoutLabel = processing
+    ? "Securing your checkout..."
+    : firstName
+      ? `Unlock ${firstName}'s Bundle for INR 499`
+      : "Unlock 639 Steps for INR 499";
+  const primaryCheckoutSubcopy = processing
+    ? "Protected Razorpay window is loading. Keep this tab open."
+    : liveSignal.copy;
+
   const handlePayment = async () => {
     if (processingRef.current) return;
     processingRef.current = true;
@@ -133,8 +172,8 @@ export default function Checkout() {
     clearFailure();
     clearReceipt();
 
-    const name = nameRef.current?.value?.trim() || "";
-    const rawPhone = phoneRef.current?.value || "";
+    const name = buyerName.trim();
+    const rawPhone = buyerPhone;
     const validatedPhone = getValidatedPhone(rawPhone);
 
     if (validatedPhone === null) {
@@ -490,27 +529,48 @@ export default function Checkout() {
                 }}
               >
                 <FormField
-                  ref={nameRef}
                   id="checkout-name"
                   type="text"
                   label="Full Name"
                   autoComplete="name"
                   hint="Optional. We will use your account name if this stays blank."
+                  value={buyerName}
+                  onChange={(event) => setBuyerName(event.target.value)}
                 />
 
                 <FormField
-                  ref={phoneRef}
                   id="checkout-phone"
                   type="tel"
                   label="WhatsApp"
                   autoComplete="tel"
                   inputMode="tel"
                   hint="Enter 10+ digits or leave blank."
+                  value={buyerPhone}
+                  onChange={(event) => setBuyerPhone(event.target.value)}
                 />
 
-                <Button type="submit" disabled={processing} className="checkout-button--wide">
-                  {processing ? "Processing..." : "Pay INR 499 Now"}
-                </Button>
+                <div className="checkout-live-cta" aria-live="polite">
+                  <div className="checkout-live-cta__top">
+                    <span className="checkout-live-pill">
+                      <span className="checkout-live-pill__dot" aria-hidden="true" />
+                      Live checkout now
+                    </span>
+                    <span className="checkout-live-cta__signal">{liveSignal.metric}</span>
+                  </div>
+
+                  <Button type="submit" disabled={processing} className="checkout-button--wide checkout-live-cta__button">
+                    <span className="checkout-live-cta__button-copy">
+                      <strong>{primaryCheckoutLabel}</strong>
+                      <span>{primaryCheckoutSubcopy}</span>
+                    </span>
+                    <ArrowRight size={18} aria-hidden="true" />
+                  </Button>
+
+                  <div className="checkout-live-cta__meta">
+                    <span>Instant dashboard access after payment</span>
+                    <span>Secure Razorpay checkout</span>
+                  </div>
+                </div>
               </form>
 
               {processing ? (
@@ -533,6 +593,21 @@ export default function Checkout() {
               <p className="inline-note checkout-form-footnote">
                 This checkout is only for the digital 639 bundle. Live batches and custom choreography remain separate premium offers.
               </p>
+            </GlassCard>
+          </div>
+
+          <div className="floating-mobile-cta">
+            <GlassCard className="checkout-mobile-cta" accent="gold">
+              <div className="checkout-mobile-cta__row">
+                <div className="checkout-mobile-cta__copy">
+                  <span className="checkout-mobile-cta__eyebrow">{liveSignal.metric}</span>
+                  <strong>{processing ? "Securing your checkout..." : "INR 499 one-time unlock"}</strong>
+                </div>
+
+                <Button type="button" onClick={handlePayment} disabled={processing} className="checkout-mobile-cta__button">
+                  {processing ? "Loading..." : "Unlock now"}
+                </Button>
+              </div>
             </GlassCard>
           </div>
         </div>

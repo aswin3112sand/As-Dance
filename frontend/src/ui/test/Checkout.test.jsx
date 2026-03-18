@@ -31,4 +31,6 @@ test("renders checkout screen", async () => {
 
   expect(await screen.findByRole("heading", { name: /unlock the 639 mastery bundle/i })).toBeInTheDocument();
   expect(screen.getAllByRole("button", { name: /pay inr 499 now/i }).length).toBeGreaterThan(0);
+  expect(screen.getByText(/live checkout now/i)).toBeInTheDocument();
+  expect(screen.getByRole("button", { name: /unlock .* bundle for inr 499/i })).toBeInTheDocument();
 });
