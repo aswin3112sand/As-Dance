@@ -7,17 +7,17 @@ const SYSTEM_CARDS = [
   {
     icon: Target,
     title: "196 Easy Steps",
-    description: "Foundation training for rhythm awareness, posture control, and smooth first moves.",
+    description: "Rhythm, posture, and clean first moves.",
   },
   {
     icon: Activity,
     title: "219 Medium Steps",
-    description: "Flow, transitions, and timing drills that convert basics into performance-ready sequences.",
+    description: "Flow, timing, and transition drills for stronger control.",
   },
   {
     icon: Flame,
     title: "226 Hard Steps",
-    description: "Advanced pace choreography for stage impact and higher confidence under pressure.",
+    description: "Advanced choreography for stage impact and pressure control.",
   },
 ];
 
@@ -31,7 +31,7 @@ export default memo(function BrandSystemSection() {
             The 639-Step Structured Dance System
           </h2>
           <p className="mt-4 text-base leading-relaxed text-gray-300">
-            Beginner to performer progression with practical sequencing.
+            Beginner to performer progression with cleaner sequencing.
           </p>
         </Reveal>
 

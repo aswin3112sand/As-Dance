@@ -1,8 +1,12 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { Crown, ShieldCheck } from "../icons.jsx";
 import { useAuth } from "../auth.jsx";
 import { apiFetch } from "../api.js";
 import { loadReceipt } from "../paymentStorage.js";
+import MainLayout from "../layouts/MainLayout.jsx";
+import GlassCard from "../components/GlassCard.jsx";
+import Button from "../components/Button.jsx";
 
 const formatAmount = (value) => {
   const amount = Number(value);
@@ -12,8 +16,8 @@ const formatAmount = (value) => {
 
 export default function PaymentSuccess() {
   const { user } = useAuth();
-  const loc = useLocation();
-  const state = loc.state || {};
+  const location = useLocation();
+  const state = location.state || {};
   const storedReceipt = useMemo(() => loadReceipt(user?.id), [user?.id]);
   const orderId = state.orderId || storedReceipt?.orderId || "";
   const paymentId = state.paymentId || storedReceipt?.paymentId || "";
@@ -27,6 +31,7 @@ export default function PaymentSuccess() {
 
   useEffect(() => {
     let active = true;
+
     async function verifyStatus() {
       try {
         const res = await apiFetch("/api/payment/status");
@@ -37,6 +42,7 @@ export default function PaymentSuccess() {
         if (active) setStatus({ unlocked: false });
       }
     }
+
     verifyStatus();
     return () => {
       active = false;
@@ -45,61 +51,99 @@ export default function PaymentSuccess() {
 
   useEffect(() => {
     if (resolvedGoogleDriveUrl && status?.unlocked !== false) {
-      const timer = setTimeout(() => {
+      const timer = window.setTimeout(() => {
         const opened = window.open(resolvedGoogleDriveUrl, "_blank", "noopener,noreferrer");
         if (!opened) {
           window.location.href = resolvedGoogleDriveUrl;
         }
       }, 2000);
-      return () => clearTimeout(timer);
+
+      return () => window.clearTimeout(timer);
     }
+
+    return undefined;
   }, [resolvedGoogleDriveUrl, status?.unlocked]);
 
   const paidAtLabel = paidAt ? new Date(paidAt).toLocaleString() : "";
   const showVerifyWarning = status && !status.unlocked;
 
   return (
-    <section className="section payment-result-page">
-      <div className="container-max">
-        <div className="payment-result-card card-glass">
-          <div className="payment-result-icon is-success" aria-hidden="true">OK</div>
-          <h1 className="payment-result-title">Payment Successful</h1>
-          <p className="payment-result-subtitle">
-            Payment confirmed. Dashboard opens with your 639-step course access.
-          </p>
+    <MainLayout
+      navProps={{
+        links: [
+          { key: "dashboard", label: "Dashboard", to: "/dashboard" },
+          { key: "home", label: "Home", to: "/" },
+        ],
+        ctaLabel: "Go to Dashboard",
+        ctaTo: "/dashboard",
+      }}
+    >
+      <section className="section-shell">
+        <div className="container-max">
+          <div className="result-shell">
+            <GlassCard className="result-card" accent="gold">
+              <div className="result-icon">
+                <ShieldCheck size={24} aria-hidden="true" />
+              </div>
+              <h1>Payment successful</h1>
+              <p className="muted">
+                Payment confirmed. Dashboard opens with your 639-step course access.
+              </p>
 
-          <div className="payment-result-meta">
-            <div><span>Amount:</span> {amount}</div>
-            {orderId && <div><span>Order ID:</span> {orderId}</div>}
-            {paymentId && <div><span>Payment ID:</span> {paymentId}</div>}
-            {paidAtLabel && <div><span>Paid:</span> {paidAtLabel}</div>}
-          </div>
+              <div className="payment-meta" style={{ marginTop: "1.2rem" }}>
+                <div className="meta-row">
+                  <span>Amount</span>
+                  <strong>{amount}</strong>
+                </div>
+                {orderId ? (
+                  <div className="meta-row">
+                    <span>Order ID</span>
+                    <strong>{orderId}</strong>
+                  </div>
+                ) : null}
+                {paymentId ? (
+                  <div className="meta-row">
+                    <span>Payment ID</span>
+                    <strong>{paymentId}</strong>
+                  </div>
+                ) : null}
+                {paidAtLabel ? (
+                  <div className="meta-row">
+                    <span>Paid at</span>
+                    <strong>{paidAtLabel}</strong>
+                  </div>
+                ) : null}
+              </div>
 
-          <div className="payment-result-actions">
-            {resolvedGoogleDriveUrl && (
-              <a href={resolvedGoogleDriveUrl} className="btn btn-cta btn-hero btn-cta-primary">
-                Open 639-Step Access
-              </a>
-            )}
-            <Link className="btn btn-cta btn-hero btn-cta-primary" to="/dashboard">
-              Go to Dashboard
-            </Link>
-            <Link className="btn btn-outline-light" to="/">
-              Back to Home
-            </Link>
+              <div className="button-row" style={{ marginTop: "1.5rem" }}>
+                {resolvedGoogleDriveUrl ? (
+                  <Button href={resolvedGoogleDriveUrl}>
+                    Open 639-step access
+                  </Button>
+                ) : null}
+                <Button to="/dashboard" variant="secondary">
+                  Go to Dashboard
+                </Button>
+                <Button to="/" variant="ghost">
+                  Back to Home
+                </Button>
+              </div>
+
+              {resolvedGoogleDriveUrl && status?.unlocked !== false ? (
+                <p className="inline-note" style={{ marginTop: "1rem" }}>
+                  Access link available na adhu 2 seconds-la open aagum.
+                </p>
+              ) : null}
+
+              {showVerifyWarning ? (
+                <div className="message-pill" role="alert" style={{ marginTop: "1rem" }}>
+                  Payment verify issue irundha dashboard check pannunga illa WhatsApp support contact pannunga.
+                </div>
+              ) : null}
+            </GlassCard>
           </div>
-          {resolvedGoogleDriveUrl && status?.unlocked !== false && (
-            <p className="payment-result-subtitle" style={{ marginTop: "1rem", fontSize: "0.9rem" }}>
-              Access link available na adhu 2 seconds-la open aagum.
-            </p>
-          )}
-          {showVerifyWarning && (
-            <p className="payment-result-subtitle" role="alert" style={{ marginTop: "1rem", fontSize: "0.9rem" }}>
-              Payment verify issue irundha dashboard check pannunga illa WhatsApp support contact pannunga.
-            </p>
-          )}
         </div>
-      </div>
-    </section>
+      </section>
+    </MainLayout>
   );
 }

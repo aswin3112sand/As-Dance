@@ -1,141 +1,161 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Crown, ShieldCheck, Sparkles } from "../icons.jsx";
 import { useAuth } from "../auth.jsx";
-import { shouldReduceMotion } from "../utils/motion.js";
+import MainLayout from "../layouts/MainLayout.jsx";
+import GlassCard from "../components/GlassCard.jsx";
+import Button from "../components/Button.jsx";
+import FormField from "../components/FormField.jsx";
+import stageImage from "../../assets/bg/w10.webp";
+import supportImage from "../../assets/bg/DanceTut.webp";
 
 export default function Login() {
   const { login } = useAuth();
-  const nav = useNavigate();
-  const loc = useLocation();
-  const params = new URLSearchParams(loc.search);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
   const redirectParam = params.get("redirect");
-  const targetPath = redirectParam || (typeof loc.state?.from === "string" ? loc.state.from : "/checkout?pay=1");
+  const targetPath = redirectParam || (typeof location.state?.from === "string" ? location.state.from : "/checkout?pay=1");
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [err, setErr] = useState("");
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const particleCount = useMemo(() => {
-    if (typeof window === "undefined") return 8;
-    const reduceMotion = shouldReduceMotion();
-    const isSmallScreen = window.matchMedia("(max-width: 768px)").matches;
-    return reduceMotion || isSmallScreen ? 6 : 20;
-  }, []);
-  const particles = useMemo(
-    () => Array.from({ length: particleCount }, () => ({
-      left: `${Math.random() * 100}%`,
-      top: `${Math.random() * 100}%`,
-      delay: `${Math.random() * 8}s`
-    })),
-    [particleCount]
-  );
 
   useEffect(() => {
-    if (typeof loc.state?.email === "string") {
-      setEmail(loc.state.email);
+    if (typeof location.state?.email === "string") {
+      setEmail(location.state.email);
     }
-  }, [loc.state]);
+  }, [location.state]);
 
-  async function onSubmit(e) {
-    e.preventDefault();
-    setErr("");
+  async function onSubmit(event) {
+    event.preventDefault();
+    setError("");
     setLoading(true);
     try {
       await login(email, password);
-      nav(targetPath, { replace: true });
-    } catch (ex) {
-      setErr(ex?.message || "Login failed");
+      navigate(targetPath, { replace: true });
+    } catch (err) {
+      setError(err?.message || "Login failed");
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <div className="cinematic-auth login-page">
-      <div className="cinematic-bg">
-        <div className="bg-gradient"></div>
-        <div className="particle-field" aria-hidden="true">
-          {particles.map((particle, i) => (
-            <div
-              key={`login-p-${i}`}
-              className="particle"
-              style={{
-                left: particle.left,
-                top: particle.top,
-                animationDelay: particle.delay
-              }}
-            ></div>
-          ))}
-        </div>
-        <div className="light-beam beam-1"></div>
-        <div className="light-beam beam-2"></div>
-      </div>
+    <MainLayout
+      footer={false}
+      navProps={{
+        links: [
+          { key: "home", label: "Home", to: "/" },
+          { key: "preview", label: "Preview", to: "/preview" },
+        ],
+        ctaLabel: "Create account",
+        ctaTo: `/register?redirect=${encodeURIComponent(targetPath)}`,
+      }}
+    >
+      <section className="section-shell">
+        <div className="container-max">
+          <div className="auth-shell">
+            <GlassCard className="auth-info-card" accent="gold">
+              <span className="chip chip--gold">
+                <Sparkles size={14} aria-hidden="true" />
+                Premium student entry
+              </span>
+              <h1 style={{ margin: "1rem 0 0.75rem", fontFamily: "var(--font-family-display)", fontSize: "clamp(2.4rem, 5vw, 4rem)", lineHeight: 1.02 }}>
+                Enter the stage.
+              </h1>
+              <p className="muted">
+                Login keeps the payment and dashboard journey protected, but the experience should still feel premium,
+                warm, and trust-building.
+              </p>
 
-      <div className="login-shell">
-        <div className="cinematic-card login-card mounted">
-          <div className="card-glow"></div>
+              <div className="auth-visual-grid">
+                <img src={stageImage} alt="AS Dance stage mood" loading="lazy" decoding="async" width="900" height="1200" />
+                <img src={supportImage} alt="AS Dance trainer support visual" loading="lazy" decoding="async" width="900" height="1200" />
+              </div>
 
-          <div className="auth-header">
-            <h1 className="auth-main-title">ENTER AS DANCE</h1>
-            <p className="auth-subtitle">Access Your Online Dance Training</p>
-            <p className="auth-micro-text">
-              Log in to manage course access and choreography requests.
-            </p>
-          </div>
+              <ul className="tier-list" style={{ marginTop: "1.2rem" }}>
+                <li>Access checkout, dashboard, and payment follow-up without friction.</li>
+                <li>Support remains visible before the user spends money.</li>
+                <li>Design should feel like a premium academy, not a generic auth form.</li>
+              </ul>
+            </GlassCard>
 
-          {err && <div className="auth-error">{err}</div>}
+            <GlassCard className="form-card">
+              <span className="chip">
+                <Crown size={14} aria-hidden="true" />
+                Student login
+              </span>
+              <h2 style={{ margin: "1rem 0 0.6rem", fontFamily: "var(--font-family-display)", fontSize: "2.2rem" }}>
+                Access your learning flow
+              </h2>
+              <p className="muted" style={{ marginTop: 0 }}>
+                Continue to checkout or open the dashboard after verification.
+              </p>
 
-          <form onSubmit={onSubmit} className="auth-form">
-            <div className="form-group">
-              <label htmlFor="login-email" className="form-label">Email</label>
-              <div className="input-wrapper">
-                <span className="input-icon">@</span>
-                <input
+              {error ? (
+                <div className="message-pill" role="alert" style={{ marginBottom: "1rem" }}>
+                  {error}
+                </div>
+              ) : null}
+
+              <form className="form-stack" onSubmit={onSubmit}>
+                <FormField
                   id="login-email"
-                  name="email"
                   type="email"
-                  className="form-input"
-                  placeholder="your@email.com"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(event) => setEmail(event.target.value)}
+                  label="Email"
+                  autoComplete="email"
                   required
-                  autoComplete="username"
                 />
-              </div>
-            </div>
 
-            <div className="form-group">
-              <label htmlFor="login-password" className="form-label">Password</label>
-              <div className="input-wrapper">
-                <span className="input-icon">*</span>
-                <input
+                <FormField
                   id="login-password"
-                  name="password"
-                  type="password"
-                  className="form-input"
-                  placeholder="********"
+                  type={isPasswordVisible ? "text" : "password"}
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
+                  onChange={(event) => setPassword(event.target.value)}
+                  label="Password"
                   autoComplete="current-password"
+                  trailingAction={
+                    <button
+                      type="button"
+                      className="form-field-action"
+                      onClick={() => setIsPasswordVisible((current) => !current)}
+                      aria-label={isPasswordVisible ? "Hide password" : "Show password"}
+                      aria-pressed={isPasswordVisible}
+                    >
+                      {isPasswordVisible ? "Hide" : "Show"}
+                    </button>
+                  }
+                  required
                 />
+
+                <Button type="submit" disabled={loading}>
+                  {loading ? "Authorizing..." : "Enter the Stage"}
+                </Button>
+              </form>
+
+              <div className="divider" style={{ marginBlock: "1.2rem" }} />
+
+              <div className="button-row">
+                <Button to={`/register?redirect=${encodeURIComponent(targetPath)}`} variant="secondary">
+                  Start your journey
+                </Button>
+                <Button to="/" variant="ghost">
+                  Back to home
+                </Button>
               </div>
-            </div>
 
-            <button type="submit" className="auth-btn" disabled={loading}>
-              <span className="btn-text">{loading ? "Entering..." : "Enter the Stage"}</span>
-              <span className="btn-glow"></span>
-            </button>
-          </form>
-
-          <div className="auth-footer">
-            <p>
-              New to AS DANCE? <Link to={`/register?redirect=${encodeURIComponent(targetPath)}`} className="auth-link">Start Your Journey</Link>
-            </p>
-            <Link to="/" className="back-link">Back to Home</Link>
+              <p className="inline-note" style={{ marginTop: "1rem" }}>
+                Need help first? <a href="mailto:businessaswin@gmail.com">Email support</a> or ask on WhatsApp after login.
+              </p>
+            </GlassCard>
           </div>
         </div>
-      </div>
-    </div>
+      </section>
+    </MainLayout>
   );
 }

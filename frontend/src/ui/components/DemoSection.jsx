@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { PlayCircle } from "../icons.jsx";
 import DemoCards from "./DemoCards.jsx";
 import Reveal from "./Reveal.jsx";
 import { apiFetch } from "../api.js";
+import SectionHeader from "./SectionHeader.jsx";
 
 export default function DemoSection() {
   const [demos, setDemos] = useState(null);
 
   useEffect(() => {
     let active = true;
+
     async function load() {
       try {
         const res = await apiFetch("/api/content/demos");
@@ -16,9 +17,10 @@ export default function DemoSection() {
         const data = await res.json();
         if (active) setDemos(data);
       } catch {
-        // fallback links already handled in DemoCards
+        // Fallback links already handled in DemoCards.
       }
     }
+
     load();
     return () => {
       active = false;
@@ -26,18 +28,21 @@ export default function DemoSection() {
   }, []);
 
   return (
-    <section id="preview" className="py-20 md:py-24">
-      <div className="max-w-7xl mx-auto px-6">
-        <Reveal className="max-w-3xl">
-          <p className="text-xs uppercase tracking-[0.16em] text-[#3B82F6]">Preview</p>
-          <h2 className="mt-4 text-4xl md:text-5xl font-bold text-white leading-tight">See How I Teach</h2>
-          <p className="mt-4 inline-flex items-center gap-2 text-gray-300 text-base leading-relaxed">
-            <PlayCircle size={16} aria-hidden="true" className="text-[#3B82F6]" />
-            Watch sample lessons before purchase.
-          </p>
+    <section id="preview" className="section-shell section-shell--tight">
+      <div className="container-max">
+        <Reveal>
+          <SectionHeader
+            eyebrow="Preview lessons"
+            title={
+              <>
+                See How <span className="display-accent">I Teach</span>
+              </>
+            }
+            description="Watch sample lessons before purchase. The pacing, count clarity, and beginner-friendly breakdown are visible up front."
+          />
         </Reveal>
 
-        <div className="mt-10">
+        <div style={{ marginTop: "2rem" }}>
           <DemoCards demos={demos} />
         </div>
       </div>

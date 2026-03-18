@@ -1,8 +1,8 @@
 import React, { useMemo } from "react";
-import { Link } from "react-router-dom";
 import {
   ArrowRight,
   Clock,
+  Flame,
   Lock,
   MessageCircle,
   Music,
@@ -10,9 +10,12 @@ import {
   Target,
   WhatsApp,
   Zap,
-  Flame,
 } from "../icons.jsx";
-import Footer from "../components/Footer.jsx";
+import MainLayout from "../layouts/MainLayout.jsx";
+import GlassCard from "../components/GlassCard.jsx";
+import SectionHeader from "../components/SectionHeader.jsx";
+import Button from "../components/Button.jsx";
+import Reveal from "../components/Reveal.jsx";
 import heroStudioImage from "../../assets/bg/DanceTut.webp";
 import supportStudioImage from "../../assets/bg/t14.webp";
 
@@ -20,69 +23,69 @@ const SUPPORT_NUMBER = "918825602356";
 
 const SERVICE_TIERS = [
   {
-    id: "basic",
-    title: "Basic",
+    id: "starter",
+    title: "Easy tier",
     icon: Target,
-    duration: "30 seconds song",
-    level: "Easy level",
-    delivery: "Delivery: 24 hours",
+    duration: "Per 30-second clip",
+    level: "Melody | Soft beats",
+    delivery: "2-min wedding intro: 4 x INR 300 = INR 1,200",
     price: "INR 300",
-    points: ["Simple steps", "Beginner friendly structure", "Clean count flow"],
+    points: ["Waves, basics, and slow groove", "Best for low-pressure intros and shy starters", "WhatsApp quote format: Easy x clips"],
   },
   {
-    id: "advanced",
-    title: "Advanced",
+    id: "performance",
+    title: "Medium tier",
     icon: Zap,
-    duration: "30 seconds song",
-    level: "Medium to hard",
-    delivery: "Delivery: 24-48 hours",
-    price: "INR 400 - INR 500",
-    points: ["Moderate / fast transitions", "Performance-ready energy", "Song-synced choreography"],
+    duration: "Per 30-second clip",
+    level: "Bollywood | Hip-hop sync",
+    delivery: "2-min reel set: 4 x INR 400 = INR 1,600",
+    price: "INR 400",
+    points: ["Isolations, footwork, and expression", "Best for reels, culturals, and group sync", "Scales cleanly by clip count"],
   },
   {
-    id: "extended",
-    title: "Extended",
+    id: "signature",
+    title: "Hard tier",
     icon: Flame,
-    duration: "2 minutes song",
-    level: "Premium custom",
-    delivery: "Delivery: timeline based",
-    price: "Custom / Premium",
-    points: ["Structured routine build", "Event-focused choreography", "Priority planning support"],
+    duration: "Per 30-second clip",
+    level: "Aggressive | Rap power",
+    delivery: "3-min stage set: 6 x INR 500 = INR 3,000",
+    price: "INR 500",
+    points: ["Jumps, fast sync, and stage explosion", "Best for power tracks and premium output", "Mixed example: 2 Medium + 4 Hard = INR 2,800"],
   },
 ];
 
 const PROCESS_STEPS = [
   {
     id: "song",
-    title: "Song Share",
+    title: "Share the song + seconds",
     icon: Music,
-    body: "Song and duration anupunga. 30s or 2min clear-ah mention pannunga.",
+    body: "Send the track and exact clip length clearly so the scope is locked before pricing starts.",
   },
   {
     id: "level",
-    title: "Level Lock",
+    title: "Choose Easy / Medium / Hard",
     icon: Target,
-    body: "Basic / Advanced / Extended choose panni, exact requirement confirm pannuvom.",
+    body: "Pick the tier based on song energy, move difficulty, and the kind of performance output you need.",
   },
   {
     id: "build",
-    title: "Choreo Build",
+    title: "Get the clip-wise quote",
     icon: Zap,
-    body: "Song rhythm-ku match pannitu practical choreography prepare pannuvom.",
+    body: "Quote logic is simple: tier x number of 30-second clips, plus optional add-ons when you need them.",
   },
   {
     id: "delivery",
-    title: "Delivery + Support",
+    title: "Receive routine + support",
     icon: Clock,
-    body: "Delivery apram paid buyers-ku instruction doubts clear pannuvom.",
+    body: "Paid buyers get the final choreography flow, optional rehearsal support, and clear follow-through.",
   },
 ];
 
 const FAQ_ITEMS = [
-  "Course and service rendu separate offers.",
-  "Service pricing level and duration based transparent-ah irukum.",
-  "Free instruction support course buyers and service buyers-ku mattum.",
-  "Music used is for demonstration & practice purposes.",
+  "30-second clip pricing scales cleanly to full routine length.",
+  "Add INR 200 for personalization and INR 500 for a rehearsal video.",
+  "Course bundle and custom choreography are separate offers.",
+  "Live batches are planned for Q3 2026 after the digital path.",
 ];
 
 function buildWhatsAppLink(message) {
@@ -93,211 +96,227 @@ export default function ServicePage() {
   const genericServiceLink = useMemo(
     () =>
       buildWhatsAppLink(
-        "Hi AS DANCE, enakku custom dance service details venum. Song anupina choreography process explain pannunga."
+        "Hi AS DANCE, enakku custom choreography venum. Song, seconds, and Easy/Medium/Hard tier process explain pannunga."
       ),
     []
   );
 
   return (
-    <>
-      <div className="service-page-shell">
-        <header className="service-page-topbar">
-          <Link to="/" className="service-brand">
-            AS DANCE
-          </Link>
-          <div className="service-top-actions">
-            <Link to="/" className="service-top-link">
-              Home
-            </Link>
-            <a href={genericServiceLink} target="_blank" rel="noopener noreferrer" className="service-top-wa">
-              <WhatsApp size={16} aria-hidden="true" />
-              WhatsApp
-            </a>
+    <MainLayout
+      navProps={{
+        links: [
+          { key: "services", label: "Tiers", href: "#tiers" },
+          { key: "workflow", label: "Workflow", href: "#workflow" },
+          { key: "support", label: "Support", href: "#support" },
+        ],
+        ctaLabel: "Chat on WhatsApp",
+        ctaHref: genericServiceLink,
+      }}
+    >
+      <section className="section-shell section-shell--tight">
+        <div className="container-max">
+          <div className="page-hero">
+            <Reveal>
+              <GlassCard className="page-hero__content" accent="gold">
+                <span className="chip chip--gold">Advanced choreo tiers</span>
+                <h1 className="page-hero__title">Choose Easy, Medium, or Hard per 30-second clip and scale it to your full routine.</h1>
+                <p>
+                  This service covers wedding intros, reels, culturals, and stage sets. The INR 499 mastery bundle stays
+                  separate. Here pricing depends on tier, clip count, and add-ons so the service feels clean and predictable.
+                </p>
+
+                <div className="button-row">
+                  <Button href={genericServiceLink} target="_blank" rel="noopener noreferrer">
+                    Send song + seconds
+                    <ArrowRight size={16} aria-hidden="true" />
+                  </Button>
+                  <Button to="/checkout?pay=1" variant="secondary">
+                    View INR 499 bundle
+                  </Button>
+                </div>
+              </GlassCard>
+            </Reveal>
+
+            <Reveal delay={0.08}>
+              <GlassCard className="page-hero__aside">
+                <div className="media-panel" style={{ minHeight: "100%" }}>
+                  <img
+                    src={heroStudioImage}
+                    alt="AS Dance rehearsal and choreography visual"
+                    width="1200"
+                    height="800"
+                    decoding="async"
+                  />
+                  <div className="media-panel__copy">
+                    <span className="chip chip--gold">Clip-wise quote workflow</span>
+                  </div>
+                </div>
+              </GlassCard>
+            </Reveal>
           </div>
-        </header>
+        </div>
+      </section>
 
-        <main className="service-page-main">
-          <section className="service-card service-hero">
-            <div className="service-hero-content">
-              <p className="service-kicker">Custom Dance Service</p>
-              <h1>Song anupina, difficulty and duration-ku match pannitu choreography create pannuvom.</h1>
-              <p>
-                Idhu dedicated custom choreography service. INR 499 guided course separate offer.
-                Need-ku match aana tier select pannitu direct WhatsApp-la start pannalaam.
-              </p>
+      <section id="workflow" className="section-shell section-shell--tight">
+        <div className="container-max">
+          <SectionHeader
+            eyebrow="How quotes work"
+            title="Tiered pricing keeps custom choreography clear."
+            description="No confusion, no bloated copy. Just enough clarity to choose the tier, count the clips, and start on WhatsApp."
+          />
 
-              <div className="service-hero-actions">
-                <a href={genericServiceLink} target="_blank" rel="noopener noreferrer" className="service-btn service-btn-primary">
-                  Send Song on WhatsApp
-                </a>
-                <Link to="/checkout?pay=1" className="service-btn">
-                  Course Checkout
-                </Link>
-              </div>
-
-              <p className="service-hero-note">Music used is for demonstration &amp; practice purposes.</p>
-            </div>
-
-            <div className="service-hero-media">
-              <img
-                src={heroStudioImage}
-                alt="Dance choreography rehearsal visual"
-                width="1200"
-                height="800"
-                decoding="async"
-              />
-              <div className="service-hero-overlay" aria-hidden="true" />
-              <span className="service-hero-chip">
-                <Music size={16} aria-hidden="true" />
-                Spotlight choreography workflow
-              </span>
-            </div>
-          </section>
-
-          <section className="service-section">
-            <div className="service-section-head">
-              <h2>How It Works</h2>
-              <p>Simple, compact process. No confusion, no unnecessary waiting.</p>
-            </div>
-
-            <div className="service-process-grid">
-              {PROCESS_STEPS.map((step, index) => {
-                const StepIcon = step.icon;
-                return (
-                  <article key={step.id} className="service-card service-process-step">
-                    <span className="service-step-number">{index + 1}</span>
-                    <span className="service-step-icon">
-                      <StepIcon size={17} aria-hidden="true" />
+          <div className="process-grid">
+            {PROCESS_STEPS.map((step, index) => {
+              const StepIcon = step.icon;
+              return (
+                <Reveal key={step.id} delay={index * 0.05}>
+                  <GlassCard className="process-card">
+                    <span className="icon-orb">
+                      <StepIcon size={18} aria-hidden="true" />
                     </span>
-                    <h3>{step.title}</h3>
-                    <p>{step.body}</p>
-                  </article>
-                );
-              })}
-            </div>
-          </section>
+                    <strong>{step.title}</strong>
+                    <p style={{ margin: 0 }}>{step.body}</p>
+                  </GlassCard>
+                </Reveal>
+              );
+            })}
+          </div>
+        </div>
+      </section>
 
-          <section className="service-card service-support-split">
-            <div className="service-support-content">
-              <div className="service-policy-head">
-                <ShieldCheck size={18} aria-hidden="true" />
-                <Lock size={18} aria-hidden="true" />
-                <h2>Free Instruction Support - How It Works</h2>
-              </div>
+      <section id="tiers" className="section-shell">
+        <div className="container-max">
+          <SectionHeader
+            eyebrow="Advanced choreo tiers"
+            title={
+              <>
+                Per 30-second pricing that scales to <span className="display-accent">reels, intros, and full routines</span>
+              </>
+            }
+            description="Use clip count to estimate the total. A 2-minute routine equals four 30-second clips."
+          />
 
-              <p>
-                Free instruction support clear policy oda irukum. Paid users-ku transparent support coverage kudukrom.
-              </p>
+          <div className="tier-grid">
+            {SERVICE_TIERS.map((tier, index) => {
+              const TierIcon = tier.icon;
+              const tierLink = buildWhatsAppLink(
+                `Hi AS DANCE, ${tier.title} (${tier.price}) custom choreography start panna aasai. Song share pannuren.`
+              );
 
-              <ul className="service-policy-list">
-                <li>Course buyers-ku free instruction support available.</li>
-                <li>Service buyers-ku free instruction support available.</li>
-                <li>Non-paid users-ku free instruction support available illa.</li>
-              </ul>
-
-              <a href={genericServiceLink} target="_blank" rel="noopener noreferrer" className="service-btn">
-                <MessageCircle size={16} aria-hidden="true" />
-                Chat Support
-              </a>
-            </div>
-
-            <div className="service-support-media">
-              <img
-                src={supportStudioImage}
-                alt="Dance instructor support visual"
-                loading="lazy"
-                width="1200"
-                height="800"
-                decoding="async"
-              />
-              <div className="service-support-overlay" aria-hidden="true" />
-            </div>
-          </section>
-
-          <section className="service-section">
-            <div className="service-section-head">
-              <h2>Service Pricing Structure</h2>
-              <p>Three clear tiers for quick decision making.</p>
-            </div>
-
-            <div className="service-tier-grid">
-              {SERVICE_TIERS.map((tier) => {
-                const TierIcon = tier.icon;
-                const tierLink = buildWhatsAppLink(
-                  `Hi AS DANCE, ${tier.title} tier (${tier.price}) custom choreography start panna aasai. Song share pannuren.`
-                );
-
-                return (
-                  <article key={tier.id} className="service-card service-tier-card">
-                    <div className="service-tier-head">
-                      <span className="service-tier-icon">
-                        <TierIcon size={18} aria-hidden="true" />
-                      </span>
+              return (
+                <Reveal key={tier.id} delay={index * 0.05}>
+                  <GlassCard className="tier-card" accent={index === 1 ? "gold" : ""}>
+                    <div className="tier-card__top">
                       <div>
-                        <h3>{tier.title}</h3>
-                        <p>{tier.level}</p>
+                        <span className="icon-orb">
+                          <TierIcon size={18} aria-hidden="true" />
+                        </span>
+                        <h3 style={{ margin: 0 }}>{tier.title}</h3>
+                        <p style={{ margin: "0.35rem 0 0" }}>{tier.level}</p>
                       </div>
+                      <span className="tier-card__price">{tier.price}</span>
                     </div>
 
-                    <div className="service-tier-meta">
-                      <span>
-                        <Clock size={14} aria-hidden="true" />
-                        {tier.duration}
-                      </span>
-                      <span>{tier.delivery}</span>
-                    </div>
+                    <ul className="detail-list">
+                      <li>{tier.duration}</li>
+                      <li>{tier.delivery}</li>
+                    </ul>
 
-                    <div className="service-tier-price">{tier.price}</div>
-
-                    <ul className="service-tier-list">
+                    <ul className="tier-list">
                       {tier.points.map((point) => (
                         <li key={point}>{point}</li>
                       ))}
                     </ul>
 
-                    <a href={tierLink} target="_blank" rel="noopener noreferrer" className="service-tier-cta">
-                      Choose {tier.title}
-                      <ArrowRight size={14} aria-hidden="true" />
-                    </a>
-                  </article>
-                );
-              })}
-            </div>
-          </section>
+                    <Button href={tierLink} target="_blank" rel="noopener noreferrer">
+                      Select package
+                      <ArrowRight size={16} aria-hidden="true" />
+                    </Button>
+                  </GlassCard>
+                </Reveal>
+              );
+            })}
+          </div>
+        </div>
+      </section>
 
-          <section className="service-faq-final-grid">
-            <article className="service-card service-faq-card">
-              <h2>FAQ</h2>
-              <ul>
-                {FAQ_ITEMS.map((item) => (
-                  <li key={item}>{item}</li>
-                ))}
-              </ul>
-            </article>
+      <section id="support" className="section-shell section-shell--tight">
+        <div className="container-max">
+          <div className="grid-2">
+            <Reveal>
+              <GlassCard className="support-card" accent="gold">
+                <div className="button-row">
+                  <span className="chip chip--gold">
+                    <ShieldCheck size={14} aria-hidden="true" />
+                    Transparent add-ons
+                  </span>
+                  <span className="chip">
+                    <Lock size={14} aria-hidden="true" />
+                    Clear support policy
+                  </span>
+                </div>
 
-            <article className="service-card service-final-card">
-              <p className="service-kicker">Final CTA</p>
-              <h2>Ready to start custom choreography?</h2>
-              <p>
-                Song share pannunga. Requirement clear-ah kudunga. Fast-a best-fit tier suggest pannuvom.
-              </p>
+                <h3 style={{ marginBottom: "0.8rem", fontFamily: "var(--font-family-display)", fontSize: "2rem" }}>
+                  Add-ons and support stay transparent.
+                </h3>
+                <ul className="policy-list">
+                  <li>INR 200 adds personalization for song tweaks and preference alignment.</li>
+                  <li>INR 500 adds a rehearsal video for practice support.</li>
+                  <li>Paid bundle and custom buyers receive implementation support.</li>
+                </ul>
 
-              <div className="service-final-actions">
-                <a href={genericServiceLink} target="_blank" rel="noopener noreferrer" className="service-btn service-btn-primary">
-                  Start on WhatsApp
-                </a>
-                <Link to="/checkout?pay=1" className="service-btn">
-                  Buy INR 499 Course
-                </Link>
-              </div>
+                <div className="button-row">
+                  <Button href={genericServiceLink} target="_blank" rel="noopener noreferrer">
+                    <MessageCircle size={16} aria-hidden="true" />
+                    Start quote
+                  </Button>
+                  <Button to="/" variant="secondary">
+                    Back to home
+                  </Button>
+                </div>
+              </GlassCard>
+            </Reveal>
 
-              <p className="service-contact-note">Replies within 24 hours</p>
-            </article>
-          </section>
-        </main>
-      </div>
+            <Reveal delay={0.08}>
+              <GlassCard className="support-card">
+                <div className="media-panel" style={{ minHeight: "14rem" }}>
+                  <img
+                    src={supportStudioImage}
+                    alt="Dance instructor support visual"
+                    loading="lazy"
+                    width="1200"
+                    height="800"
+                    decoding="async"
+                  />
+                  <div className="media-panel__copy">
+                    <span className="chip chip--gold">FAQ and CTA</span>
+                  </div>
+                </div>
 
-      <Footer />
-    </>
+                <h3 style={{ margin: 0, fontFamily: "var(--font-family-display)", fontSize: "1.85rem" }}>
+                  Ready to calculate your custom quote?
+                </h3>
+
+                <ul className="tier-list">
+                  {FAQ_ITEMS.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+
+                <div className="button-row">
+                  <Button href={genericServiceLink} target="_blank" rel="noopener noreferrer">
+                    <WhatsApp size={16} aria-hidden="true" />
+                    Start on WhatsApp
+                  </Button>
+                  <Button to="/checkout?pay=1" variant="ghost">
+                    View mastery bundle
+                  </Button>
+                </div>
+              </GlassCard>
+            </Reveal>
+          </div>
+        </div>
+      </section>
+    </MainLayout>
   );
 }

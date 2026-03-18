@@ -276,8 +276,8 @@
   background: linear-gradient(135deg, rgba(11, 24, 41, 0.9), rgba(19, 14, 34, 0.86));
   color: rgba(218, 247, 255, 0.96);
   border-radius: 10px;
-  min-height: 42px;
-  min-width: 42px;
+  min-height: 44px;
+  min-width: 44px;
   padding: 0 0.95rem;
   font-size: 0.78rem;
   letter-spacing: 0.08em;

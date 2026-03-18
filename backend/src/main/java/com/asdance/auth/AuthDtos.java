@@ -28,6 +28,8 @@ public class AuthDtos {
     String message,
     Long id,
     String email,
+    String fullName,
+    boolean unlocked,
     String token
   ) {}
 

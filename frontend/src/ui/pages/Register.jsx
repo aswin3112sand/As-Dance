@@ -1,218 +1,219 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { Sparkles, UserPlus } from "../icons.jsx";
 import { useAuth } from "../auth.jsx";
-import { shouldReduceMotion } from "../utils/motion.js";
+import MainLayout from "../layouts/MainLayout.jsx";
+import GlassCard from "../components/GlassCard.jsx";
+import Button from "../components/Button.jsx";
+import FormField from "../components/FormField.jsx";
+import practiceImage from "../../assets/bg/w12.webp";
+import performanceImage from "../../assets/bg/Ayan.webp";
 
 export default function Register() {
   const { register } = useAuth();
-  const nav = useNavigate();
-  const loc = useLocation();
-  const params = new URLSearchParams(loc.search);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
   const redirectParam = params.get("redirect");
-  const redirectFromState = typeof loc.state?.redirect === "string" ? loc.state.redirect : "";
+  const redirectFromState = typeof location.state?.redirect === "string" ? location.state.redirect : "";
   const redirectTarget = redirectParam || redirectFromState;
+
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [err, setErr] = useState("");
-  const [ok, setOk] = useState("");
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
-  const particleCount = useMemo(() => {
-    if (typeof window === "undefined") return 10;
-    const reduceMotion = shouldReduceMotion();
-    const isSmallScreen = window.matchMedia("(max-width: 768px)").matches;
-    return reduceMotion || isSmallScreen ? 6 : 25;
-  }, []);
-  const particles = useMemo(
-    () => Array.from({ length: particleCount }, () => ({
-      left: `${Math.random() * 100}%`,
-      top: `${Math.random() * 100}%`,
-      delay: `${Math.random() * 6}s`
-    })),
-    [particleCount]
-  );
 
   useEffect(() => {
-    if (typeof loc.state?.email === "string") {
-      setEmail(loc.state.email);
+    if (typeof location.state?.email === "string") {
+      setEmail(location.state.email);
     }
-  }, [loc.state]);
+  }, [location.state]);
 
-  async function onSubmit(e) {
-    e.preventDefault();
-    setErr("");
-    setOk("");
+  async function onSubmit(event) {
+    event.preventDefault();
+    setError("");
+    setSuccess("");
+
     if (password !== confirmPassword) {
-      setErr("Passwords do not match.");
+      setError("Passwords do not match.");
       return;
     }
+
     setLoading(true);
     try {
       const normalizedName = fullName.trim();
       const fallbackName = email.split("@")[0] || "AS DANCE User";
       const safeName = normalizedName || fallbackName;
       await register(safeName, email, password);
-      setOk("Account created! Redirecting...");
-      const loginTarget = redirectTarget
-        ? `/login?redirect=${encodeURIComponent(redirectTarget)}`
-        : "/login";
-      setTimeout(() => nav(loginTarget, { state: { email } }), 800);
-    } catch (ex) {
-      if (ex?.message === "EMAIL_NOT_ALLOWED") {
-        setErr("This email is not allowed for access.");
-      } else {
-        setErr(ex?.message || "Register failed");
-      }
+      setSuccess("Account created! Redirecting...");
+      const loginTarget = redirectTarget ? `/login?redirect=${encodeURIComponent(redirectTarget)}` : "/login";
+      window.setTimeout(() => navigate(loginTarget, { state: { email } }), 800);
+    } catch (err) {
+      setError(err?.message || "Register failed");
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <div className="cinematic-auth register-page">
-      <div className="cinematic-bg">
-        <div className="bg-gradient register-gradient"></div>
-        <div className="particle-field">
-          {particles.map((particle, i) => (
-            <div
-              key={`register-p-${i}`}
-              className="particle register-particle"
-              style={{
-                left: particle.left,
-                top: particle.top,
-                animationDelay: particle.delay
-              }}
-            ></div>
-          ))}
-        </div>
-        <div className="light-beam beam-1 register-beam"></div>
-        <div className="light-beam beam-2 register-beam"></div>
-        <div className="light-pulse"></div>
-      </div>
+    <MainLayout
+      footer={false}
+      navProps={{
+        links: [
+          { key: "home", label: "Home", to: "/" },
+          { key: "login", label: "Login", to: "/login" },
+        ],
+        ctaLabel: "Back to home",
+        ctaTo: "/",
+      }}
+    >
+      <section className="section-shell">
+        <div className="container-max">
+          <div className="auth-shell">
+            <GlassCard className="auth-info-card" accent="gold">
+              <span className="chip chip--gold">
+                <Sparkles size={14} aria-hidden="true" />
+                Create your student access
+              </span>
+              <h1 style={{ margin: "1rem 0 0.75rem", fontFamily: "var(--font-family-display)", fontSize: "clamp(2.4rem, 5vw, 4rem)", lineHeight: 1.02 }}>
+                Begin your journey.
+              </h1>
+              <p className="muted">
+                Registration should feel premium, clear, and low-friction. The user is not just making an account;
+                they are entering the AS Dance brand experience.
+              </p>
 
-      <div className="register-shell">
-        <div className="cinematic-card register-card mounted">
-          <div className="card-glow register-glow"></div>
+              <div className="auth-visual-grid">
+                <img src={practiceImage} alt="Dance practice visual" loading="lazy" decoding="async" width="900" height="1200" />
+                <img src={performanceImage} alt="Dance performance visual" loading="lazy" decoding="async" width="900" height="1200" />
+              </div>
 
-          <div className="auth-header">
-            <h1 className="auth-main-title">BEGIN YOUR JOURNEY</h1>
-            <p className="auth-subtitle">Create Your AS DANCE Access</p>
-            <p className="auth-micro-text">Every performance starts with a single step.</p>
-          </div>
+              <ul className="tier-list" style={{ marginTop: "1.2rem" }}>
+                <li>Use a name or let the system create a safe fallback for you.</li>
+                <li>Login and payment flow remain unchanged after registration.</li>
+                <li>WhatsApp support can guide the user before they pay.</li>
+              </ul>
+            </GlassCard>
 
-          {err && <div className="auth-error">{err}</div>}
-          {ok && <div className="auth-success">{ok}</div>}
+            <GlassCard className="form-card">
+              <span className="chip">
+                <UserPlus size={14} aria-hidden="true" />
+                Student registration
+              </span>
+              <h2 style={{ margin: "1rem 0 0.6rem", fontFamily: "var(--font-family-display)", fontSize: "2.2rem" }}>
+                Create your premium access
+              </h2>
+              <p className="muted" style={{ marginTop: 0 }}>
+                Set up your login now, then move directly into preview, checkout, and dashboard flow.
+              </p>
 
-          <form onSubmit={onSubmit} className="auth-form register-form">
-            <div className="form-group">
-              <label htmlFor="reg-name" className="form-label">
-                Full Name <span className="optional">(Optional)</span>
-              </label>
-              <div className="input-wrapper">
-                <span className="input-icon">N</span>
-                <input
+              {error ? (
+                <div className="message-pill" role="alert" style={{ marginBottom: "1rem" }}>
+                  {error}
+                </div>
+              ) : null}
+
+              {success ? (
+                <div className="chip chip--gold" style={{ marginBottom: "1rem" }}>
+                  {success}
+                </div>
+              ) : null}
+
+              <form className="form-stack" onSubmit={onSubmit}>
+                <FormField
                   id="reg-name"
-                  name="fullName"
                   type="text"
-                  className="form-input"
-                  placeholder="Your name"
                   value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                  autoComplete="name"
+                  onChange={(event) => setFullName(event.target.value)}
+                  label="Full Name"
                 />
-              </div>
-            </div>
 
-            <div className="form-group">
-              <label htmlFor="reg-email" className="form-label">Email</label>
-              <div className="input-wrapper">
-                <span className="input-icon">@</span>
-                <input
+                <FormField
                   id="reg-email"
-                  name="email"
                   type="email"
-                  className="form-input"
-                  placeholder="your@email.com"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
+                  onChange={(event) => setEmail(event.target.value)}
+                  label="Email"
                   autoComplete="email"
+                  required
                 />
-              </div>
-            </div>
 
-            <div className="form-group">
-              <label htmlFor="reg-phone" className="form-label">
-                WhatsApp <span className="optional">(Optional)</span>
-              </label>
-              <div className="input-wrapper">
-                <span className="input-icon">#</span>
-                <input
+                <FormField
                   id="reg-phone"
-                  name="phone"
                   type="tel"
-                  className="form-input"
-                  placeholder="+91 88256 02356"
                   value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  inputMode="tel"
+                  onChange={(event) => setPhone(event.target.value)}
+                  label="WhatsApp"
                   autoComplete="tel"
                 />
-              </div>
-            </div>
 
-            <div className="form-group">
-              <label htmlFor="reg-password" className="form-label">Password</label>
-              <div className="input-wrapper">
-                <span className="input-icon">*</span>
-                <input
+                <FormField
                   id="reg-password"
-                  name="password"
-                  type="password"
-                  className="form-input"
-                  placeholder="********"
+                  type={isPasswordVisible ? "text" : "password"}
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
+                  onChange={(event) => setPassword(event.target.value)}
+                  label="Password"
                   autoComplete="new-password"
+                  trailingAction={
+                    <button
+                      type="button"
+                      className="form-field-action"
+                      onClick={() => setIsPasswordVisible((current) => !current)}
+                      aria-label={isPasswordVisible ? "Hide password" : "Show password"}
+                      aria-pressed={isPasswordVisible}
+                    >
+                      {isPasswordVisible ? "Hide" : "Show"}
+                    </button>
+                  }
+                  required
                 />
-              </div>
-            </div>
 
-            <div className="form-group">
-              <label htmlFor="reg-confirm" className="form-label">Confirm Password</label>
-              <div className="input-wrapper">
-                <span className="input-icon">*</span>
-                <input
+                <FormField
                   id="reg-confirm"
-                  name="confirmPassword"
-                  type="password"
-                  className="form-input"
-                  placeholder="********"
+                  type={isConfirmPasswordVisible ? "text" : "password"}
                   value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  required
+                  onChange={(event) => setConfirmPassword(event.target.value)}
+                  label="Confirm Password"
                   autoComplete="new-password"
+                  trailingAction={
+                    <button
+                      type="button"
+                      className="form-field-action"
+                      onClick={() => setIsConfirmPasswordVisible((current) => !current)}
+                      aria-label={isConfirmPasswordVisible ? "Hide confirm password" : "Show confirm password"}
+                      aria-pressed={isConfirmPasswordVisible}
+                    >
+                      {isConfirmPasswordVisible ? "Hide" : "Show"}
+                    </button>
+                  }
+                  required
                 />
+
+                <Button type="submit" disabled={loading}>
+                  {loading ? "Creating Access..." : "Create My Access"}
+                </Button>
+              </form>
+
+              <div className="divider" style={{ marginBlock: "1.2rem" }} />
+
+              <div className="button-row">
+                <Button to="/login" variant="secondary">
+                  Already have access?
+                </Button>
+                <Button to="/" variant="ghost">
+                  Back to home
+                </Button>
               </div>
-            </div>
-
-            <button type="submit" className="auth-btn register-btn" disabled={loading}>
-              <span className="btn-text">{loading ? "Creating Access..." : "Create My Access"}</span>
-              <span className="btn-glow"></span>
-            </button>
-          </form>
-
-          <div className="auth-footer">
-            <p>
-              Already have access? <Link to="/login" className="auth-link">Enter the Stage</Link>
-            </p>
-            <Link to="/" className="back-link">Back to Home</Link>
+            </GlassCard>
           </div>
         </div>
-      </div>
-    </div>
+      </section>
+    </MainLayout>
   );
 }

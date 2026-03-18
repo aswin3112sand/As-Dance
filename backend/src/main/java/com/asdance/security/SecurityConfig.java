@@ -29,12 +29,12 @@ public class SecurityConfig {
             "object-src 'none'; " +
             "frame-ancestors 'self'; " +
             "form-action 'self'; " +
-            "script-src 'self' 'unsafe-inline' https://checkout.razorpay.com; " +
+            "script-src 'self' 'unsafe-inline' https://checkout.razorpay.com https://www.googletagmanager.com https://connect.facebook.net; " +
             "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com data:; " +
             "img-src 'self' data: https: blob:; " +
             "font-src 'self' https://fonts.gstatic.com data:; " +
             "connect-src 'self' https: ws: wss:; " +
-            "frame-src 'self' https://checkout.razorpay.com https://api.razorpay.com; " +
+            "frame-src 'self' https://checkout.razorpay.com https://api.razorpay.com https://www.googletagmanager.com; " +
             "media-src 'self' https: data: blob:;";
 
     public SecurityConfig(CookieService cookieService,
@@ -81,6 +81,7 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/",
                                 "/index.html",
+                                "/error",
                                 "/login",
                                 "/register",
                                 "/assets/**",

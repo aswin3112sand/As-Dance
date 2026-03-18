@@ -1,92 +1,52 @@
-import React, { Suspense, useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
-
-const DemoSection = React.lazy(() => import("../components/DemoSection.jsx"));
+import React from "react";
+import DemoSection from "../components/DemoSection.jsx";
+import MainLayout from "../layouts/MainLayout.jsx";
+import GlassCard from "../components/GlassCard.jsx";
+import Button from "../components/Button.jsx";
+import SectionHeader from "../components/SectionHeader.jsx";
 
 export default function Preview() {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isNavHidden, setIsNavHidden] = useState(false);
-  const lastScrollYRef = useRef(0);
-  const navHiddenRef = useRef(false);
-
-  useEffect(() => {
-    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const minDelta = 6;
-    const hideAfter = 90;
-    let rafId = null;
-
-    const setHidden = (value) => {
-      if (navHiddenRef.current === value) return;
-      navHiddenRef.current = value;
-      setIsNavHidden(value);
-    };
-
-    const updateScrollState = () => {
-      const currentY = window.scrollY || document.documentElement.scrollTop || 0;
-      setIsScrolled(currentY > 12);
-
-      if (prefersReducedMotion) {
-        setHidden(false);
-        lastScrollYRef.current = currentY;
-        rafId = null;
-        return;
-      }
-
-      const lastY = lastScrollYRef.current;
-      const delta = currentY - lastY;
-
-      if (currentY <= 8) {
-        setHidden(false);
-      } else if (delta > minDelta && currentY > hideAfter) {
-        setHidden(true);
-      } else if (delta < -minDelta) {
-        setHidden(false);
-      }
-
-      lastScrollYRef.current = currentY;
-      rafId = null;
-    };
-
-    const handleScroll = () => {
-      if (rafId) return;
-      rafId = window.requestAnimationFrame(updateScrollState);
-    };
-
-    lastScrollYRef.current = window.scrollY || 0;
-    updateScrollState();
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      if (rafId) window.cancelAnimationFrame(rafId);
-    };
-  }, []);
-
   return (
-    <>
-      <header className="site-header">
-        <nav className={`navbar-glass${isScrolled ? " is-scrolled" : ""}${isNavHidden ? " is-hidden" : ""}`}>
-          <div className="container-max">
-            <div className="brand fs-4 text-white fw-bold tracking-wider" style={{ fontFamily: "var(--font-display)" }}>
-              AS DANCE
-            </div>
-            <Link to="/" className="btn btn--ghost">
-              Back to Home
-            </Link>
-          </div>
-        </nav>
-      </header>
+    <MainLayout
+      navProps={{
+        links: [
+          { key: "home", label: "Home", to: "/" },
+          { key: "services", label: "Services", to: "/services" },
+        ],
+        ctaLabel: "Back to Home",
+        ctaTo: "/",
+      }}
+    >
+      <section className="section-shell section-shell--tight">
+        <div className="container-max">
+          <div className="preview-layout">
+            <GlassCard className="form-card" accent="gold">
+              <SectionHeader
+                eyebrow="Preview route"
+                title="Watch how the teaching style feels before you pay."
+                description="This route exists to reduce hesitation. It should feel premium, fast, and focused on confidence building."
+              />
+              <div className="button-row">
+                <Button to="/checkout?pay=1">Go to checkout</Button>
+                <Button to="/services" variant="secondary">
+                  Custom choreography
+                </Button>
+              </div>
+            </GlassCard>
 
-      <div className="page-content">
-        <Suspense fallback={(
-          <section id="preview" className="section section-compact section-anim" aria-busy="true">
-            <div className="container-max text-center text-white-50 small" style={{ opacity: 0.8 }}>
-              Loading preview...
-            </div>
-          </section>
-        )}>
-          <DemoSection />
-        </Suspense>
-      </div>
-    </>
+            <GlassCard className="summary-card">
+              <h3 style={{ marginTop: 0, fontFamily: "var(--font-family-display)", fontSize: "1.9rem" }}>What to look for</h3>
+              <ul className="tier-list">
+                <li>Beginner-friendly pacing</li>
+                <li>Clear count breakdown and explanation</li>
+                <li>Premium visual and teaching confidence</li>
+              </ul>
+            </GlassCard>
+          </div>
+        </div>
+      </section>
+
+      <DemoSection />
+    </MainLayout>
   );
 }

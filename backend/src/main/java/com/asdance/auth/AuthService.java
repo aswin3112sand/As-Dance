@@ -4,6 +4,8 @@ import com.asdance.payment.PurchaseRepository;
 import com.asdance.security.AccessPolicy;
 import com.asdance.user.AppUser;
 import com.asdance.user.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,6 +13,8 @@ import java.util.Objects;
 
 @Service
 public class AuthService {
+
+  private static final Logger logger = LoggerFactory.getLogger(AuthService.class);
 
   private final UserRepository userRepository;
   private final PasswordService passwordService;
@@ -38,10 +42,11 @@ public class AuthService {
     userRepository.findByEmail(normalizedEmail).ifPresent(u -> {
       throw new IllegalArgumentException("EMAIL_ALREADY_REGISTERED");
     });
+    String safeFullName = resolveFullName(fullName, normalizedEmail);
     var user = AppUser.builder()
         .email(normalizedEmail)
         .passwordHash(passwordService.hash(password))
-        .fullName(fullName.trim())
+        .fullName(safeFullName)
         .externalId(accessPolicy.getAllowedUserId())
         .hasAccess(false)
         .enabled(true)
@@ -60,9 +65,30 @@ public class AuthService {
     if (!passwordService.matches(password, user.getPasswordHash())) {
       throw new IllegalArgumentException("INVALID_PASSWORD");
     }
+    boolean needsSave = false;
     if (user.getExternalId() == null || user.getExternalId().isBlank()) {
       user.setExternalId(accessPolicy.getAllowedUserId());
+      needsSave = true;
+    }
+    String safeFullName = resolveFullName(user.getFullName(), normalizedEmail);
+    if (!Objects.equals(safeFullName, user.getFullName())) {
+      user.setFullName(safeFullName);
+      needsSave = true;
+    }
+    if (needsSave) {
       userRepository.save(user);
+    }
+    return user;
+  }
+
+  public AppUser findAllowedUser(Long userId, String email) {
+    AppUser user = userRepository.findById(userId)
+        .orElseThrow(() -> new IllegalArgumentException("USER_NOT_FOUND"));
+    if (!Objects.equals(accessPolicy.normalizeEmail(email), accessPolicy.normalizeEmail(user.getEmail()))) {
+      throw new IllegalArgumentException("EMAIL_NOT_ALLOWED");
+    }
+    if (!accessPolicy.isAllowedUser(user)) {
+      throw new IllegalArgumentException("EMAIL_NOT_ALLOWED");
     }
     return user;
   }
@@ -72,15 +98,32 @@ public class AuthService {
     if (userOpt.isEmpty() || !accessPolicy.isAllowedUser(userOpt.get())) {
       return false;
     }
-    boolean purchaseUnlocked = purchaseRepository.findTopByUserIdOrderByCreatedAtDesc(userId)
-        .map(p -> isSuccessStatus(p.getStatus()))
-        .orElse(false);
     boolean userUnlocked = userOpt.get().isHasAccess();
-    return purchaseUnlocked || userUnlocked;
+    try {
+      boolean purchaseUnlocked = purchaseRepository.findTopByUserIdOrderByCreatedAtDesc(userId)
+          .map(p -> isSuccessStatus(p.getStatus()))
+          .orElse(false);
+      return purchaseUnlocked || userUnlocked;
+    } catch (RuntimeException ex) {
+      logger.warn("Unable to resolve purchase unlock state for user {}", userId, ex);
+      return userUnlocked;
+    }
   }
 
   private boolean isSuccessStatus(String status) {
     if (status == null) return false;
     return "SUCCESS".equalsIgnoreCase(status) || "PAID".equalsIgnoreCase(status);
+  }
+
+  private String resolveFullName(String fullName, String email) {
+    String normalizedName = fullName == null ? "" : fullName.trim();
+    if (!normalizedName.isBlank()) {
+      return normalizedName;
+    }
+    int emailSeparator = email.indexOf('@');
+    if (emailSeparator > 0) {
+      return email.substring(0, emailSeparator);
+    }
+    return "AS DANCE User";
   }
 }

@@ -1,14 +1,20 @@
 import React, { useEffect, useState } from "react";
+import { Crown, Mail, ShieldCheck, Trophy, Users, WhatsApp } from "../icons.jsx";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../auth.jsx";
 import { apiFetch } from "../api.js";
 import accessPreview from "../../assets/bg/DanceTut.webp";
 import accountPreview from "../../assets/bg/Ayan.webp";
 import routinePreview from "../../assets/bg/Jeyam2.webp";
+import MainLayout from "../layouts/MainLayout.jsx";
+import GlassCard from "../components/GlassCard.jsx";
+import Button from "../components/Button.jsx";
+import SectionHeader from "../components/SectionHeader.jsx";
+import Reveal from "../components/Reveal.jsx";
 
 export default function Dashboard() {
   const { user, refresh, logout } = useAuth();
-  const nav = useNavigate();
+  const navigate = useNavigate();
   const [status, setStatus] = useState(null);
 
   useEffect(() => {
@@ -21,14 +27,12 @@ export default function Dashboard() {
       const data = await res.json().catch(() => ({}));
       setStatus(data);
     }
+
     loadStatus();
   }, []);
 
   const unlocked = status?.unlocked || user?.unlocked;
   const unlockedUrl = status?.unlockedVideoUrl || "";
-  const statusLine = unlocked
-    ? "639-step course unlocked - open your Google Drive access."
-    : "Course access locked - complete INR 499 payment.";
 
   const openVideo = () => {
     apiFetch("/api/payment/downloaded", { method: "POST" }).catch(() => {});
@@ -38,124 +42,157 @@ export default function Dashboard() {
 
   const handleLogout = async () => {
     await logout();
-    nav("/", { replace: true });
-  };
-
-  const scrollToRoutines = () => {
-    const el = document.getElementById("my-routines");
-    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    navigate("/", { replace: true });
   };
 
   return (
-    <div className="section dashboard-page">
-      <div className="container-max">
-        <div className="dashboard-header">
-          <div>
-            <div className="brand">AS DANCE</div>
-            <div className="subtle small">Dashboard</div>
+    <MainLayout
+      navProps={{
+        links: [
+          { key: "home", label: "Home", to: "/" },
+          { key: "services", label: "Services", to: "/services" },
+          { key: "preview", label: "Preview", to: "/preview" },
+        ],
+        ctaLabel: unlocked ? "Open 639 steps" : "Unlock course",
+        ctaTo: unlocked ? "/dashboard" : "/checkout?pay=1",
+      }}
+    >
+      <section className="section-shell section-shell--tight">
+        <div className="container-max">
+          <div className="page-topbar">
+            <div>
+              <span className={`status-badge ${unlocked ? "status-badge--emerald" : "status-badge--gold"}`}>
+                {unlocked ? "Unlocked" : "Locked"}
+              </span>
+              <h1 style={{ margin: "1rem 0 0.5rem", fontFamily: "var(--font-family-display)", fontSize: "clamp(2.5rem, 5vw, 4rem)" }}>
+                Welcome back to AS Dance.
+              </h1>
+              <p className="muted" style={{ margin: 0 }}>
+                Signed in as {user?.email || "Guest"}. Keep the dashboard clear, useful, and premium.
+              </p>
+            </div>
+
+            <div className="action-cluster">
+              <Button type="button" variant="secondary" onClick={() => navigate("/checkout?pay=1")}>
+                Unlock 639 Steps
+              </Button>
+              <Button href="https://wa.me/918825602356" target="_blank" rel="noopener noreferrer" variant="ghost">
+                Support
+              </Button>
+              <Button type="button" variant="ghost" onClick={handleLogout}>
+                Logout
+              </Button>
+            </div>
           </div>
-          {user?.email && <div className="dashboard-email subtle small">{user.email}</div>}
+
+          <SectionHeader
+            eyebrow="Dashboard status"
+            title="One place for course access, support, and next actions."
+            description="A premium dashboard should reduce confusion after payment and keep important actions visible."
+          />
+
+          <div className="dashboard-grid">
+            <Reveal>
+              <GlassCard className="dashboard-card" accent="gold">
+                <div className="media-panel" style={{ minHeight: "14rem" }}>
+                  <img src={accessPreview} alt="Course access preview" loading="lazy" decoding="async" width="640" height="360" />
+                  <div className="media-panel__copy">
+                    <span className="chip chip--gold">Course access</span>
+                  </div>
+                </div>
+                <strong className="stat-number">{unlocked ? "Unlocked" : "Locked"}</strong>
+                <p style={{ margin: 0 }}>
+                  {unlocked
+                    ? "Your 639-step course is unlocked. Open the delivery link any time."
+                    : "Complete INR 499 payment to unlock the full 639-step learning path."}
+                </p>
+                <div className="button-row">
+                  {unlocked ? (
+                    <Button type="button" onClick={openVideo}>
+                      Open 639 Steps
+                    </Button>
+                  ) : (
+                    <Button to="/checkout?pay=1">Go to checkout</Button>
+                  )}
+                </div>
+              </GlassCard>
+            </Reveal>
+
+            <Reveal delay={0.05}>
+              <GlassCard className="dashboard-card">
+                <div className="media-panel" style={{ minHeight: "14rem" }}>
+                  <img src={accountPreview} alt="Account summary preview" loading="lazy" decoding="async" width="640" height="360" />
+                  <div className="media-panel__copy">
+                    <span className="chip">Account and support</span>
+                  </div>
+                </div>
+                <div className="summary-list">
+                  <div className="summary-row">
+                    <span>Account email</span>
+                    <strong>{user?.email || "Guest"}</strong>
+                  </div>
+                  <div className="summary-row">
+                    <span>Support path</span>
+                    <strong>Email + WhatsApp</strong>
+                  </div>
+                  <div className="summary-row">
+                    <span>Course format</span>
+                    <strong>Recorded practical training</strong>
+                  </div>
+                </div>
+              </GlassCard>
+            </Reveal>
+
+            <Reveal delay={0.1}>
+              <GlassCard className="dashboard-card">
+                <div className="media-panel" style={{ minHeight: "14rem" }}>
+                  <img src={routinePreview} alt="Training roadmap preview" loading="lazy" decoding="async" width="640" height="360" />
+                  <div className="media-panel__copy">
+                    <span className="chip">Training roadmap</span>
+                  </div>
+                </div>
+                <ul className="tier-list">
+                  <li>Beginner confidence and rhythm control</li>
+                  <li>Intermediate flow and body coordination</li>
+                  <li>Advanced stage-ready movement language</li>
+                </ul>
+              </GlassCard>
+            </Reveal>
+          </div>
+
+          <div className="grid-3" style={{ marginTop: "2rem" }}>
+            <Reveal>
+              <GlassCard className="detail-card">
+                <span className="icon-orb">
+                  <Crown size={18} aria-hidden="true" />
+                </span>
+                <strong>Main product</strong>
+                <p style={{ margin: 0 }}>639-step structured dance course with one-time payment access.</p>
+              </GlassCard>
+            </Reveal>
+
+            <Reveal delay={0.05}>
+              <GlassCard className="detail-card">
+                <span className="icon-orb">
+                  <Users size={18} aria-hidden="true" />
+                </span>
+                <strong>Support layer</strong>
+                <p style={{ margin: 0 }}>Visible human help through WhatsApp and email if clarity is needed.</p>
+              </GlassCard>
+            </Reveal>
+
+            <Reveal delay={0.1}>
+              <GlassCard className="detail-card">
+                <span className="icon-orb">
+                  <Trophy size={18} aria-hidden="true" />
+                </span>
+                <strong>Goal</strong>
+                <p style={{ margin: 0 }}>From unsure beginner to confident performer with a cleaner, guided journey.</p>
+              </GlassCard>
+            </Reveal>
+          </div>
         </div>
-
-        {user && (
-          <div className="dashboard-nav" role="navigation" aria-label="Dashboard actions">
-            <button className="btn btn-neon btn-neo" onClick={() => nav("/checkout?pay=1")}>
-              Unlock 639 Steps
-            </button>
-            <button className="btn btn-ghost btn-neo" onClick={scrollToRoutines}>
-              My Training
-            </button>
-            <a className="btn btn-ghost btn-neo" href="https://wa.me/918825602356" target="_blank" rel="noopener noreferrer">
-              Support
-            </a>
-            <button className="btn btn-ghost btn-neo" onClick={handleLogout}>
-              Logout
-            </button>
-          </div>
-        )}
-
-        <div className="dashboard-grid">
-          <div className="card-glass dashboard-card">
-            <div className="dashboard-card-media">
-              <img
-                src={accessPreview}
-                alt="Access preview"
-                loading="lazy"
-                decoding="async"
-                width="640"
-                height="360"
-              />
-            </div>
-            <div className="status-label">Course Access</div>
-            <div className={`status-pill ${unlocked ? "is-unlocked" : ""}`}>
-              {unlocked ? "Unlocked" : "Locked"}
-            </div>
-            <div className="status-message">{statusLine}</div>
-            <div className="dashboard-actions">
-              {unlocked ? (
-                <button className="btn btn-cta btn-neo" onClick={openVideo}>
-                  Open 639 Steps (Google Drive)
-                </button>
-              ) : (
-                <div className="subtle small">Unlock access using the Unlock 639 Steps button above.</div>
-              )}
-            </div>
-          </div>
-
-          <div className="card-glass dashboard-card">
-            <div className="dashboard-card-media">
-              <img
-                src={accountPreview}
-                alt="Account preview"
-                loading="lazy"
-                decoding="async"
-                width="640"
-                height="360"
-              />
-            </div>
-            <div className="status-label">Account</div>
-            <h2 className="text-section">Welcome back.</h2>
-            <p className="text-body subtle">Signed in as {user?.email || "Guest"}</p>
-            <div className="dashboard-metrics">
-              <div className="metric-item">
-                <span className="metric-label">Course Access</span>
-                <span className="metric-value">{unlocked ? "Active" : "Locked"}</span>
-              </div>
-              <div className="metric-item">
-                <span className="metric-label">Training</span>
-                <span className="metric-value">639 practical steps</span>
-              </div>
-              <div className="metric-item">
-                <span className="metric-label">Support</span>
-                <span className="metric-value">Email + WhatsApp</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="card-glass dashboard-card" id="my-routines">
-            <div className="dashboard-card-media">
-              <img
-                src={routinePreview}
-                alt="My routines preview"
-                loading="lazy"
-                decoding="async"
-                width="640"
-                height="360"
-              />
-            </div>
-            <div className="status-label">My Training</div>
-            <p className="text-body subtle">Your 639-step routine library opens once payment is verified.</p>
-            <div className="routine-pills">
-              <span className="pill">Beginner</span>
-              <span className="pill">Intermediate</span>
-              <span className="pill">Advanced</span>
-            </div>
-            <div className="subtle small">Updates included with active access.</div>
-          </div>
-        </div>
-      </div>
-    </div>
+      </section>
+    </MainLayout>
   );
 }
-
-

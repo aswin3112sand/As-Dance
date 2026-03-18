@@ -42,8 +42,9 @@ public class AuthController {
     var u = authService.authenticate(req.email(), req.password());
     String token = jwtService.createToken(u.getId(), u.getEmail());
     addAuthCookie(response, request, token, Duration.ofDays(30));
+    boolean unlocked = authService.isUnlocked(u.getId());
 
-    return ResponseEntity.ok(new LoginResponse(true, "Login success", u.getId(), u.getEmail(), token));
+    return ResponseEntity.ok(new LoginResponse(true, "Login success", u.getId(), u.getEmail(), u.getFullName(), unlocked, token));
   }
 
   @PostMapping("/logout")
@@ -55,17 +56,20 @@ public class AuthController {
   @GetMapping("/me")
   public ResponseEntity<?> me(Authentication auth) {
     Authentication current = auth != null ? auth : SecurityContextHolder.getContext().getAuthentication();
-    if (current == null) return ResponseEntity.status(401).body(new ApiResponse(false, "Not logged in"));
-    Long userId = (Long) current.getPrincipal();
-    String email = (String) current.getCredentials();
+    if (current == null || !current.isAuthenticated()) {
+      return ResponseEntity.ok(new ApiResponse(false, "Not logged in"));
+    }
+    if (!(current.getPrincipal() instanceof Long userId) || !(current.getCredentials() instanceof String email)) {
+      return ResponseEntity.ok(new ApiResponse(false, "Not logged in"));
+    }
     if (!accessPolicy.isAllowedEmail(email)) {
-      return ResponseEntity.status(401).body(new ApiResponse(false, "EMAIL_NOT_ALLOWED"));
+      return ResponseEntity.ok(new ApiResponse(false, "EMAIL_NOT_ALLOWED"));
     }
 
+    var user = authService.findAllowedUser(userId, email);
     boolean unlocked = authService.isUnlocked(userId);
 
-    // name lookup optional (keep simple)
-    return ResponseEntity.ok(new MeResponse(userId, email, "AS DANCE User", unlocked));
+    return ResponseEntity.ok(new MeResponse(user.getId(), user.getEmail(), user.getFullName(), unlocked));
   }
 
   private static boolean isSecureRequest(HttpServletRequest request) {

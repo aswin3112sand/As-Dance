@@ -1,6 +1,8 @@
 import React, { useMemo } from "react";
-import { Play } from "../icons.jsx";
+import { PlayCircle } from "../icons.jsx";
 import Reveal from "./Reveal.jsx";
+import Button from "./Button.jsx";
+import GlassCard from "./GlassCard.jsx";
 import t10 from "../../assets/bg/t10.webp";
 import t12 from "../../assets/bg/t12.webp";
 import t16 from "../../assets/bg/t16.webp";
@@ -70,49 +72,40 @@ export default function DemoCards({ demos }) {
   }, [demos]);
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+    <div className="demo-grid">
       {items.slice(0, 3).map((url, idx) => {
         const disabled = !url;
         const thumb = DEMO_THUMBS[idx % DEMO_THUMBS.length];
 
         return (
-          <Reveal
-            key={`demo-${idx}`}
-            delay={idx * 0.06}
-            className="rounded-2xl border border-blue-500/25 bg-[#0F172A] p-6"
-          >
-            <div className="relative overflow-hidden rounded-xl border border-blue-500/20">
-              <img
-                src={thumb}
-                alt={`Sample lesson ${idx + 1}`}
-                loading="lazy"
-                decoding="async"
-                width="640"
-                height="360"
-                className="aspect-video w-full object-cover object-center"
-              />
-              <span className="absolute bottom-3 right-3 inline-flex h-9 w-9 items-center justify-center rounded-full bg-[#0B1220] text-[#3B82F6] border border-blue-500/30">
-                <Play size={16} />
-              </span>
-            </div>
+          <Reveal key={`demo-${idx}`} delay={idx * 0.06}>
+            <GlassCard className="demo-card" accent={idx === 1 ? "gold" : ""}>
+              <div className="media-panel" style={{ minHeight: "15rem" }}>
+                <img
+                  src={thumb}
+                  alt={`Sample lesson ${idx + 1}`}
+                  loading="lazy"
+                  decoding="async"
+                  width="640"
+                  height="360"
+                />
+                <div className="media-panel__copy">
+                  <span className="chip chip--gold">Lesson {idx + 1}</span>
+                </div>
+              </div>
 
-            <h3 className="mt-4 text-xl font-semibold text-white">Sample Lesson {idx + 1}</h3>
-            <p className="mt-2 text-gray-300 leading-relaxed">Step-by-step explanation with beginner-friendly pacing.</p>
+              <h3>Sample Lesson {idx + 1}</h3>
+              <p>Step-by-step explanation, repeat-friendly pacing, and clearer rhythm counts before you buy.</p>
 
-            {disabled ? (
-              <span className="mt-4 inline-flex min-h-[44px] w-full items-center justify-center rounded-xl border border-slate-600 bg-slate-900/70 text-gray-400">
-                Preview unavailable
-              </span>
-            ) : (
-              <a
-                className="mt-4 inline-flex min-h-[44px] w-full items-center justify-center rounded-xl bg-[#3B82F6] px-4 text-white font-semibold transition hover:scale-[1.02]"
-                href={url}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Watch Sample Lesson
-              </a>
-            )}
+              {disabled ? (
+                <span className="chip">Preview unavailable right now</span>
+              ) : (
+                <Button href={url} target="_blank" rel="noopener noreferrer">
+                  Watch sample lesson
+                  <PlayCircle size={16} aria-hidden="true" />
+                </Button>
+              )}
+            </GlassCard>
           </Reveal>
         );
       })}

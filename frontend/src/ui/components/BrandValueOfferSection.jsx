@@ -6,9 +6,9 @@ import Reveal from "./Reveal.jsx";
 import offerPoster from "../../assets/bg/poster.webp";
 
 const VALUE_STACK = [
-  { label: "639 Structured Step Library", value: "INR 800", icon: PlayCircle },
-  { label: "Beat Understanding Training", value: "INR 300", icon: Clock },
-  { label: "Section-wise Practice System", value: "INR 200", icon: ShieldCheck },
+  { label: "639 Step Library", value: "INR 800", icon: PlayCircle },
+  { label: "Beat Training", value: "INR 300", icon: Clock },
+  { label: "Practice System", value: "INR 200", icon: ShieldCheck },
   { label: "Lifetime Access", value: "INR 200", icon: Infinity },
 ];
 
@@ -17,6 +17,10 @@ export default memo(function BrandValueOfferSection() {
   const { user } = useAuth();
 
   const handleCheckout = () => {
+    if (user?.unlocked) {
+      nav("/dashboard");
+      return;
+    }
     const target = "/checkout?pay=1";
     if (!user) {
       nav(`/login?redirect=${encodeURIComponent(target)}`);
@@ -26,7 +30,7 @@ export default memo(function BrandValueOfferSection() {
   };
 
   return (
-    <section className="py-20 md:py-24" aria-labelledby="offer-title">
+    <section id="pricing" className="py-20 md:py-24" aria-labelledby="offer-title">
       <div className="max-w-7xl mx-auto px-6">
         <Reveal className="max-w-3xl">
           <p className="text-xs uppercase tracking-[0.16em] text-[#3B82F6]">Offer</p>
@@ -34,10 +38,10 @@ export default memo(function BrandValueOfferSection() {
             id="offer-title"
             className="mt-4 text-4xl md:text-5xl font-bold text-white leading-tight"
           >
-            Structured Value Stack + One-Time Offer
+            Start free if you want. Upgrade only when the flow feels right.
           </h2>
           <p className="mt-4 text-gray-300 text-base md:text-lg leading-relaxed">
-            Clear pricing. Clear structure. No subscription confusion.
+            The free class lowers pressure. The full course keeps the paid offer simple, premium, and easy to trust.
           </p>
         </Reveal>
 
@@ -71,13 +75,24 @@ export default memo(function BrandValueOfferSection() {
               <p className="mt-2 text-gray-300 text-sm">One-time payment. Lifetime access.</p>
             </div>
 
-            <button
-              type="button"
-              onClick={handleCheckout}
-              className="mt-6 min-h-[44px] w-full rounded-xl bg-[#3B82F6] px-5 py-3 text-white font-semibold shadow-md transition hover:scale-[1.02]"
-            >
-              Unlock 639 Steps Now
-            </button>
+            <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+              <a
+                href="#free-class"
+                className="inline-flex min-h-[44px] flex-1 items-center justify-center rounded-xl border border-blue-500/30 bg-[#0B1220] px-5 py-3 text-center font-semibold text-white transition hover:scale-[1.02]"
+              >
+                Try Free Class First
+              </a>
+              <button
+                type="button"
+                onClick={handleCheckout}
+                className="min-h-[44px] flex-1 rounded-xl bg-[#3B82F6] px-5 py-3 text-white font-semibold shadow-md transition hover:scale-[1.02]"
+              >
+                {user?.unlocked ? "Open Dashboard" : "Unlock 639 Steps Now"}
+              </button>
+            </div>
+            <p className="mt-4 text-sm leading-relaxed text-gray-300">
+              Good sales flow means cold visitors get a soft start and warm visitors get a clear checkout path.
+            </p>
           </Reveal>
 
           <Reveal delay={0.08}>

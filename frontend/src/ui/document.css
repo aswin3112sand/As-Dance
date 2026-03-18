@@ -1,0 +1,76 @@
+:root {
+  color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  margin: 0;
+  min-height: 100%;
+  background: #05000a;
+  color: #fff;
+  font-family: "Outfit", "Urbanist", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+  line-height: 1.5;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+.skip-link {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 0.65rem 1rem;
+  background: #fff;
+  color: #000;
+  text-decoration: none;
+  border-radius: 0 0 6px 6px;
+  transform: translateY(-140%);
+  z-index: 10000;
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}
+
+#preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.loader-content {
+  text-align: center;
+}
+
+.loader-text {
+  font-size: 2.5rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.loader-subtext {
+  margin-top: 0.55rem;
+  font-size: 0.85rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}

@@ -1,18 +1,70 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X } from "../icons.jsx";
+import { Menu, Sparkles, X } from "../icons.jsx";
+import { useAuth } from "../auth.jsx";
+import Button from "./Button.jsx";
 
-const NAV_SECTIONS = [
-  { id: "about", label: "About" },
-  { id: "services", label: "Services" },
-  { id: "preview", label: "Preview" },
-  { id: "reviews", label: "Reviews" },
-  { id: "contacts", label: "Contact" },
+const DEFAULT_LINKS = [
+  { key: "home", label: "Home", to: "/" },
+  { key: "preview", label: "639 Bundle", to: "/preview" },
+  { key: "services", label: "Custom Choreo", to: "/services" },
 ];
 
-export default function Navbar({ activeSection, loaded, isScrolled }) {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+const DEFAULT_WHATSAPP_LINK =
+  "https://wa.me/918825602356?text=Hi%20AS%20DANCE%2C%20free%20style-check%20preview%20venum%20before%20the%20INR%20499%20bundle.";
+
+function joinClasses(...values) {
+  return values.filter(Boolean).join(" ");
+}
+
+function NavLinkItem({ item, activeKey, onClick }) {
+  const isActive = item.key && item.key === activeKey;
+  const classes = joinClasses("site-nav__link", isActive ? "is-active" : "");
+
+  if (item.to) {
+    return (
+      <Link to={item.to} className={classes} onClick={onClick} aria-current={isActive ? "page" : undefined}>
+        {item.label}
+      </Link>
+    );
+  }
+
+  return (
+    <a href={item.href} className={classes} onClick={onClick} aria-current={isActive ? "location" : undefined}>
+      {item.label}
+    </a>
+  );
+}
+
+export default function Navbar({
+  links = DEFAULT_LINKS,
+  activeKey = "",
+  isScrolled = false,
+  ctaLabel = "Free WhatsApp Preview",
+  ctaHref = DEFAULT_WHATSAPP_LINK,
+  ctaTo = "",
+  secondaryLabel = "",
+  secondaryTo = "",
+  secondaryHref = "",
+}) {
   const location = useLocation();
+  const auth = useAuth();
+  const user = auth?.user ?? null;
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const utilityLink = useMemo(() => {
+    if (secondaryLabel) {
+      return secondaryTo
+        ? { label: secondaryLabel, to: secondaryTo }
+        : { label: secondaryLabel, href: secondaryHref };
+    }
+
+    if (user) {
+      return { label: "Dashboard", to: "/dashboard" };
+    }
+
+    return { label: "Login", to: "/login" };
+  }, [secondaryHref, secondaryLabel, secondaryTo, user]);
 
   useEffect(() => {
     setMobileMenuOpen(false);
@@ -22,102 +74,133 @@ export default function Navbar({ activeSection, loaded, isScrolled }) {
     const onEscape = (event) => {
       if (event.key === "Escape") setMobileMenuOpen(false);
     };
-    if (mobileMenuOpen) window.addEventListener("keydown", onEscape);
-    return () => window.removeEventListener("keydown", onEscape);
-  }, [mobileMenuOpen]);
 
-  useEffect(() => {
-    document.body.classList.toggle("mobile-menu-open", mobileMenuOpen);
-    return () => document.body.classList.remove("mobile-menu-open");
+    if (mobileMenuOpen) {
+      window.addEventListener("keydown", onEscape);
+      document.body.classList.add("mobile-menu-open");
+    }
+
+    return () => {
+      window.removeEventListener("keydown", onEscape);
+      document.body.classList.remove("mobile-menu-open");
+    };
   }, [mobileMenuOpen]);
 
   return (
     <>
-      <nav className={`navbar${loaded ? " is-nav-animated" : ""}${isScrolled ? " is-scrolled" : ""}`}>
-        <div className="container-max">
-          <Link to="/" className="brand fs-4 text-white fw-bold tracking-wider" style={{ fontFamily: "var(--font-display)" }}>
-            AS DANCE
-          </Link>
+      <header className="site-header">
+        <nav className={joinClasses("site-nav", isScrolled ? "is-scrolled" : "")} aria-label="Primary">
+          <div className="site-nav__inner">
+            <Link to="/" className="site-brand" aria-label="AS Dance home">
+              <span className="site-brand__mark">
+                <Sparkles size={16} aria-hidden="true" />
+              </span>
+              <span>AS Dance</span>
+            </Link>
 
-          <div className="nav-center">
-            {NAV_SECTIONS.map((item) => (
-              <a
-                key={item.id}
-                href={`#${item.id}`}
-                className={`nav-link${activeSection === item.id ? " is-active" : ""}`}
-                aria-current={activeSection === item.id ? "location" : undefined}
+            <div className="site-nav__links">
+              {links.map((item) => (
+                <NavLinkItem key={item.key || item.label} item={item} activeKey={activeKey} />
+              ))}
+            </div>
+
+            <div className="site-nav__actions">
+              {utilityLink.to ? (
+                <Button to={utilityLink.to} variant="ghost" className="site-nav__desktop-link">
+                  {utilityLink.label}
+                </Button>
+              ) : (
+                <Button
+                  href={utilityLink.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  variant="ghost"
+                  className="site-nav__desktop-link"
+                >
+                  {utilityLink.label}
+                </Button>
+              )}
+
+              {ctaTo ? (
+                <Button to={ctaTo}>{ctaLabel}</Button>
+              ) : (
+                <Button href={ctaHref} target={ctaHref?.startsWith("http") ? "_blank" : undefined} rel="noopener noreferrer">
+                  {ctaLabel}
+                </Button>
+              )}
+
+              <button
+                className="site-nav__toggle"
+                type="button"
+                onClick={() => setMobileMenuOpen(true)}
+                aria-label="Open navigation menu"
+                aria-controls="site-nav-drawer"
+                aria-expanded={mobileMenuOpen}
               >
-                <span className="nav-label">{item.label}</span>
-              </a>
-            ))}
+                <Menu size={20} aria-hidden="true" />
+              </button>
+            </div>
           </div>
-
-          <div className="header-actions">
-            <Link to="/login" className="nav-login-link nav-action-link">
-              Login
-            </Link>
-            <Link to="/register" className="btn nav-cta nav-access-btn nav-action-link">
-              <span className="cta-text">Get Access</span>
-            </Link>
-
-            <button
-              className="nav-toggle-btn"
-              type="button"
-              onClick={() => setMobileMenuOpen(true)}
-              aria-label="Open Menu"
-              aria-expanded={mobileMenuOpen}
-              aria-controls="mobile-menu-overlay"
-            >
-              <Menu size={24} color="#fff" />
-            </button>
-          </div>
-        </div>
-      </nav>
+        </nav>
+      </header>
 
       <div
-        id="mobile-menu-overlay"
-        className={`mobile-menu-overlay ${mobileMenuOpen ? "is-open" : ""}`}
-        aria-hidden={!mobileMenuOpen}
+        id="site-nav-drawer"
+        className={joinClasses("site-nav__drawer", mobileMenuOpen ? "is-open" : "")}
         role="dialog"
         aria-modal="true"
+        aria-hidden={!mobileMenuOpen}
       >
-        <div className="mobile-menu-header">
-          <Link
-            to="/"
-            className="brand fs-4 text-white fw-bold tracking-wider"
-            style={{ fontFamily: "var(--font-display)" }}
-            onClick={() => setMobileMenuOpen(false)}
-          >
-            AS DANCE
-          </Link>
-          <button
-            className="nav-close-btn"
-            type="button"
-            onClick={() => setMobileMenuOpen(false)}
-            aria-label="Close Menu"
-          >
-            <X size={28} color="#fff" />
-          </button>
-        </div>
-
-        <div className="mobile-menu-links">
-          {NAV_SECTIONS.map((item) => (
-            <a
-              key={item.id}
-              href={`#${item.id}`}
-              className={`mobile-nav-link${activeSection === item.id ? " is-active" : ""}`}
+        <div className="site-nav__drawer-panel">
+          <div className="site-nav__drawer-header">
+            <span className="site-brand">
+              <span className="site-brand__mark">
+                <Sparkles size={16} aria-hidden="true" />
+              </span>
+              <span>AS Dance</span>
+            </span>
+            <button
+              type="button"
+              className="site-nav__close"
               onClick={() => setMobileMenuOpen(false)}
+              aria-label="Close navigation menu"
             >
-              {item.label}
-            </a>
-          ))}
-          <div className="mobile-menu-actions">
-            <Link to="/login" className="btn btn-outline-light w-100 mb-3" onClick={() => setMobileMenuOpen(false)}>
-              Login
-            </Link>
-            <Link to="/register" className="btn btn-hero btn-cta-primary w-100" onClick={() => setMobileMenuOpen(false)}>
-              Get Access
-            </Link>
+              <X size={18} aria-hidden="true" />
+            </button>
+          </div>
+
+          <div className="site-nav__drawer-links">
+            {links.map((item) => (
+              <NavLinkItem
+                key={`drawer-${item.key || item.label}`}
+                item={item}
+                activeKey={activeKey}
+                onClick={() => setMobileMenuOpen(false)}
+              />
+            ))}
+            <NavLinkItem
+              item={utilityLink}
+              activeKey={activeKey}
+              onClick={() => setMobileMenuOpen(false)}
+            />
+          </div>
+
+          <div className="button-row" style={{ marginTop: "1rem" }}>
+            {ctaTo ? (
+              <Button to={ctaTo} className="w-full" onClick={() => setMobileMenuOpen(false)}>
+                {ctaLabel}
+              </Button>
+            ) : (
+              <Button
+                href={ctaHref}
+                target={ctaHref?.startsWith("http") ? "_blank" : undefined}
+                rel="noopener noreferrer"
+                className="w-full"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                {ctaLabel}
+              </Button>
+            )}
           </div>
         </div>
       </div>

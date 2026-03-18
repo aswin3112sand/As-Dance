@@ -1,60 +1,61 @@
 import React, { memo } from "react";
-import { Mail, PhoneCall, ShieldCheck, WhatsApp } from "../icons.jsx";
+import { Link } from "react-router-dom";
+import { ArrowRight, Mail, PhoneCall, ShieldCheck, WhatsApp } from "../icons.jsx";
+
+const SUPPORT_LINK = "https://wa.me/918825602356?text=Hi%20AS%20DANCE%2C%20I%20need%20help.";
 
 function Footer() {
   return (
-    <footer id="contacts" className="border-t border-blue-500/20 bg-[#0B1220] py-20 md:py-24">
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-          <section>
-            <h3 className="text-xl font-bold text-white">AS DANCE</h3>
-            <p className="mt-3 text-gray-300 leading-relaxed">
-              Structured 639-step practical dance course with one-time payment and lifetime access.
-            </p>
-            <p className="mt-2 text-gray-400 text-sm">Music used is for demonstration &amp; practice purposes.</p>
-          </section>
+    <footer id="contacts" className="site-footer">
+      <div className="container-max">
+        <div className="glass-card glass-card--gold site-footer__inner">
+          <div className="site-footer__grid">
+            <section className="site-footer__group">
+              <h3>AS Dance</h3>
+              <p className="muted">
+                639-step mastery training for beginners, reels, culturals, and wedding-ready performers. Start with a
+                free style check, unlock the INR 499 bundle, or request tiered custom choreography.
+              </p>
+              <span className="chip chip--gold">
+                <ShieldCheck size={14} aria-hidden="true" />
+                Preview first, one-time unlock, human support
+              </span>
+            </section>
 
-          <section>
-            <h3 className="text-xl font-bold text-white">Contact</h3>
-            <ul className="mt-3 space-y-3">
-              <li className="flex items-center gap-3 text-gray-300">
-                <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-blue-500/10 text-[#3B82F6]">
-                  <WhatsApp size={16} />
-                </span>
-                +91 88256 02356
-              </li>
-              <li className="flex items-center gap-3 text-gray-300">
-                <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-blue-500/10 text-[#3B82F6]">
-                  <Mail size={16} />
-                </span>
-                businessaswin@gmail.com
-              </li>
-              <li className="flex items-center gap-3 text-gray-300">
-                <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-blue-500/10 text-[#3B82F6]">
-                  <PhoneCall size={16} />
-                </span>
-                Replies within 24 hours
-              </li>
-            </ul>
-          </section>
+            <section className="site-footer__group">
+              <h4>Navigate</h4>
+              <div className="site-footer__links">
+                <Link to="/">Home</Link>
+                <Link to="/preview">639 Bundle</Link>
+                <Link to="/services">Custom Choreo Tiers</Link>
+                <Link to="/dashboard">Student Dashboard</Link>
+              </div>
+            </section>
 
-          <section>
-            <h3 className="text-xl font-bold text-white">Policy</h3>
-            <ul className="mt-3 space-y-2 text-gray-300">
-              <li>Dashboard access unlocks after successful payment.</li>
-              <li>Instruction support is available for paid users only.</li>
-              <li>Refund applies only if access is not delivered.</li>
-              <li>After delivery, digital sale is final.</li>
-            </ul>
-          </section>
-        </div>
+            <section className="site-footer__group">
+              <h4>Contact and policy</h4>
+              <div className="site-footer__links">
+                <a href={SUPPORT_LINK} target="_blank" rel="noopener noreferrer">
+                  <WhatsApp size={14} aria-hidden="true" /> WhatsApp preview + quote help
+                </a>
+                <a href="mailto:businessaswin@gmail.com">
+                  <Mail size={14} aria-hidden="true" /> businessaswin@gmail.com
+                </a>
+                <span>
+                  <PhoneCall size={14} aria-hidden="true" /> Replies within 24 hours
+                </span>
+                <span>Bundle refund applies only if access is not delivered.</span>
+              </div>
+            </section>
+          </div>
 
-        <div className="mt-10 border-t border-blue-500/20 pt-6 flex flex-wrap items-center justify-between gap-4">
-          <p className="text-gray-400 text-sm">© {new Date().getFullYear()} AS DANCE</p>
-          <span className="inline-flex items-center gap-2 rounded-full border border-blue-500/30 px-3 py-1.5 text-sm text-gray-300">
-            <ShieldCheck size={14} className="text-[#3B82F6]" />
-            Secure payment and guided access
-          </span>
+          <div className="site-footer__bottom">
+            <span>&copy; {new Date().getFullYear()} AS Dance. Music used only for demo, practice, and choreography reference.</span>
+            <a href={SUPPORT_LINK} target="_blank" rel="noopener noreferrer" className="chip">
+              Need preview or quote
+              <ArrowRight size={14} aria-hidden="true" />
+            </a>
+          </div>
         </div>
       </div>
     </footer>

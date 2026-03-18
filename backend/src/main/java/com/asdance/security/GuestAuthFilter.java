@@ -30,7 +30,9 @@ public class GuestAuthFilter extends OncePerRequestFilter {
   @Override
   protected boolean shouldNotFilter(@NonNull HttpServletRequest request) {
     String path = request.getRequestURI();
-    return path.startsWith("/static/")
+    return path.startsWith("/api/auth/")
+        || path.startsWith("/api/admin/")
+        || path.startsWith("/static/")
         || path.startsWith("/assets/")
         || STATIC_FILE_PATTERN.matcher(path).matches()
         || path.equals("/")

@@ -34,7 +34,9 @@ import {
   Move,
   Mail,
   Menu,
-  X
+  X,
+  Footprints,
+  Crown
 } from "lucide-react";
 
 export const WhatsApp = ({ size = 24, color = "currentColor", ...props }) => (
@@ -85,5 +87,7 @@ export {
   Move,
   Mail,
   Menu,
-  X
+  X,
+  Footprints,
+  Crown
 };

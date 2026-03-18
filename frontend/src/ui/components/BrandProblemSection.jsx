@@ -7,22 +7,22 @@ const PROBLEM_CARDS = [
   {
     icon: Activity,
     title: "Random Reel Copy",
-    description: "Many beginners copy steps without structure, so retention and confidence stay low.",
+    description: "Copy-only practice keeps retention and confidence low.",
   },
   {
     icon: Layers,
     title: "No Progress System",
-    description: "Without a clear order, practice becomes inconsistent and choreography memory breaks.",
+    description: "Without an order, practice becomes inconsistent fast.",
   },
   {
     icon: ShieldCheck,
     title: "Confidence Gap",
-    description: "Stage fear stays longer when training does not move from basics to performance mode.",
+    description: "Stage fear stays longer when basics never become performance drills.",
   },
   {
     icon: Sparkles,
     title: "Structured Solution",
-    description: "The 639-step progression fixes this with practical sequencing and repeatable routines.",
+    description: "The 639-step path fixes this with clean sequencing and repeatable routines.",
   },
 ];
 
@@ -36,7 +36,7 @@ export default memo(function BrandProblemSection() {
             Most beginners fail because the path is broken, not because talent is missing.
           </h2>
           <p className="mt-4 text-base leading-relaxed text-gray-300">
-            Clarity first. Then practice. Then confidence.
+            Clarity first. Practice next. Confidence follows.
           </p>
         </Reveal>
 

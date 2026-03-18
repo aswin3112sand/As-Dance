@@ -29,6 +29,6 @@ test("renders checkout screen", async () => {
     </MemoryRouter>
   );
 
-  expect(await screen.findByText(/Secure Checkout/i)).toBeInTheDocument();
-  expect(screen.getByRole("button", { name: /pay inr 499 now/i })).toBeInTheDocument();
+  expect(await screen.findByRole("heading", { name: /unlock the 639 mastery bundle/i })).toBeInTheDocument();
+  expect(screen.getAllByRole("button", { name: /pay inr 499 now/i }).length).toBeGreaterThan(0);
 });

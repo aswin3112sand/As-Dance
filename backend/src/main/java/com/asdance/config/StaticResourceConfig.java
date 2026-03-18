@@ -12,7 +12,9 @@ public class StaticResourceConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/assets/**")
-                .addResourceLocations("classpath:/static/assets/")
+                .addResourceLocations(
+                        "file:src/main/resources/static/assets/",
+                        "classpath:/static/assets/")
                 .setCacheControl(CacheControl.maxAge(365, TimeUnit.DAYS).cachePublic().immutable());
     }
 }

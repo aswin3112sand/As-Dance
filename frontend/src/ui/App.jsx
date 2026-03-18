@@ -2,7 +2,7 @@ import React, { Suspense, useEffect, useRef } from "react";
 import { BrowserRouter, Routes, Route, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "./auth.jsx";
 import { LazyMotion, domAnimation } from "framer-motion";
-import "./premium-buttons.css";
+import { scheduleAnalytics, trackPageView } from "./analytics.js";
 
 // Lazy load pages
 const Home = React.lazy(() => import("./pages/Home.jsx"));
@@ -15,13 +15,21 @@ const Dashboard = React.lazy(() => import("./pages/Dashboard.jsx"));
 const Admin = React.lazy(() => import("./pages/Admin.jsx"));
 const Preview = React.lazy(() => import("./pages/Preview.jsx"));
 const ServicePage = React.lazy(() => import("./pages/ServicePage.jsx"));
+const LandingPromo = React.lazy(() => import("./pages/LandingPromo.jsx"));
 const NotFound = React.lazy(() => import("./pages/NotFound.jsx"));
 
 function ProtectedRoute({ children }) {
   const { loading, user } = useAuth();
   const loc = useLocation();
   const from = `${loc.pathname}${loc.search || ""}`;
-  if (loading) return <div className="page-center text-white-50">Loading...</div>;
+  if (loading) {
+    return (
+      <div className="app-loading-inline">
+        <span className="spinner-dot" aria-hidden="true" />
+        Loading...
+      </div>
+    );
+  }
   if (!user) return <Navigate to="/login" replace state={{ from }} />;
   return children;
 }
@@ -66,18 +74,15 @@ function RevealObserver() {
 
 function MetaPixelPageTracker() {
   const location = useLocation();
-  const isFirstRender = useRef(true);
+  const initialRouteRef = useRef(`${location.pathname}${location.search || ""}`);
 
   useEffect(() => {
-    // Initial PageView is already fired from index.html.
-    if (isFirstRender.current) {
-      isFirstRender.current = false;
-      return;
-    }
+    scheduleAnalytics();
+  }, []);
 
-    if (typeof window !== "undefined" && typeof window.fbq === "function") {
-      window.fbq("track", "PageView");
-    }
+  useEffect(() => {
+    const path = `${location.pathname}${location.search || ""}`;
+    trackPageView(path, path === initialRouteRef.current);
   }, [location.pathname, location.search]);
 
   return null;
@@ -89,9 +94,8 @@ function OfferPopupMount() {
   const { loading, user } = useAuth();
 
   const isOfferRoute =
-    location.pathname === "/" ||
-    location.pathname === "/home" ||
-    location.pathname === "/dance";
+    location.pathname === "/landing" ||
+    location.pathname === "/offer";
 
   const handlePrimaryCta = () => {
     const target = "/checkout?pay=1";
@@ -114,7 +118,7 @@ function OfferPopupMount() {
 export default function App() {
   return (
     <AuthProvider>
-      <BrowserRouter>
+      <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <a className="skip-link" href="#main-content">Skip to content</a>
         <RevealObserver />
         <MetaPixelPageTracker />
@@ -126,6 +130,8 @@ export default function App() {
                 <Route path="/" element={<RootRoute />} />
                 <Route path="/home" element={<Home />} />
                 <Route path="/dance" element={<Home />} />
+                <Route path="/landing" element={<LandingPromo />} />
+                <Route path="/offer" element={<LandingPromo />} />
                 <Route path="/services" element={<ServicePage />} />
                 <Route path="/preview" element={<Preview />} />
                 <Route path="/login" element={<Login />} />

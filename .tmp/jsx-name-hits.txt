@@ -1,0 +1,52 @@
+frontend\src\ui\components\BrandStorySection.jsx:48:              alt="AS Dance story visual"
+frontend\src\ui\pages\ServicePage.jsx:99:        "Hi AS DANCE, enakku custom choreography details venum. Song anupina process explain pannunga."
+frontend\src\ui\pages\ServicePage.jsx:146:                    alt="AS Dance rehearsal and choreography visual"
+frontend\src\ui\pages\ServicePage.jsx:204:                `Hi AS DANCE, ${tier.title} (${tier.price}) custom choreography start panna aasai. Song share pannuren.`
+frontend\src\ui\pages\Register.jsx:49:      const fallbackName = email.split("@")[0] || "AS DANCE User";
+frontend\src\ui\pages\Register.jsx:91:                they are entering the AS Dance brand experience.
+frontend\src\ui\pages\Login.jsx:74:                <img src={stageImage} alt="AS Dance stage mood" loading="lazy" decoding="async" width="900" height="1200" />
+frontend\src\ui\pages\Login.jsx:75:                <img src={supportImage} alt="AS Dance trainer support visual" loading="lazy" decoding="async" width="900" height="1200" />
+frontend\src\ui\pages\Home.jsx:291:              description="Explore the programs and premium choreography paths inside AS Dance. Every card is a clear entry point, not visual clutter."
+frontend\src\ui\pages\Home.jsx:333:              eyebrow="Why AS Dance"
+frontend\src\ui\pages\Home.jsx:371:                  alt="AS Dance transformation and stage-ready storytelling visual"
+frontend\src\ui\pages\Home.jsx:604:                    alt="AS Dance support and coaching visual"
+frontend\src\ui\pages\Dashboard.jsx:68:                Welcome back to AS Dance.
+frontend\src\ui\pages\Checkout.jsx:147:      name: "As Dance",
+frontend\src\ui\test\Home.test.jsx:24:  expect(screen.getAllByText(/AS DANCE/i).length).toBeGreaterThan(0);
+frontend\src\ui\components\ReviewsSection.jsx:20:  { name: "Rahul M", role: "Competition Team", quote: "Won regional championship thanks to AS Dance" },
+frontend\src\ui\components\ReviewsSection.jsx:40:            description="Don't just take our word for it. See how AS Dance is helping beginners, performers, families, and event teams move with confidence."
+frontend\src\ui\components\ReviewLoop.jsx:31:  { id: 1, name: "Karthi", profileIndex: 0, tagline: "AS DANCE Learner", txt: "Na beginner. 1st week la than confidence increase aachu." },
+frontend\src\ui\components\ReviewLoop.jsx:32:  { id: 2, name: "Stephan", profileIndex: 1, tagline: "AS DANCE Learner", txt: "Steps easy ah split pannirukanga, daily practice panna romba use aachu." },
+frontend\src\ui\components\ReviewLoop.jsx:33:  { id: 3, name: "Babu", profileIndex: 2, tagline: "AS DANCE Learner", txt: "Beat follow panna theriyala nu irundhen. Ippo counts clear ah puriyuthu." },
+frontend\src\ui\components\ReviewLoop.jsx:34:  { id: 4, name: "Godjeni", profileIndex: 3, tagline: "AS DANCE Learner", txt: "WhatsApp support quick. Doubt ketta immediate direction kuduthanga." },
+frontend\src\ui\components\ReviewLoop.jsx:35:  { id: 5, name: "Rickson", profileIndex: 4, tagline: "AS DANCE Learner", txt: "Short daily drills nala body control improve aaguthu." },
+frontend\src\ui\components\ReviewLoop.jsx:36:  { id: 6, name: "Akash", profileIndex: 5, tagline: "AS DANCE Learner", txt: "Tamil + English explanation nala confuse agala." },
+frontend\src\ui\components\ReviewLoop.jsx:37:  { id: 7, name: "Arun", profileIndex: 6, tagline: "AS DANCE Learner", txt: "College culturals ku prepare aagarathukku helpful framework." },
+frontend\src\ui\components\ReviewLoop.jsx:38:  { id: 8, name: "Wifread", profileIndex: 7, tagline: "AS DANCE Learner", txt: "Access and flow simple ah irundhuchu, mobile la practice panniten." },
+frontend\src\ui\components\ReviewLoop.jsx:39:  { id: 9, name: "Akish", profileIndex: 8, tagline: "AS DANCE Learner", txt: "Naan stage fear irundhen. Ippo konjam confident ah aadaren." },
+frontend\src\ui\components\ReviewLoop.jsx:40:  { id: 10, name: "Vishal", profileIndex: 9, tagline: "AS DANCE Learner", txt: "Pacing nalla iruku. Over speed illa, clear progression iruku." },
+frontend\src\ui\components\ReviewLoop.jsx:41:  { id: 11, name: "Rabi", profileIndex: 10, tagline: "AS DANCE Learner", txt: "Practice routine set pannitu follow panna easy aachu." },
+frontend\src\ui\components\ReviewLoop.jsx:42:  { id: 12, name: "Rio", profileIndex: 11, tagline: "AS DANCE Learner", txt: "Promise pannina support timing ku reply vandhuchu." },
+frontend\src\ui\components\ReviewLoop.jsx:43:  { id: 13, name: "Kabi", profileIndex: 12, tagline: "AS DANCE Learner", txt: "Motivation drop aagumbothu guidance helpful ah irundhuchu." },
+frontend\src\ui\components\ReviewLoop.jsx:44:  { id: 14, name: "PeriyaVijay", profileIndex: 13, tagline: "AS DANCE Learner", txt: "Home la practice panna suitable format." },
+frontend\src\ui\components\ReviewLoop.jsx:45:  { id: 15, name: "Venkat", profileIndex: 14, tagline: "AS DANCE Learner", txt: "Course path clear. Enna first panna nu direct ah therinjiduchu." },
+frontend\src\ui\components\ReviewLoop.jsx:46:  { id: 16, name: "Starwin", profileIndex: 15, tagline: "AS DANCE Learner", txt: "Beginner-ku nalla starting point nu feel aachu." }
+frontend\src\ui\components\PaymentSection.jsx:9:  const displayName = user?.fullName || user?.email?.split("@")[0] || "AS DANCE Learner";
+frontend\src\ui\components\OfferPopup.jsx:144:                    AS Dance turns random practice into a guided path for beginners, creators, and performers.
+frontend\src\ui\components\NewHeroHeader.jsx:130:                <div className="nhh-logo">AS DANCE</div>
+frontend\src\ui\components\BannerStrip.jsx:128:              Welcome to AS DANCE
+frontend\src\ui\components\BannerStrip.jsx:189:                  alt="AS DANCE welcome banner"
+frontend\src\ui\components\Navbar.jsx:94:            <Link to="/" className="site-brand" aria-label="AS Dance home">
+frontend\src\ui\components\Navbar.jsx:98:              <span>AS Dance</span>
+frontend\src\ui\components\Navbar.jsx:160:              <span>AS Dance</span>
+frontend\src\ui\components\EnhancedNavbar.jsx:88:          AS DANCE
+frontend\src\ui\components\LevelCards.jsx:9:const COURSE_WA_TEXT = "Hi AS DANCE, enakku INR 499 639-step course details venum.";
+frontend\src\ui\components\LevelCards.jsx:12:const SERVICE_WA_TEXT = "Hi AS DANCE, custom choreography service details venum.";
+frontend\src\ui\components\HeroSection.jsx:383:                  aria-label="AS Dance choreography preview"
+frontend\src\ui\components\DanceCarousel.jsx:198:        <section className="dance-carousel stage-carousel" aria-label="AS DANCE premium stage carousel">
+frontend\src\ui\components\DanceCarousel.jsx:209:                <p className="stage-kicker">AS DANCE - 639 Premium Step Curriculum</p>
+frontend\src\ui\components\BuyNowButton.jsx:95:      name: "AS DANCE",
+frontend\src\ui\components\BuyNowButton.jsx:122:        name: user?.fullName || user?.email?.split("@")[0] || "AS DANCE Learner",
+frontend\src\ui\components\Footer.jsx:13:              <h3>AS Dance</h3>
+frontend\src\ui\components\Footer.jsx:52:            <span>&copy; {new Date().getFullYear()} AS Dance. Music used only for demo and practice.</span>
+frontend\src\ui\components\BrandValueOfferSection.jsx:102:                alt="AS Dance offer visual"

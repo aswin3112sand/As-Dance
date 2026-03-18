@@ -14,7 +14,7 @@ test("renders preview navigation and demo section", async () => {
     </MemoryRouter>
   );
 
-  expect(screen.getByText(/as dance/i)).toBeInTheDocument();
+  expect(screen.getAllByText(/as dance/i).length).toBeGreaterThan(0);
   expect(screen.getByRole("link", { name: /back to home/i })).toHaveAttribute("href", "/");
   expect(await screen.findByText(/demo section/i)).toBeInTheDocument();
 });

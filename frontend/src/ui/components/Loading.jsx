@@ -1,13 +1,10 @@
-import React from 'react';
+import React from "react";
 
-const Loading = () => {
-    return (
-        <div className="d-flex justify-content-center align-items-center vh-100 bg-black">
-            <div className="spinner-border text-primary" role="status">
-                <span className="visually-hidden">Loading...</span>
-            </div>
-        </div>
-    );
-};
-
-export default Loading;
+export default function Loading() {
+  return (
+    <div className="app-loading" role="status" aria-live="polite">
+      <span className="spinner-dot" aria-hidden="true" />
+      Loading...
+    </div>
+  );
+}

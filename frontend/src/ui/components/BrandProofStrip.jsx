@@ -14,7 +14,7 @@ export default memo(function BrandProofStrip() {
               Real Learners. Real Progress.
             </h3>
             <p className="mt-3 text-gray-300 leading-relaxed">
-              4.8/5 average learner rating and 1,000+ students using the structured path.
+              4.8/5 rating. 1,000+ learners on the structured path.
             </p>
           </Reveal>
 
@@ -24,7 +24,7 @@ export default memo(function BrandProofStrip() {
               Trust Before Purchase
             </h3>
             <p className="mt-3 text-gray-300 leading-relaxed">
-              Transparent feedback helps users decide confidently. No inflated claims, only practical outcomes.
+              Transparent feedback. No inflated claims.
             </p>
           </Reveal>
         </div>

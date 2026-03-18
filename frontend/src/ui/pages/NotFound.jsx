@@ -1,14 +1,35 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import MainLayout from "../layouts/MainLayout.jsx";
+import GlassCard from "../components/GlassCard.jsx";
+import Button from "../components/Button.jsx";
 
-export default function NotFound(){
+export default function NotFound() {
   return (
-    <div className="container-max section">
-      <div className="card-glass p-4">
-        <h2 className="fw-bold">Page not found</h2>
-        <p className="subtle">This route is handled by React Router. Ensure Spring Boot SPA forward is enabled.</p>
-        <Link to="/" className="btn btn-neon">Go Home</Link>
-      </div>
-    </div>
+    <MainLayout
+      navProps={{
+        links: [
+          { key: "home", label: "Home", to: "/" },
+          { key: "preview", label: "Preview", to: "/preview" },
+        ],
+        ctaLabel: "Go Home",
+        ctaTo: "/",
+      }}
+    >
+      <section className="section-shell">
+        <div className="container-max">
+          <div className="result-shell">
+            <GlassCard className="result-card" accent="red">
+              <h1>Page not found</h1>
+              <p className="muted">
+                This route is handled by React Router. The page shell is still intact, but this specific URL does not exist.
+              </p>
+              <div className="button-row" style={{ marginTop: "1.5rem" }}>
+                <Button to="/">Go Home</Button>
+              </div>
+            </GlassCard>
+          </div>
+        </div>
+      </section>
+    </MainLayout>
   );
 }
